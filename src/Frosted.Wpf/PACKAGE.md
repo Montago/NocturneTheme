@@ -42,7 +42,7 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
 
 ## What is in it
 
-- **FrostedWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` (0.3),
+- **FrostedWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` (0.5),
   44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2 or with
   transparency effects off it paints an opaque ground of the same colour.
 - **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,

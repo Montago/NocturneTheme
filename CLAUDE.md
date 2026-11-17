@@ -12,7 +12,7 @@ dictionary, MahApps-style resource keys with a `Frosted.` prefix.
 - Keep the design's values (colours, radii, sizes, 120/150 ms transitions). The Tokens board is the
   spec; `Styles/Brushes.xaml` holds the colours.
 - Window defaults chosen by the user after trying them on screen (they differ from the design's
-  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.3.
+  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.5.
 - No grain/noise texture. The design had one; the user tried many versions (sandblasted, hammered,
   1:1 pixels) and had it removed: it added nothing and turned to mud over RDP compression.
 - Accents: `FrostedTheme.SetAccent` (`Controls/FrostedTheme.cs`) writes the accent brushes,

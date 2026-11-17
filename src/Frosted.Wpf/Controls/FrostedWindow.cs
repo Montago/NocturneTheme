@@ -90,9 +90,9 @@ public class FrostedWindow : Window
     public bool IsBackdropActive => (bool)GetValue(IsBackdropActiveProperty);
 
     public static readonly DependencyProperty TintOpacityProperty = DependencyProperty.Register(
-        nameof(TintOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.3));
+        nameof(TintOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.5));
 
-    /// <summary>How strongly the dark tint (<c>Frosted.Brushes.Window.Tint</c>) covers the backdrop.</summary>
+    /// <summary>How strongly the dark tint (<c>Frosted.Brushes.Window.Tint</c>) covers the backdrop (0.5 by default).</summary>
     public double TintOpacity
     {
         get => (double)GetValue(TintOpacityProperty);

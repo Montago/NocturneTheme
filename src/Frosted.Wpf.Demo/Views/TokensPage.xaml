@@ -42,7 +42,7 @@
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                     </Border>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="2 · Tint" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Window.Tint #101E16 × TintOpacity (0.3)" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Window.Tint #101E16 × TintOpacity (0.5)" />
                 </StackPanel>
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}">
