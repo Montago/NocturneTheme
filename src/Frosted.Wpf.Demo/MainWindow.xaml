@@ -23,20 +23,24 @@
                     <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding TintOpacity, ElementName=Window, StringFormat={}{0:P0}}" />
                     <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Tint" />
                 </DockPanel>
-                <Slider Margin="8,0,0,10" Minimum="0.2" Maximum="0.9" SmallChange="0.05" LargeChange="0.1"
+                <Slider Margin="8,0,0,14" Minimum="0.2" Maximum="0.9" SmallChange="0.05" LargeChange="0.1"
                         Value="{Binding TintOpacity, ElementName=Window}" AutomationProperties.Name="Tint" />
-                <DockPanel Margin="8,0,0,0">
-                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding NoiseOpacity, ElementName=Window, StringFormat={}{0:P0}}" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Grain" />
-                </DockPanel>
-                <Slider Margin="8,0,0,10" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
-                        Value="{Binding NoiseOpacity, ElementName=Window}" AutomationProperties.Name="Grain" />
-                <DockPanel Margin="8,0,0,0">
-                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding GrainSize, ElementName=Window, StringFormat={}{0:0.#} px}" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Grain size" />
-                </DockPanel>
-                <Slider Margin="8,0,0,0" Minimum="1" Maximum="6" SmallChange="0.5" LargeChange="1" IsSnapToTickEnabled="True" TickFrequency="0.5"
-                        Value="{Binding GrainSize, ElementName=Window}" AutomationProperties.Name="Grain size" />
+                <TextBlock Margin="8,0,0,8" Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Accent" />
+                <StackPanel x:Name="AccentPicker" Margin="8,0,0,0" Orientation="Horizontal">
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.Green}" Background="#1F9D57"
+                                 IsChecked="True" ToolTip="Green" AutomationProperties.Name="Green" Checked="OnAccentChecked" />
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.Orange}" Background="#D9661A"
+                                 ToolTip="Orange" AutomationProperties.Name="Orange" Checked="OnAccentChecked" />
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.Blue}" Background="#1F78D1"
+                                 ToolTip="Blue" AutomationProperties.Name="Blue" Checked="OnAccentChecked" />
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.Yellow}" Background="#D1A112"
+                                 ToolTip="Yellow" AutomationProperties.Name="Yellow" Checked="OnAccentChecked" />
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.Red}" Background="#D13A3A"
+                                 ToolTip="Red" AutomationProperties.Name="Red" Checked="OnAccentChecked" />
+                    <!-- Filled from code with the colour chosen in Windows -->
+                    <RadioButton x:Name="SystemSwatch" Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static fg:FrostedAccent.System}"
+                                 ToolTip="Windows accent colour" AutomationProperties.Name="Windows accent colour" Checked="OnAccentChecked" />
+                </StackPanel>
             </StackPanel>
 
             <TextBlock DockPanel.Dock="Top" Margin="8,8,8,12" Style="{StaticResource Frosted.Styles.TextBlock.Eyebrow}" Text="LIBRARY" />

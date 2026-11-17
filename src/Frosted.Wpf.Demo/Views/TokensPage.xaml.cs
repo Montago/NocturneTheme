@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Frosted.Wpf.Controls;
 
 namespace Frosted.Wpf.Demo.Views;
 
@@ -31,6 +32,14 @@ public partial class TokensPage : UserControl
     public TokensPage()
     {
         InitializeComponent();
+        ShowSwatches();
+
+        // The accent buttons replace brushes; show the new ones.
+        FrostedTheme.AccentChanged += (_, _) => ShowSwatches();
+    }
+
+    private void ShowSwatches()
+    {
         Swatches.ItemsSource = SwatchKeys.Select(s => new Swatch(s.Name, s.Key, (Brush)FindResource(s.Key))).ToList();
     }
 

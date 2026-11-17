@@ -8,8 +8,7 @@ namespace Frosted.Wpf.Controls;
 /// The soft light from the window's top-left corner, drawn as a dithered bitmap.
 /// <para>
 /// As a gradient brush the light (8 % white fading out over the first 38 % of the diagonal) has
-/// only about 20 alpha steps, which show as diagonal bands across the window, above all when the
-/// grain is weak or a remote desktop connection smooths it away. Here every pixel rounds its exact
+/// only about 20 alpha steps, which show as diagonal bands across the window. Here every pixel rounds its exact
 /// value up or down at random (a hash of its position), so the steps dissolve into noise finer
 /// than the eye can see.
 /// </para>

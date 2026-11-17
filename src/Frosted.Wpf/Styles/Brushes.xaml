@@ -3,10 +3,13 @@
     backdrop: there is no blur inside the window. Reference them with DynamicResource.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:c="clr-namespace:Frosted.Wpf.Controls">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Accent (meadow green) -->
+    <!--
+        Accent (meadow green). FrostedTheme.SetAccent switches the accent brushes, Text.OnAccent, the
+        primary button, Popup and the window's Tint and Fallback to another hue.
+    -->
+
     <Color x:Key="Frosted.Colors.Accent">#FF1F9D57</Color>
     <Color x:Key="Frosted.Colors.Accent.Light">#FF3FD27F</Color>
     <SolidColorBrush x:Key="Frosted.Brushes.Accent" Color="#FF1F9D57" />
@@ -20,6 +23,7 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Text.Label" Color="#D6EEF4F0" />
     <SolidColorBrush x:Key="Frosted.Brushes.Text.Hint" Color="#BDEBF2ED" />
     <SolidColorBrush x:Key="Frosted.Brushes.Text.Placeholder" Color="#9EEBF2ED" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.Selected" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Text.OnAccent" Color="#FFFFFFFF" />
 
     <!-- Glass surfaces -->
@@ -110,11 +114,9 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Success" Color="#FF8EF0B8" />
     <SolidColorBrush x:Key="Frosted.Brushes.Success.Background" Color="#293FD27F" />
 
-    <!-- Window layers, from the bottom: backdrop (or the fallback ground), tint, grain, light -->
+    <!-- Window layers, from the bottom: backdrop (or the fallback ground), tint, light -->
     <SolidColorBrush x:Key="Frosted.Brushes.Window.Fallback" Color="#FF1E2E25" />
     <SolidColorBrush x:Key="Frosted.Brushes.Window.Tint" Color="#FF101E16" />
-    <ImageBrush x:Key="Frosted.Brushes.Noise" ImageSource="{x:Static c:NoiseTexture.Image}"
-                TileMode="Tile" Stretch="None" ViewportUnits="Absolute" Viewport="0,0,512,512" />
     <!-- The light as a brush, for own templates. FrostedWindow draws it dithered instead (LightTexture), as a gradient this faint shows bands -->
     <LinearGradientBrush x:Key="Frosted.Brushes.Window.Light" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#14FFFFFF" />

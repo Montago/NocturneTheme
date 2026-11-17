@@ -24,6 +24,7 @@ internal static class NativeMethods
     public const int WmStyleChanging = 0x007C;
     public const int WmSysCommand = 0x0112;
     public const int WmSettingChange = 0x001A;
+    public const int WmDwmColorizationColorChanged = 0x0320;
     public const int ScKeyMenu = 0xF100;
     public const int GwlStyle = -16;
     public const int WsSysMenu = 0x00080000;

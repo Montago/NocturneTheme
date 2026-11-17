@@ -18,7 +18,7 @@
     <Version>0.1.0</Version>
     <Authors>Martin Kirk</Authors>
     <Copyright>Copyright (c) 2026 Martin Kirk</Copyright>
-    <Description>Frosted Glass: a dark, frosted-glass theme for WPF on .NET 8+. Windows 11 Acrylic, Mica or Mica Alt shows through a tinted, grainy window, with glass cards and styles for the standard controls.</Description>
+    <Description>Frosted Glass: a dark, frosted-glass theme for WPF on .NET 8+. Windows 11 Acrylic, Mica or Mica Alt shows through a tinted window, with glass cards and styles for the standard controls.</Description>
     <PackageTags>wpf;theme;mica;acrylic;glass;frosted;dark;controls;styles</PackageTags>
     <PackageProjectUrl>https://github.com/Montago/FrostedWpfTheme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Montago/FrostedWpfTheme</RepositoryUrl>

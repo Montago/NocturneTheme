@@ -1,8 +1,9 @@
 # Frosted Glass for WPF
 
 A dark, frosted-glass theme for WPF (.NET 8+), built from the "Frosted Glass" design: the Windows 11
-backdrop (Acrylic by default, or Mica / Mica Alt) under a dark green tint, a fine grain and a soft light from the
-top-left corner, with glass cards and controls on top.
+backdrop (Acrylic by default, or Mica / Mica Alt) under a dark tint and a soft light from the top-left
+corner, with glass cards and controls on top. The accent is meadow green; `FrostedTheme.SetAccent`
+switches it to orange, blue, yellow, red or the Windows accent colour.
 
 This is the first, basic control set. See [src/Frosted.Wpf/PACKAGE.md](src/Frosted.Wpf/PACKAGE.md)
 for how to use the package.

@@ -30,7 +30,7 @@
 
         <!-- Layer stack -->
         <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="LAYERS — FROM THE BOTTOM UP">
-            <UniformGrid Columns="5">
+            <UniformGrid Columns="4">
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}" Background="Transparent" />
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="1 · Backdrop" />
@@ -48,17 +48,6 @@
                     <Border Style="{StaticResource LayerSample}">
                         <Grid>
                             <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="1" />
-                        </Grid>
-                    </Border>
-                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="3 · Grain" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Noise 512 × 512, specks GrainSize (1) across, tiled × NoiseOpacity (0.3); shown at full strength here" />
-                </StackPanel>
-                <StackPanel Margin="0,0,16,0">
-                    <Border Style="{StaticResource LayerSample}">
-                        <Grid>
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{Binding NoiseOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                             <Rectangle>
                                 <Rectangle.Fill>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -69,21 +58,20 @@
                             </Rectangle>
                         </Grid>
                     </Border>
-                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="4 · Light" />
+                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="3 · Light" />
                     <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="8 % white from the top-left corner, dithered (LightTexture) so it shows no bands" />
                 </StackPanel>
                 <StackPanel>
                     <Border Style="{StaticResource LayerSample}">
                         <Grid>
                             <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{Binding NoiseOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                             <Border Margin="14,22" CornerRadius="10" Background="{DynamicResource Frosted.Brushes.Surface1}"
                                     BorderBrush="{DynamicResource Frosted.Brushes.Surface1.Border}" BorderThickness="1">
                                 <Border Margin="10,0" Height="28" CornerRadius="7" Background="{DynamicResource Frosted.Brushes.Surface2}" />
                             </Border>
                         </Grid>
                     </Border>
-                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="5 · Glass surfaces" />
+                    <TextBlock FontSize="14" FontWeight="SemiBold" Text="4 · Glass surfaces" />
                     <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Surface1 (cards) · Surface2 (selected)" />
                 </StackPanel>
             </UniformGrid>

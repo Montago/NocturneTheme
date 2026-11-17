@@ -12,16 +12,21 @@ dictionary, MahApps-style resource keys with a `Frosted.` prefix.
 - Keep the design's values (colours, radii, sizes, 120/150 ms transitions). The Tokens board is the
   spec; `Styles/Brushes.xaml` holds the colours.
 - Window defaults chosen by the user after trying them on screen (they differ from the design's
-  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.3, `NoiseOpacity` 0.3.
-- The grain should look sandblasted: fine, even, soft specks with no direction (the user tried and
-  rejected embossed "hammered glass" bumps). `NoiseTexture` hashes every pixel (SplitMix64; the
-  seeded `System.Random` showed diagonal streaks), blurs to `GrainSize` (default 1: one speck per screen pixel, chosen by the user), and
-  `FrostedWindow` draws the 512px tile 1:1 to screen pixels at any display scaling.
+  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.3.
+- No grain/noise texture. The design had one; the user tried many versions (sandblasted, hammered,
+  1:1 pixels) and had it removed: it added nothing and turned to mud over RDP compression.
+- Accents: `FrostedTheme.SetAccent` (`Controls/FrostedTheme.cs`) writes the accent brushes,
+  `Text.OnAccent`, primary button, `Popup`, `Window.Tint` and `Window.Fallback` for green (default),
+  orange, blue, yellow (dark text on it), red or `System` into the app's resources. `System` reads
+  Windows' 7-shade `AccentPalette` from HKCU\...\Explorer\Accent (no Windows SDK target needed),
+  derives the ground from its hue and picks white or dark `OnAccent` by luminance; FrostedWindow's
+  WndProc (WM_SETTINGCHANGE, WM_DWMCOLORIZATIONCOLORCHANGED) makes it follow live. New
+  accent-coloured brushes must be added to the palettes too. `--snapshot` writes `accent-<name>.png`.
 - The light from the top-left corner is drawn dithered (`Controls/LightTexture.cs`, `PART_Light`),
   pixel for pixel and redrawn 150 ms after a resize. As a plain gradient (8 % to 0) it has ~20
-  steps that show as diagonal bands, worst over RDP, which smooths the grain away. `--snapshot`
+  steps that show as diagonal bands, worst over RDP. `--snapshot`
   writes `light.png` (gradient left, dithered right; stretch the contrast to compare).
-- Everything is MIT. The grain is drawn in code (`Controls/NoiseTexture.cs`); no third-party images
+- Everything is MIT. No third-party images
   or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
   `Frosted.Fonts.Family`).
 - This is the basic control set. Grow it step by step; do not add a large set of extra controls
@@ -35,7 +40,7 @@ src/Frosted.Wpf/              library (net8.0-windows, NuGet package Frosted.Wpf
   Styles/Brushes.xaml, Fonts.xaml, Icons.xaml
   Styles/Controls.*.xaml      one file per control group
   Themes/Generic.xaml         merges Frosted.xaml (implicit styles don't reach MainWindow : FrostedWindow)
-  Controls/                   FrostedWindow, StrokeIcon, TabPanelBorder, NoiseTexture, NativeMethods
+  Controls/                   FrostedWindow, FrostedTheme (accents), LightTexture, StrokeIcon, TabPanelBorder, NativeMethods
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper (attached properties)
 src/Frosted.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
 ```

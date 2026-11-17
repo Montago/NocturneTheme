@@ -1,5 +1,5 @@
 <!--
-    FrostedWindow: backdrop (or the opaque fallback), tint, grain and the light from the top-left
+    FrostedWindow: backdrop (or the opaque fallback), tint and the light from the top-left
     corner, under a 44px title bar with 46 x 32 caption buttons.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -71,8 +71,6 @@
                         <!-- Layers, from the bottom -->
                         <Border x:Name="Fallback" Background="{DynamicResource Frosted.Brushes.Window.Fallback}" />
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{TemplateBinding TintOpacity}" />
-                        <!-- FrostedWindow fills it with a tile for the display scaling and GrainSize -->
-                        <Rectangle x:Name="PART_Grain" Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{TemplateBinding NoiseOpacity}" />
                         <!-- The light from the top-left corner: FrostedWindow draws it dithered for the window's size -->
                         <Image x:Name="PART_Light" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" IsHitTestVisible="False" />
 

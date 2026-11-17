@@ -1,7 +1,7 @@
 ﻿# Frosted Glass for WPF
 
 A dark, frosted-glass theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic, Mica or
-Mica Alt) shows through a tinted, grainy window; cards and controls are light glass surfaces on top.
+Mica Alt) shows through a tinted window; cards and controls are light glass surfaces on top.
 One resource dictionary styles the standard controls; `FrostedWindow` gives the frame.
 
 ## Getting started
@@ -42,7 +42,7 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
 
 ## What is in it
 
-- **FrostedWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` and `NoiseOpacity` (0.3 each),
+- **FrostedWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` (0.3),
   44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2 or with
   transparency effects off it paints an opaque ground of the same colour.
 - **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,
@@ -51,6 +51,9 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
   side navigation, Slider, ProgressBar (indeterminate), ScrollViewer, GroupBox, Expander, TabControl
   (segmented and `.Document` tabs with close buttons, badges and "+"), DataGrid, ContextMenu, Menu,
   ToolTip, Hyperlink, Separator.
+- **Accent colours**: meadow green by default; `FrostedTheme.SetAccent(FrostedAccent.Blue)` (or Orange,
+  Yellow, Red) switches the accent, the primary button and the window tint at run time. `FrostedAccent.System` uses
+  the accent colour chosen in Windows and follows it when the user changes it.
 - **Glass cards** (`Frosted.Styles.Card`), tags, status pills, badges, icon tiles, typography styles.
 - **StrokeIcon** and a small set of line icons (`Frosted.Icons.*`).
 - Attached helpers: `ControlHelper` (`Placeholder`, `Icon`, `HasError`, `CornerRadius`),

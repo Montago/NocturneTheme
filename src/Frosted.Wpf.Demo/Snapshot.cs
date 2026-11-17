@@ -43,11 +43,25 @@ internal static class Snapshot
             }
         }
 
-        SaveGrainSamples();
         SaveLightSample();
         await SavePopups(window);
         await CheckWheelChaining(window);
+        await SaveAccents(window);
         window.Close();
+    }
+
+    /// <summary>accent-&lt;name&gt;.png: the top of the controls page in every accent but the default.</summary>
+    private static async Task SaveAccents(MainWindow window)
+    {
+        window.Navigation.SelectedIndex = 0;
+        window.PageScroller.ScrollToTop();
+        foreach (var accent in Enum.GetValues<FrostedAccent>().Where(a => a != FrostedAccent.Green))
+        {
+            FrostedTheme.SetAccent(accent);
+            await Settle(window);
+            Save(window, Path.Combine(Folder!, $"accent-{accent.ToString().ToLowerInvariant()}.png"));
+        }
+        FrostedTheme.SetAccent(FrostedAccent.Green);
     }
 
     /// <summary>
@@ -120,37 +134,7 @@ internal static class Snapshot
     }
 
     /// <summary>
-    /// grain-&lt;size&gt;.png: a 320 x 240 piece of the grain per speck size on the tinted ground,
-    /// at the default strength (left) and at full strength (right).
-    /// </summary>
-    private static void SaveGrainSamples()
-    {
-        foreach (var size in new[] { 1.0, 1.5, 2, 3 })
-        {
-            var tile = NoiseTexture.Get(size);
-            var visual = new DrawingVisual();
-            using (var dc = visual.RenderOpen())
-            {
-                var ground = new SolidColorBrush(Color.FromRgb(0x1A, 0x2A, 0x21));
-                dc.DrawRectangle(ground, null, new Rect(0, 0, 660, 240));
-                var piece = new CroppedBitmap(tile, new Int32Rect(0, 0, 320, 240));
-                dc.PushOpacity(0.3);
-                dc.DrawImage(piece, new Rect(0, 0, 320, 240));
-                dc.Pop();
-                dc.DrawImage(piece, new Rect(340, 0, 320, 240));
-            }
-
-            var bitmap = new RenderTargetBitmap(660, 240, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(visual);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var stream = File.Create(Path.Combine(Folder!, $"grain-{size}.png"));
-            encoder.Save(stream);
-        }
-    }
-
-    /// <summary>
-    /// light.png: the window light on the tinted ground without grain, as a plain gradient brush
+    /// light.png: the window light on the tinted ground, as a plain gradient brush
     /// (left, shows bands) and dithered as FrostedWindow draws it (right).
     /// </summary>
     private static void SaveLightSample()

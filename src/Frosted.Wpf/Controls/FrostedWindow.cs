@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Shell;
 using System.Windows.Threading;
 
@@ -28,18 +27,16 @@ public enum WindowBackdrop
 
 /// <summary>
 /// Window with the Frosted Glass frame: a Windows 11 backdrop (Acrylic by default, or Mica / Mica Alt),
-/// a dark tint, a grain texture and a soft light from the top-left corner, under a 44px
+/// a dark tint and a soft light from the top-left corner, under a 44px
 /// title bar with its own caption buttons. Where the backdrop is not available (Windows 10,
 /// transparency effects off) it paints an opaque ground of the same colour.
 /// </summary>
 public class FrostedWindow : Window
 {
     private const string PartRoot = "PART_Root";
-    private const string PartGrain = "PART_Grain";
     private const string PartLight = "PART_Light";
 
     private FrameworkElement? root;
-    private Shape? grain;
     private Image? light;
     private DispatcherTimer? lightTimer;
     private Color? surfaceColor;
@@ -95,30 +92,6 @@ public class FrostedWindow : Window
     {
         get => (double)GetValue(TintOpacityProperty);
         set => SetValue(TintOpacityProperty, value);
-    }
-
-    public static readonly DependencyProperty NoiseOpacityProperty = DependencyProperty.Register(
-        nameof(NoiseOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.3));
-
-    /// <summary>Strength of the grain that makes the glass look matte; 0 turns it off.</summary>
-    public double NoiseOpacity
-    {
-        get => (double)GetValue(NoiseOpacityProperty);
-        set => SetValue(NoiseOpacityProperty, value);
-    }
-
-    public static readonly DependencyProperty GrainSizeProperty = DependencyProperty.Register(
-        nameof(GrainSize), typeof(double), typeof(FrostedWindow),
-        new PropertyMetadata(NoiseTexture.DefaultGrainSize, (d, _) => ((FrostedWindow)d).UpdateGrain()));
-
-    /// <summary>
-    /// Size of the sandblasted grain's specks in device-independent pixels (1 = single-pixel noise, 1 to 16).
-    /// The texture is drawn pixel for pixel on the screen at any display scaling.
-    /// </summary>
-    public double GrainSize
-    {
-        get => (double)GetValue(GrainSizeProperty);
-        set => SetValue(GrainSizeProperty, value);
     }
 
     public static readonly DependencyProperty TitleBarHeightProperty = DependencyProperty.Register(
@@ -184,21 +157,18 @@ public class FrostedWindow : Window
             root.SizeChanged -= OnRootSizeChanged;
         }
         root = GetTemplateChild(PartRoot) as FrameworkElement;
-        grain = GetTemplateChild(PartGrain) as Shape;
         light = GetTemplateChild(PartLight) as Image;
         if (root != null)
         {
             root.SizeChanged += OnRootSizeChanged;
         }
         UpdateMaximizedMargin();
-        UpdateGrain();
         UpdateLight();
     }
 
     protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
     {
         base.OnDpiChanged(oldDpi, newDpi);
-        UpdateGrain();
         UpdateLight();
     }
 
@@ -242,33 +212,6 @@ public class FrostedWindow : Window
         light.Width = bitmap.PixelWidth / dpi.DpiScaleX;
         light.Height = bitmap.PixelHeight / dpi.DpiScaleY;
         RenderOptions.SetBitmapScalingMode(light, BitmapScalingMode.NearestNeighbor);
-    }
-
-    /// <summary>
-    /// Fills the grain layer with a tile made for the current display scaling, sized so one
-    /// texture pixel covers exactly one screen pixel: a scaled tile would be resampled, which
-    /// blurs the specks and makes faint regular patterns.
-    /// </summary>
-    private void UpdateGrain()
-    {
-        if (grain == null)
-        {
-            return;
-        }
-
-        var dpi = VisualTreeHelper.GetDpi(this);
-        var tile = NoiseTexture.Get(GrainSize * dpi.DpiScaleX);
-        var size = NoiseTexture.Size / dpi.DpiScaleX;
-        var brush = new ImageBrush(tile)
-        {
-            TileMode = TileMode.Tile,
-            Stretch = Stretch.Fill,
-            ViewportUnits = BrushMappingMode.Absolute,
-            Viewport = new Rect(0, 0, size, size),
-        };
-        brush.Freeze();
-        grain.Fill = brush;
-        RenderOptions.SetBitmapScalingMode(grain, BitmapScalingMode.NearestNeighbor);
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -386,6 +329,12 @@ public class FrostedWindow : Window
             && NativeMethods.IsTransparencyEnabled() != transparencyEnabled)
         {
             Dispatcher.BeginInvoke(ApplyBackdrop);
+        }
+
+        // A new accent colour in Windows: FrostedTheme follows it when the app uses FrostedAccent.System.
+        if (msg is NativeMethods.WmSettingChange or NativeMethods.WmDwmColorizationColorChanged)
+        {
+            Dispatcher.BeginInvoke(FrostedTheme.OnSystemSettingsChanged);
         }
         return IntPtr.Zero;
     }

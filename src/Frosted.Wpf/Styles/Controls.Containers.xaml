@@ -196,7 +196,7 @@
                             <Setter TargetName="SelectedBg" Property="Visibility" Value="Visible" />
                             <Setter TargetName="HoverBg" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="HeaderPresenter" Property="TextElement.Foreground" Value="{DynamicResource Frosted.Brushes.Text.OnAccent}" />
+                            <Setter TargetName="HeaderPresenter" Property="TextElement.Foreground" Value="{DynamicResource Frosted.Brushes.Text.Selected}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Root" Property="Opacity" Value="0.42" />
@@ -303,7 +303,7 @@
                             <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Frosted.Brushes.DocumentTab.Selected}" />
                             <Setter TargetName="Line" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="Frame" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="HeaderRow" Property="TextElement.Foreground" Value="{DynamicResource Frosted.Brushes.Text.OnAccent}" />
+                            <Setter TargetName="HeaderRow" Property="TextElement.Foreground" Value="{DynamicResource Frosted.Brushes.Text.Selected}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Root" Property="Opacity" Value="0.42" />
