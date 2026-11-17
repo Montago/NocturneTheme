@@ -48,15 +48,18 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
 - **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,
   TextBox (`.Search`, `.MultiLine`), PasswordBox (reveal button), Label, CheckBox (three-state),
   RadioButton, toggle switch (`Frosted.Styles.ToggleSwitch`), ComboBox (editable too), ListBox and
-  side navigation, Slider, ProgressBar (indeterminate), ScrollViewer, GroupBox, Expander, TabControl
-  (segmented and `.Document` tabs with close buttons, badges and "+"), DataGrid, ContextMenu, Menu,
-  ToolTip, Hyperlink, Separator.
+  side navigation, ListView (with GridView column headers), TreeView, Slider, ProgressBar
+  (indeterminate), ScrollViewer, GroupBox, Expander, TabControl (segmented and `.Document` tabs with
+  close buttons, badges and "+"), DataGrid (row headers too), Calendar, DatePicker, RichTextBox,
+  ToolBar and ToolBarTray, StatusBar, GridSplitter, ContextMenu, Menu, ToolTip, Hyperlink, Separator,
+  ResizeGrip.
 - **Accent colours**: meadow green by default; `FrostedTheme.SetAccent(FrostedAccent.Blue)` (or Orange,
   Yellow, Red) switches the accent, the primary button and the window tint at run time. `FrostedAccent.System` uses
   the accent colour chosen in Windows and follows it when the user changes it.
 - **Glass cards** (`Frosted.Styles.Card`), tags, status pills, badges, icon tiles, typography styles.
 - **StrokeIcon** and a small set of line icons (`Frosted.Icons.*`).
 - Attached helpers: `ControlHelper` (`Placeholder`, `Icon`, `HasError`, `CornerRadius`),
-  `PasswordBoxHelper.CanReveal`, `TabHelper` (`ShowCloseButton`, `Badge`, `ShowAddButton`).
+  `PasswordBoxHelper.CanReveal`, `TabHelper` (`ShowCloseButton`, `Badge`, `ShowAddButton`),
+  `FocusHelper` (a keyboard-focus ring a template draws itself, as the TreeViewItem does).
 
 Brushes are `Frosted.Brushes.*`; reference them with `DynamicResource`.

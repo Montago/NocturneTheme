@@ -28,7 +28,7 @@ internal static class Snapshot
         Directory.CreateDirectory(Folder!);
         window.Backdrop = WindowBackdrop.None;
 
-        foreach (var (index, name) in new[] { (0, "controls"), (1, "tokens") })
+        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "tokens") })
         {
             window.Navigation.SelectedIndex = index;
             await Settle(window);
@@ -131,6 +131,18 @@ internal static class Snapshot
         await Settle(window);
         SaveOnGround(tip, Path.Combine(Folder!, "popup-tooltip.png"));
         tip.IsOpen = false;
+
+        window.Navigation.SelectedIndex = 1;
+        var more = window.MoreControlsPage;
+        more.MeetingPicker.BringIntoView();
+        await Settle(window);
+        more.MeetingPicker.IsDropDownOpen = true;
+        await Settle(window);
+        if (more.MeetingPicker.Template.FindName("PART_Popup", more.MeetingPicker) is Popup { Child: FrameworkElement calendar })
+        {
+            SaveOnGround(calendar, Path.Combine(Folder!, "popup-datepicker.png"));
+        }
+        more.MeetingPicker.IsDropDownOpen = false;
     }
 
     /// <summary>
@@ -162,8 +174,9 @@ internal static class Snapshot
 
     private static void SaveOnGround(FrameworkElement element, string path)
     {
-        var w = Math.Max(1, element.ActualWidth);
-        var h = Math.Max(1, element.ActualHeight);
+        // The element is drawn at its margin (popups keep room for the shadow there): include it.
+        var w = Math.Max(1, element.ActualWidth + element.Margin.Left + element.Margin.Right);
+        var h = Math.Max(1, element.ActualHeight + element.Margin.Top + element.Margin.Bottom);
         var ground = new Border { Width = w, Height = h, Background = (Brush)element.FindResource("Frosted.Brushes.Window.Fallback") };
         ground.Measure(new Size(w, h));
         ground.Arrange(new Rect(0, 0, w, h));

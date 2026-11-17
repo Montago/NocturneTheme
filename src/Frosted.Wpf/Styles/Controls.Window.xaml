@@ -162,4 +162,21 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Six dots in the bottom-right corner (ResizeMode CanResizeWithGrip) -->
+    <Style TargetType="ResizeGrip">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ResizeGrip">
+                    <Grid Background="Transparent" SnapsToDevicePixels="True">
+                        <Path Margin="0,0,4,4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Fill="{DynamicResource Frosted.Brushes.Text.Hint}"
+                              Data="M8,0h2v2h-2z M4,4h2v2h-2z M8,4h2v2h-2z M0,8h2v2h-2z M4,8h2v2h-2z M8,8h2v2h-2z" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

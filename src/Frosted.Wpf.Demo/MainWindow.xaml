@@ -54,6 +54,14 @@
                         <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Controls" />
                     </StackPanel>
                 </ListBoxItem>
+                <ListBoxItem AutomationProperties.Name="More controls">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Frosted.Styles.IconTile.Small}">
+                            <fg:StrokeIcon Width="18" Height="18" Data="{StaticResource Frosted.Icons.Folder}" />
+                        </ContentControl>
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="More controls" />
+                    </StackPanel>
+                </ListBoxItem>
                 <ListBoxItem AutomationProperties.Name="Layers and colours">
                     <StackPanel Orientation="Horizontal">
                         <ContentControl Style="{StaticResource Frosted.Styles.IconTile.Small}">
@@ -69,6 +77,7 @@
         <ScrollViewer Grid.Column="1" x:Name="PageScroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="8,12,32,32">
                 <views:ControlsPage x:Name="ControlsPage" />
+                <views:MoreControlsPage x:Name="MoreControlsPage" Visibility="Collapsed" />
                 <views:TokensPage x:Name="TokensPage" Visibility="Collapsed" />
             </Grid>
         </ScrollViewer>

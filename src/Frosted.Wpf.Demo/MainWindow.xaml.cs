@@ -45,8 +45,12 @@ public partial class MainWindow : FrostedWindow
             return;
         }
 
-        ControlsPage.Visibility = Navigation.SelectedIndex == 1 ? Visibility.Collapsed : Visibility.Visible;
-        TokensPage.Visibility = Navigation.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
+        // In the order of the navigation items.
+        UIElement[] pages = [ControlsPage, MoreControlsPage, TokensPage];
+        for (var i = 0; i < pages.Length; i++)
+        {
+            pages[i].Visibility = i == Math.Max(0, Navigation.SelectedIndex) ? Visibility.Visible : Visibility.Collapsed;
+        }
         PageScroller.ScrollToTop();
     }
 }

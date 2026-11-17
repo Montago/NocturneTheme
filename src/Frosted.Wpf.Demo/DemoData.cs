@@ -47,6 +47,40 @@ public class DemoData : INotifyPropertyChanged
         new("Thomas Bak", "Developer", "Active", "Nov 16"),
     ];
 
+    /// <summary>The folder tree on the "More controls" page.</summary>
+    public IReadOnlyList<Folder> Folders { get; } =
+    [
+        new("Projects", true,
+        [
+            new("Frosted Glass", true,
+            [
+                new("Design"),
+                new("Screenshots") { IsSelected = true },
+                new("Source"),
+            ]),
+            new("Website relaunch"),
+            new("Archive", false, [new("2025"), new("2024")]),
+        ]),
+        new("Documents", false, [new("Invoices"), new("Contracts")]),
+        new("Pictures"),
+        new("Downloads"),
+    ];
+
+    /// <summary>The files in the selected folder.</summary>
+    public IReadOnlyList<FileEntry> Files { get; } =
+    [
+        new("controls.png", "Today 07:12", "PNG image", "412 KB", false),
+        new("controls-bottom.png", "Today 07:12", "PNG image", "388 KB", false),
+        new("Exports", "Yesterday 16:40", "Folder", "", true),
+        new("tokens.png", "Today 07:12", "PNG image", "296 KB", false),
+        new("light.png", "Nov 14", "PNG image", "1.2 MB", false),
+        new("popup-combobox.png", "Nov 14", "PNG image", "38 KB", false),
+        new("Notes.md", "Nov 12", "Markdown file", "4 KB", false),
+    ];
+
+    /// <summary>Three days from today: selected in the calendar and the date picker.</summary>
+    public DateTime? Meeting { get; set; } = DateTime.Today.AddDays(3);
+
     private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (!EqualityComparer<T>.Default.Equals(field, value))
@@ -58,6 +92,13 @@ public class DemoData : INotifyPropertyChanged
 }
 
 public record Person(string Name, string Role, string Status, string LastActive);
+
+public record Folder(string Name, bool IsExpanded = false, IReadOnlyList<Folder>? Children = null)
+{
+    public bool IsSelected { get; set; }
+}
+
+public record FileEntry(string Name, string Modified, string Kind, string Size, bool IsFolder);
 
 /// <summary>A TCP port: a whole number from 1 to 65535.</summary>
 public class PortRule : ValidationRule

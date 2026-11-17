@@ -1,5 +1,5 @@
 <!--
-    TextBox, PasswordBox, Label. A field is a dark, slightly sunken glass strip with a lighter
+    TextBox, PasswordBox, RichTextBox, Label. A field is a dark, slightly sunken glass strip with a lighter
     bottom edge; keyboard focus draws a 2px accent line along the bottom, an error a red one.
     ControlHelper.Placeholder shows hint text, ControlHelper.Icon an icon on the left
     (Frosted.Styles.TextBox.Search sets the magnifier), PasswordBoxHelper.CanReveal an eye button.
@@ -221,5 +221,79 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- The TextBox ToolBar gives its children -->
+    <Style x:Key="{x:Static ToolBar.TextBoxStyleKey}" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Margin" Value="2,0" />
+    </Style>
+
+    <!--
+        RichTextBox: the multi-line field. A FlowDocument does not take the box's font (it would be
+        justified Georgia), so the document gets the theme font, left-aligned, and paragraphs 8px
+        apart instead of a blank line.
+    -->
+    <Style TargetType="RichTextBox" BasedOn="{StaticResource Frosted.Styles.Field.Base}">
+        <Setter Property="CaretBrush" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Frosted.Brushes.Accent.Light}" />
+        <Setter Property="SelectionOpacity" Value="0.45" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="MinHeight" Value="80" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="AllowDrop" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RichTextBox">
+                    <Grid x:Name="Root" SnapsToDevicePixels="True">
+                        <Border x:Name="Bd" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border x:Name="BottomLine" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Frosted.Brushes.Field.Border.Bottom}" />
+                        <Border x:Name="FocusLine" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Frosted.Brushes.Accent.Light}" Visibility="Collapsed" />
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding BorderThickness}" Focusable="False" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Field.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Field.Focus}" />
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Field.Border.Focus}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="FocusLine" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                        </Trigger>
+                        <Trigger Property="h:ControlHelper.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="FocusLine" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.42" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="FlowDocument">
+                <Setter Property="FontFamily" Value="{DynamicResource Frosted.Fonts.Family}" />
+                <Setter Property="FontSize" Value="{DynamicResource Frosted.Font.Size.Default}" />
+                <Setter Property="TextAlignment" Value="Left" />
+                <Setter Property="PagePadding" Value="0" />
+            </Style>
+            <Style TargetType="Paragraph">
+                <Setter Property="Margin" Value="0,0,0,8" />
+            </Style>
+        </Style.Resources>
     </Style>
 </ResourceDictionary>

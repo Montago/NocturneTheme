@@ -12,7 +12,7 @@ for how to use the package.
 
 ```
 src/Frosted.Wpf/          the library (NuGet package Frosted.Wpf)
-src/Frosted.Wpf.Demo/     the demo app: Controls page and Layers & colours page
+src/Frosted.Wpf.Demo/     the demo app: Controls, More controls and Layers & colours pages
 ```
 
 ## Build and run

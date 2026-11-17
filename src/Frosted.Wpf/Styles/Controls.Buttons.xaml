@@ -120,4 +120,20 @@
     <Style TargetType="RepeatButton" BasedOn="{StaticResource Frosted.Styles.Button}" />
     <!-- A checked ToggleButton takes the primary look -->
     <Style TargetType="ToggleButton" BasedOn="{StaticResource Frosted.Styles.Button}" />
+
+    <!-- The buttons ToolBar gives its children: subtle, 32px high, at least square -->
+    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource Frosted.Styles.Button.Subtle}">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="MinWidth" Value="32" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="Margin" Value="1,0" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+    <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton" BasedOn="{StaticResource Frosted.Styles.Button.Subtle}">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="MinWidth" Value="32" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="Margin" Value="1,0" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
 </ResourceDictionary>

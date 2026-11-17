@@ -1,6 +1,7 @@
 <!--
-    GroupBox, Expander and TabControl. The default TabControl is a segmented control (tabs share
-    a sunken strip, the selected one has a light fill and a short accent bar).
+    GroupBox, Expander, TabControl, GridSplitter and StatusBar. The default TabControl is a
+    segmented control (tabs share a sunken strip, the selected one has a light fill and a short
+    accent bar).
     Frosted.Styles.TabControl.Document gives browser-like document tabs with close buttons
     (TabHelper.ShowCloseButton), badges (TabHelper.Badge) and a "+" button (TabHelper.ShowAddButton).
 -->
@@ -379,6 +380,131 @@
                             <Setter TargetName="AddButton" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--
+        GridSplitter: a hairline along the splitter with a small rounded grip in the middle; both light
+        up under the mouse, and the grip turns accent while dragged. Give it a width (or height) of 8 or so.
+    -->
+    <h:GridSplitterDirectionConverter x:Key="Frosted.Converters.GridSplitterDirection" />
+
+    <Style x:Key="Frosted.Styles.GridSplitter.Preview" TargetType="Control">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    <Border Background="{DynamicResource Frosted.Brushes.Accent.Light}" Opacity="0.5" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="GridSplitter">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.ScrollBar.Thumb}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Divider}" />
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource Frosted.Styles.FocusVisual}" />
+        <Setter Property="PreviewStyle" Value="{StaticResource Frosted.Styles.GridSplitter.Preview}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Border x:Name="Line" Width="1" HorizontalAlignment="Center" Background="{TemplateBinding BorderBrush}" />
+                        <Border x:Name="Grip" Width="4" Height="32" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Background="{TemplateBinding Foreground}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Value="{x:Static GridResizeDirection.Rows}">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource Frosted.Converters.GridSplitterDirection}">
+                                    <Binding Path="ResizeDirection" RelativeSource="{RelativeSource Self}" />
+                                    <Binding Path="HorizontalAlignment" RelativeSource="{RelativeSource Self}" />
+                                    <Binding Path="VerticalAlignment" RelativeSource="{RelativeSource Self}" />
+                                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}" />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter TargetName="Line" Property="Width" Value="NaN" />
+                            <Setter TargetName="Line" Property="Height" Value="1" />
+                            <Setter TargetName="Line" Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter TargetName="Line" Property="VerticalAlignment" Value="Center" />
+                            <Setter TargetName="Grip" Property="Width" Value="32" />
+                            <Setter TargetName="Grip" Property="Height" Value="4" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.ScrollBar.Thumb.Hover}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Stroke}" />
+            </Trigger>
+            <Trigger Property="IsDragging" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Accent.Light}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        StatusBar: a sunken strip with a hairline on top and small secondary text. Separators are
+        vertical lines; the last item fills the rest (DockPanel), so right-align it to put it at the end.
+    -->
+    <Style TargetType="StatusBar">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FontFamily" Value="{DynamicResource Frosted.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Frosted.Font.Size.Small}" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text.Secondary}" />
+        <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Surface.Sunken}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Divider}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="StatusBar">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Keep the last item clear of the window's resize grip -->
+            <DataTrigger Binding="{Binding ResizeMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="CanResizeWithGrip">
+                <Setter Property="Padding" Value="8,0,20,0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="StatusBarItem">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="StatusBarItem">
+                    <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Static StatusBar.SeparatorStyleKey}" TargetType="Separator">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Margin" Value="4,8" />
+        <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Divider}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

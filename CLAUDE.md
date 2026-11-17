@@ -41,7 +41,8 @@ src/Frosted.Wpf/              library (net8.0-windows, NuGet package Frosted.Wpf
   Styles/Controls.*.xaml      one file per control group
   Themes/Generic.xaml         merges Frosted.xaml (implicit styles don't reach MainWindow : FrostedWindow)
   Controls/                   FrostedWindow, FrostedTheme (accents), LightTexture, StrokeIcon, TabPanelBorder, NativeMethods
-  Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper (attached properties)
+  Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
+                              (attached properties); Converters (tree indent, splitter direction)
 src/Frosted.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
 ```
 
@@ -54,8 +55,8 @@ dotnet build FrostedTheme.slnx
 src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <scratch folder>
 ```
 
-- `--snapshot` renders both pages (top and scrolled to the bottom) and the combo box, context menu
-  and tool tip popups to PNG, and writes `wheel-check.txt` (PASS when a wheel turn over the settings
+- `--snapshot` renders the three pages (top and scrolled to the bottom) and the combo box, context
+  menu, tool tip and date picker popups to PNG, and writes `wheel-check.txt` (PASS when a wheel turn over the settings
   ListBox scrolls the page), then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
   out of the repo.
@@ -83,6 +84,14 @@ src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <s
 - Scroll bars are 18px wide with a thumb that fills that width (the drawn bar is 6px, 10px under
   the mouse), so a bar along the window edge stays clear of the 6px resize border.
 - Effects (DropShadowEffect) sit on separate background layers, never on text.
+- ToolBar gives its children the styles under `ToolBar.*StyleKey`, not the implicit ones. Each lives
+  in the file of its base style (Buttons, Lists, Text, Toggles), since `BasedOn` cannot cross files.
+- In `ControlTemplate.Triggers`, a DataTrigger's `RelativeSource Self` is the templated control;
+  `RelativeSource TemplatedParent` is one level further up.
+- Calendar binds its day buttons' `Style` to `CalendarDayButtonStyle`; set it (and
+  `CalendarButtonStyle`) explicitly, an implicit style alone may not reach them.
+- A FlowDocument does not take the RichTextBox's font (justified Georgia); the RichTextBox style
+  gives FlowDocument the theme font in its resources.
 - FrostedWindow extends the DWM frame over the whole window (GlassFrameThickness -1) while a backdrop
   is active and removes WS_SYSMENU so Windows does not draw its own caption buttons (same approach
   as JetPackWindow).
