@@ -2,7 +2,7 @@
 
 Nocturne for WPF: a dark theme for .NET 8+, built from the user's design canvas (claude.ai artifact
 "Nocturne – WPF kontrolbibliotek", boards Main and Tokens). It was called Frosted Glass until the
-glass look was dropped; this folder keeps the old name.
+glass look was dropped.
 Structured like the user's JetPack theme (`C:\Git\JetpackTheme`): one library, one merged
 dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 
