@@ -49,11 +49,11 @@
                 <TextBlock Margin="8,0,0,8" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Accent" />
                 <StackPanel x:Name="AccentPicker" Margin="8,0,0,0" Orientation="Horizontal">
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Green}" Background="#1F9D57"
-                                 IsChecked="True" ToolTip="Green" AutomationProperties.Name="Green" Checked="OnAccentChecked" />
+                                 ToolTip="Green" AutomationProperties.Name="Green" Checked="OnAccentChecked" />
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Orange}" Background="#D9661A"
                                  ToolTip="Orange" AutomationProperties.Name="Orange" Checked="OnAccentChecked" />
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Blue}" Background="#1F78D1"
-                                 ToolTip="Blue" AutomationProperties.Name="Blue" Checked="OnAccentChecked" />
+                                 IsChecked="True" ToolTip="Blue" AutomationProperties.Name="Blue" Checked="OnAccentChecked" />
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Yellow}" Background="#D1A112"
                                  ToolTip="Yellow" AutomationProperties.Name="Yellow" Checked="OnAccentChecked" />
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Red}" Background="#D13A3A"

@@ -55,6 +55,26 @@
                 </Setter>
             </Style>
 
+            <!-- Gallery sample (Views/GalleryPage): a card on the window ground, 16px of ground around it.
+                 The AdornerDecorator keeps adorners inside the sample, so they are rendered too. -->
+            <Style x:Key="Demo.Sample" TargetType="ContentControl">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Width" Value="472" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentControl">
+                            <AdornerDecorator>
+                                <Border Margin="16" Style="{StaticResource Nocturne.Styles.Border.Card}">
+                                    <ContentPresenter />
+                                </Border>
+                            </AdornerDecorator>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="Demo.StateLabel" TargetType="TextBlock" BasedOn="{StaticResource Nocturne.Styles.TextBlock.Mono}">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Margin" Value="0,0,0,8" />

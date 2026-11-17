@@ -181,7 +181,7 @@
                             <StackPanel>
                                 <DockPanel Margin="0,0,0,10"><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Nocturne (dark)" /><TextBlock Style="{StaticResource Demo.Key}" Text="Theme" /></DockPanel>
                                 <DockPanel Margin="0,0,0,10"><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Acrylic" /><TextBlock Style="{StaticResource Demo.Key}" Text="Backdrop" /></DockPanel>
-                                <DockPanel><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Meadow green" /><TextBlock Style="{StaticResource Demo.Key}" Text="Accent colour" /></DockPanel>
+                                <DockPanel><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Blue" /><TextBlock Style="{StaticResource Demo.Key}" Text="Accent colour" /></DockPanel>
                             </StackPanel>
                         </TabItem>
                         <TabItem Header="Network">

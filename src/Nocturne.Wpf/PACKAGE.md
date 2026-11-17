@@ -4,6 +4,9 @@ A dark theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic, Mica
 Mica Alt) shows through a tinted window; cards and controls are light translucent surfaces on top.
 One resource dictionary styles the standard controls; `NocturneWindow` gives the frame.
 
+Documentation, with a picture and XAML for every control:
+https://github.com/Montago/NocturneTheme/tree/master/docs
+
 ## Getting started
 
 ```bash
@@ -66,7 +69,7 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
   days for dates), grouping (`GroupMemberPath`), three-state sorting, paging (`PageSize`), and
   virtualized rows and columns with text drawn straight from the font. Columns: `NocturneGridColumn`
   and `NocturneGridCheckBoxColumn`.
-- **Accent colours**: meadow green by default; `NocturneTheme.SetAccent(NocturneAccent.Blue)` (or Orange,
+- **Accent colours**: blue by default; `NocturneTheme.SetAccent(NocturneAccent.Green)` (or Orange,
   Yellow, Red) switches the accent, the primary button and the window tint at run time. `NocturneAccent.System` uses
   the accent colour chosen in Windows and follows it when the user changes it.
 - **Cards** (`Nocturne.Styles.Card`), tags, status pills, badges, icon tiles, typography styles.

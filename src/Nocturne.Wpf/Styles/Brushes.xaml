@@ -6,16 +6,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Accent (meadow green). NocturneTheme.SetAccent switches the accent brushes, Text.OnAccent, the
+        Accent (blue). NocturneTheme.SetAccent switches the accent brushes, Text.OnAccent, the
         primary button, Popup and the window's Tint and Fallback to another hue.
     -->
 
-    <Color x:Key="Nocturne.Colors.Accent">#FF1F9D57</Color>
-    <Color x:Key="Nocturne.Colors.Accent.Light">#FF3FD27F</Color>
-    <SolidColorBrush x:Key="Nocturne.Brushes.Accent" Color="#FF1F9D57" />
-    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Light" Color="#FF3FD27F" />
-    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Text" Color="#FF8EF0B8" />
-    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Text.Hover" Color="#FFC2F7D8" />
+    <Color x:Key="Nocturne.Colors.Accent">#FF1F78D1</Color>
+    <Color x:Key="Nocturne.Colors.Accent.Light">#FF4DA3FF</Color>
+    <SolidColorBrush x:Key="Nocturne.Brushes.Accent" Color="#FF1F78D1" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Light" Color="#FF4DA3FF" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Text" Color="#FF9CCBFF" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Accent.Text.Hover" Color="#FFC9E2FF" />
 
     <!-- Text -->
     <SolidColorBrush x:Key="Nocturne.Brushes.Text" Color="#FFF2F6F3" />
@@ -41,14 +41,14 @@
 
     <!-- Buttons -->
     <LinearGradientBrush x:Key="Nocturne.Brushes.Button.Primary" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0" Color="#FF1A8C50" />
-        <GradientStop Offset="1" Color="#FF157E46" />
+        <GradientStop Offset="0" Color="#FF1A6CC0" />
+        <GradientStop Offset="1" Color="#FF155FAD" />
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="Nocturne.Brushes.Button.Primary.Hover" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0" Color="#FF169457" />
-        <GradientStop Offset="1" Color="#FF13834A" />
+        <GradientStop Offset="0" Color="#FF1D76CF" />
+        <GradientStop Offset="1" Color="#FF1867B9" />
     </LinearGradientBrush>
-    <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Pressed" Color="#FF126E3D" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Pressed" Color="#FF134F8C" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Border" Color="#33FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Highlight" Color="#33FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Secondary" Color="#14FFFFFF" />
@@ -101,7 +101,7 @@
     <SolidColorBrush x:Key="Nocturne.Brushes.DocumentTab.Selected" Color="#1AFFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Expander.Header" Color="#0FFFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Expander.Header.Hover" Color="#1AFFFFFF" />
-    <SolidColorBrush x:Key="Nocturne.Brushes.Popup" Color="#F71F2D25" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Popup" Color="#F71F2633" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Popup.Border" Color="#24FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Option.Hover" Color="#17FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Option.Selected" Color="#1FFFFFFF" />
@@ -117,8 +117,8 @@
     <SolidColorBrush x:Key="Nocturne.Brushes.Success.Background" Color="#293FD27F" />
 
     <!-- Window layers, from the bottom: backdrop (or the fallback ground), tint, light -->
-    <SolidColorBrush x:Key="Nocturne.Brushes.Window.Fallback" Color="#FF1E2E25" />
-    <SolidColorBrush x:Key="Nocturne.Brushes.Window.Tint" Color="#FF101E16" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Window.Fallback" Color="#FF1E2633" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.Window.Tint" Color="#FF10161F" />
     <!-- The light as a brush, for own templates. NocturneWindow draws it dithered instead (LightTexture), as a gradient this faint shows bands -->
     <LinearGradientBrush x:Key="Nocturne.Brushes.Window.Light" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#14FFFFFF" />

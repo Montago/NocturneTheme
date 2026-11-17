@@ -17,8 +17,9 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 - No grain/noise texture. The design had one; the user tried many versions (sandblasted, hammered,
   1:1 pixels) and had it removed: it added nothing and turned to mud over RDP compression.
 - Accents: `NocturneTheme.SetAccent` (`Controls/NocturneTheme.cs`) writes the accent brushes,
-  `Text.OnAccent`, primary button, `Popup`, `Window.Tint` and `Window.Fallback` for green (default),
-  orange, blue, yellow (dark text on it), red or `System` into the app's resources. `System` reads
+  `Text.OnAccent`, primary button, `Popup`, `Window.Tint` and `Window.Fallback` for blue (the
+  default, chosen by the user; `Brushes.xaml` holds its values), green (the design's colour),
+  orange, yellow (dark text on it), red or `System` into the app's resources. `System` reads
   Windows' 7-shade `AccentPalette` from HKCU\...\Explorer\Accent (no Windows SDK target needed),
   derives the ground from its hue and picks white or dark `OnAccent` by luminance; NocturneWindow's
   WndProc (WM_SETTINGCHANGE, WM_DWMCOLORIZATIONCOLORCHANGED) makes it follow live. New
@@ -32,6 +33,11 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
   `Nocturne.Fonts.Family`).
 - This is the basic control set. Grow it step by step; do not add a large set of extra controls
   without the user asking.
+- **Docs and screenshots are updated only for a release.** Code changes leave `docs/` (pages,
+  `resource-keys.md`, screenshots), `README.md` and `PACKAGE.md` alone; take snapshots into a scratch
+  folder to check the look. Before tagging, `/update-docs` (`.claude/skills/update-docs`) brings
+  everything up to date with the changes since the previous docs update. A new control gets a sample
+  in `Views/GalleryPage.xaml` and a section on its docs page.
 
 ## Layout
 
@@ -51,7 +57,14 @@ src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.W
                               NocturneGridCheckBoxColumn and its Grid* helpers (DataGrid.xaml; JetPackGrid renamed)
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
                               (attached properties); Converters (tree indent, splitter direction)
-src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
+src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot; Views/GalleryPage.xaml
+                              has one Demo.Sample per control (Tag = file name), GallerySnapshot.cs renders
+                              each to controls/<Tag>.png with popups marked demo:Gallery.Open drawn open
+docs/                         GitHub Pages site (Just the Docs, colour scheme in _sass); pages per control
+                              group, screenshots/ (pages) and screenshots/controls/ (gallery)
+tools/update_docs.py          builds the demo, runs --snapshot, copies the pictures to docs/, regenerates
+                              docs/resource-keys.md (generate_resource_keys.py) and runs the checks
+                              (StaticResource order, images, every control documented); --check: checks only
 tools/generate_icon.ps1       draws src/Nocturne.Wpf/icon.png, the package icon (System.Drawing)
 .github/workflows/            ci.yml (build and pack on every push and PR), release.yml (version tags)
 ```
@@ -68,7 +81,7 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
 - `--snapshot` renders the five pages (top, halfway down a long page, and the bottom), the popups
   (combo box, context menu, tool tip, date picker, drop-down button, time picker, colour picker,
   search combo box, two NocturneGrid filters), an open dialog, the open flyout, the folded
-  HamburgerMenu and the grid grouped by make to PNG,
+  HamburgerMenu and the grid grouped by make to PNG, one picture per gallery sample into `controls/`,
   and writes `wheel-check.txt` (PASS when a wheel turn over the settings ListBox scrolls the page),
   then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
@@ -114,6 +127,8 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
   `RelativeSource TemplatedParent` is one level further up.
 - Calendar binds its day buttons' `Style` to `CalendarDayButtonStyle`; set it (and
   `CalendarButtonStyle`) explicitly, an implicit style alone may not reach them.
+  `CalendarDayButton.IsToday` is set whatever `Calendar.IsTodayHighlighted` says; the day template
+  checks both (the gallery turns the ring off so its pictures do not change with the date).
 - DataGrid rows choose their template (with or without a row header) from the inherited
   `DataGridHelper.HeadersVisibility` in triggers, not a binding to the ancestor DataGrid: NocturneGrid
   refreshes and recycles rows, and an ancestor binding can give up for good. NocturneGrid's code needs

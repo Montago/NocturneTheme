@@ -30,7 +30,7 @@ public partial class MainWindow : NocturneWindow
 
     private void OnAccentChecked(object sender, RoutedEventArgs e)
     {
-        // The first swatch is checked during InitializeComponent; green is already the default.
+        // The blue swatch is checked during InitializeComponent; blue is already the default.
         if (IsInitialized && sender is FrameworkElement { Tag: NocturneAccent accent })
         {
             NocturneTheme.SetAccent(accent);

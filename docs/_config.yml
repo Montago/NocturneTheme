@@ -1,0 +1,29 @@
+# GitHub Pages site for the docs/ folder, using the Just the Docs theme.
+# https://just-the-docs.com/docs/configuration/
+
+title: Nocturne
+description: A dark theme for WPF on .NET 8+, over the Windows 11 backdrop.
+
+remote_theme: just-the-docs/just-the-docs@v0.12.0
+plugins:
+  - jekyll-remote-theme
+
+color_scheme: nocturne
+search_enabled: true
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Back to top"
+
+aux_links:
+  "Nocturne on GitHub":
+    - "https://github.com/Montago/NocturneTheme"
+
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/Montago/NocturneTheme"
+gh_edit_branch: "master"
+gh_edit_source: docs
+gh_edit_view_mode: "edit"
+
+footer_content: >-
+  Nocturne is MIT licensed. See <a href="https://github.com/Montago/NocturneTheme/blob/master/LICENSE">LICENSE</a>.

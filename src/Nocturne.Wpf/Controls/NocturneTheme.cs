@@ -7,11 +7,12 @@ namespace Nocturne.Wpf.Controls;
 /// <summary>The accent colours that <see cref="NocturneTheme.SetAccent"/> can switch to.</summary>
 public enum NocturneAccent
 {
-    /// <summary>Meadow green, the design's colour (the default).</summary>
+    /// <summary>Meadow green, the colour of the original design.</summary>
     Green,
 
     Orange,
 
+    /// <summary>Blue (the default).</summary>
     Blue,
 
     /// <summary>Gold; text on it is dark, as white on yellow is hard to read.</summary>
@@ -21,7 +22,7 @@ public enum NocturneAccent
 
     /// <summary>
     /// The accent colour chosen in Windows (Settings, Personalisation, Colours), followed while the
-    /// app runs. Green where Windows has none.
+    /// app runs. Blue where Windows has none.
     /// </summary>
     System,
 }
@@ -62,7 +63,7 @@ public static class NocturneTheme
     private static Color? lastSeenSystemAccent = GetSystemAccent();
 
     /// <summary>The accent last set with <see cref="SetAccent"/>.</summary>
-    public static NocturneAccent Accent { get; private set; } = NocturneAccent.Green;
+    public static NocturneAccent Accent { get; private set; } = NocturneAccent.Blue;
 
     /// <summary>Raised after <see cref="SetAccent"/> (or a change of the Windows accent) has replaced the brushes.</summary>
     public static event EventHandler? AccentChanged;
@@ -88,7 +89,7 @@ public static class NocturneTheme
         }
         else
         {
-            palette = Palettes[accent == NocturneAccent.System ? NocturneAccent.Green : accent];
+            palette = Palettes[accent == NocturneAccent.System ? NocturneAccent.Blue : accent];
             appliedSystemAccent = null;
         }
 
@@ -168,7 +169,7 @@ public static class NocturneTheme
     /// <summary>
     /// A palette from the Windows shades. Fills and the primary button use the accent and its darker
     /// shades, text the lighter ones; the window ground takes the accent's hue at the darkness the
-    /// green design uses, with the saturation toned down for greyish accents.
+    /// palettes use, with the saturation toned down for greyish accents.
     /// </summary>
     private static Palette FromSystem(Color[] shades)
     {

@@ -156,7 +156,7 @@ public class ColorPicker : Control
 
     public static readonly DependencyProperty SelectedColorProperty = DependencyProperty.Register(
         nameof(SelectedColor), typeof(Color), typeof(ColorPicker),
-        new FrameworkPropertyMetadata(Color.FromRgb(0x1F, 0x9D, 0x57), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, (d, _) => ((ColorPicker)d).Sync()));
+        new FrameworkPropertyMetadata(Color.FromRgb(0x1F, 0x78, 0xD1), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, (d, _) => ((ColorPicker)d).Sync()));
 
     public Color SelectedColor
     {

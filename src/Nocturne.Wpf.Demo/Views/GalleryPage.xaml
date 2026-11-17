@@ -1,0 +1,794 @@
+<UserControl x:Class="Nocturne.Wpf.Demo.Views.GalleryPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:demo="clr-namespace:Nocturne.Wpf.Demo"
+             xmlns:nc="urn:nocturne-wpf">
+    <!--
+    One sample per control for the documentation. Not shown in the demo window: snapshot renders each
+    Demo.Sample to <folder>/controls/<Tag>.png, and tools/update_docs.py copies them to
+    docs/screenshots/controls. Elements marked demo:Gallery.Open have their drop-down, menu or tool tip
+    opened for the picture. Fixed values only (no DateTime.Today), so a picture changes only when the
+    look does.
+    -->
+    <UserControl.Resources>
+        <ContextMenu x:Key="ExportMenu">
+            <MenuItem Header="PDF document" />
+            <MenuItem Header="CSV for Excel" />
+            <MenuItem Header="PNG image" />
+        </ContextMenu>
+        <ContextMenu x:Key="SaveMenu">
+            <MenuItem Header="Save as…" InputGestureText="Ctrl+Shift+S" />
+            <MenuItem Header="Save all" />
+        </ContextMenu>
+
+        <Style x:Key="ItemIcon" TargetType="nc:StrokeIcon">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+            <Setter Property="Data" Value="{StaticResource Nocturne.Icons.File}" />
+        </Style>
+
+        <!-- One icon with its key under it, for the icons sample -->
+        <DataTemplate x:Key="IconCell">
+            <StackPanel Width="96" Margin="0,0,0,14">
+                <nc:StrokeIcon Width="20" Height="20" HorizontalAlignment="Center" Data="{Binding Value}" />
+                <TextBlock Margin="0,6,0,0" HorizontalAlignment="Center" FontSize="11" Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}"
+                           Text="{Binding Key}" TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="SamplesHost">
+
+        <!-- ======================================================== Buttons -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="button">
+            <WrapPanel>
+                <Button Margin="0,0,10,10" Style="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save changes" />
+                <Button Margin="0,0,10,10" Content="Cancel" />
+                <Button Margin="0,0,10,10" Style="{StaticResource Nocturne.Styles.Button.Subtle}" Content="More" />
+                <Button Margin="0,0,10,10" Style="{StaticResource Nocturne.Styles.Button.Icon}" AutomationProperties.Name="Refresh">
+                    <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Refresh}" />
+                </Button>
+                <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Primary}" Content="Disabled" IsEnabled="False" />
+                <Button Content="Disabled" IsEnabled="False" />
+            </WrapPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="toggle-button">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Margin="0,0,10,0" Content="Off" />
+                <ToggleButton Margin="0,0,10,0" Content="On" IsChecked="True" />
+                <RepeatButton Content="Repeat" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="hyperlink">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,24,0"><Hyperlink>Open the release notes</Hyperlink></TextBlock>
+                <TextBlock><Hyperlink IsEnabled="False">Disabled link</Hyperlink></TextBlock>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="drop-down-button" Width="380">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,110">
+                <nc:DropDownButton Margin="0,0,16,0" Content="Export" Menu="{StaticResource ExportMenu}" demo:Gallery.Open="True" />
+                <nc:DropDownButton Style="{StaticResource Nocturne.Styles.DropDownButton.Primary}" Content="New" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="split-button" Width="380">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,90">
+                <nc:SplitButton Margin="0,0,16,0" Content="Save" Menu="{StaticResource SaveMenu}" demo:Gallery.Open="True" />
+                <nc:SplitButton Style="{StaticResource Nocturne.Styles.SplitButton.Primary}" Content="Synchronise" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="tile">
+            <StackPanel Orientation="Horizontal">
+                <nc:Tile Margin="0,0,12,0" Width="150" Title="Files" Count="1,284">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Folder}" />
+                </nc:Tile>
+                <nc:Tile Width="150" Style="{StaticResource Nocturne.Styles.Tile.Accent}" Title="Synchronise" Count="3">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Sync}" />
+                </nc:Tile>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="badged">
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <nc:Badged Margin="0,0,28,0" Badge="3">
+                    <Button Style="{StaticResource Nocturne.Styles.Button.Icon}" AutomationProperties.Name="Messages">
+                        <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Sync}" />
+                    </Button>
+                </nc:Badged>
+                <nc:Badged Margin="0,0,28,0" Badge="12" BadgeBackground="{DynamicResource Nocturne.Brushes.Error}" BadgeForeground="#FF2A0E0B">
+                    <Button Content="Conflicts" />
+                </nc:Badged>
+                <nc:Badged Badge="New" BadgeBackground="{DynamicResource Nocturne.Brushes.Warning}" BadgeForeground="#FF2A2108">
+                    <Button Content="Reports" />
+                </nc:Badged>
+            </StackPanel>
+        </ContentControl>
+
+        <!-- ======================================================== Text and input -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="textbox">
+            <StackPanel>
+                <Label Content="Server name" />
+                <TextBox Text="intranet.local" />
+                <Label Margin="0,14,0,0" Content="User name" />
+                <TextBox nc:ControlHelper.Placeholder="e.g. anna.holm" />
+                <Label Margin="0,14,0,0" Content="Port" />
+                <TextBox Text="99999" nc:ControlHelper.HasError="True" />
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Must be a number from 1 to 65535." />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="textbox-search">
+            <StackPanel>
+                <TextBox Style="{StaticResource Nocturne.Styles.TextBox.Search}" nc:ControlHelper.Placeholder="Search files" />
+                <TextBox Margin="0,12,0,0" Style="{StaticResource Nocturne.Styles.TextBox.Search}" Text="quarterly report"
+                         nc:ControlHelper.ClearButton="True" nc:ControlHelper.Placeholder="Search files" />
+                <TextBox Margin="0,12,0,0" Text="intranet.local" nc:ControlHelper.ClearButton="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="textbox-multiline">
+            <TextBox Style="{StaticResource Nocturne.Styles.TextBox.MultiLine}" Height="110"
+                     Text="The meeting moves to Thursday at 09:30.&#x0a;Bring the figures for the third quarter and the list of open conflicts." />
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="passwordbox">
+            <StackPanel>
+                <Label Content="Password" />
+                <PasswordBox x:Name="Password" nc:PasswordBoxHelper.CanReveal="True" nc:ControlHelper.Placeholder="Password" />
+                <Label Margin="0,14,0,0" Content="Repeat password" />
+                <PasswordBox nc:PasswordBoxHelper.CanReveal="True" nc:ControlHelper.Placeholder="Repeat password" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="richtextbox">
+            <RichTextBox Height="130" AutomationProperties.Name="Release notes">
+                <FlowDocument>
+                    <Paragraph>
+                        <Bold>This release</Bold> adds the rest of the standard controls.
+                    </Paragraph>
+                    <Paragraph>
+                        Trees, lists with columns, calendars, tool bars and status bars now take the
+                        <Italic>Nocturne</Italic> look.
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="combobox">
+            <StackPanel Margin="0,0,0,170">
+                <Label Content="Language" />
+                <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="combobox-variants">
+            <StackPanel>
+                <Label Content="Editable" />
+                <ComboBox IsEditable="True" ItemsSource="{Binding Languages}" Text="Norsk" />
+                <Label Margin="0,14,0,0" Content="Nothing chosen yet" />
+                <ComboBox ItemsSource="{Binding Languages}" nc:ControlHelper.Placeholder="Choose a language" />
+                <Label Margin="0,14,0,0" Content="Disabled" />
+                <ComboBox ItemsSource="{Binding Languages}" SelectedIndex="1" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="numericupdown">
+            <StackPanel>
+                <Label Content="Port" />
+                <nc:NumericUpDown Minimum="1" Maximum="65535" Value="8080" />
+                <Label Margin="0,14,0,0" Content="Timeout (steps of 5, StringFormat)" />
+                <nc:NumericUpDown Minimum="0" Maximum="300" Interval="5" Value="30" StringFormat="0 's'" />
+                <Label Margin="0,14,0,0" Content="Retries (out of range)" />
+                <nc:NumericUpDown Value="12" nc:ControlHelper.HasError="True" />
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="At most 10 retries." />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="datepicker" Width="400">
+            <StackPanel Margin="0,0,0,330">
+                <Label Content="Meeting" />
+                <DatePicker x:Name="MeetingPicker" IsTodayHighlighted="False" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="datepicker-states">
+            <StackPanel>
+                <Label Content="Due date (nothing chosen yet)" />
+                <DatePicker />
+                <Label Margin="0,14,0,0" Content="End date" />
+                <DatePicker x:Name="EndPicker" nc:ControlHelper.HasError="True" />
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Must be after the start date." />
+                <Label Margin="0,14,0,0" Content="Created (disabled)" />
+                <DatePicker x:Name="CreatedPicker" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="timepicker" Width="400">
+            <StackPanel Margin="0,0,0,320">
+                <Label Content="Meeting time" />
+                <nc:TimePicker SelectedTime="09:30:00" MinuteStep="30" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="colorpicker" Width="400">
+            <StackPanel Margin="0,0,0,120">
+                <Label Content="Label colour" />
+                <nc:ColorPicker Width="200" HorizontalAlignment="Left" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="autosuggestbox">
+            <StackPanel Margin="0,0,0,300">
+                <Label Content="City" />
+                <nc:AutoSuggestBox ItemsSource="{Binding Cities}" nc:ControlHelper.Placeholder="Start typing a city"
+                                   nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Search}" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="searchcombobox">
+            <StackPanel Margin="0,0,0,250">
+                <Label Content="Owner" />
+                <nc:SearchComboBox ItemsSource="{Binding People}" DisplayMemberPath="Name" MaxDropDownHeight="226"
+                                   nc:ControlHelper.Placeholder="Choose or type a name" demo:Gallery.Open="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <!-- ======================================================== Selection -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="checkbox">
+            <StackPanel>
+                <CheckBox Margin="0,0,0,4" Content="Start automatically with Windows" IsChecked="True" />
+                <CheckBox Margin="0,0,0,4" Content="Send anonymous usage statistics" />
+                <CheckBox Margin="0,0,0,4" Content="Select all folders (partly selected)" IsThreeState="True" IsChecked="{x:Null}" />
+                <CheckBox Content="Require administrator (disabled)" IsChecked="True" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="radiobutton">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Updates" />
+                <RadioButton Margin="0,0,0,4" GroupName="Updates" Content="Automatic (recommended)" IsChecked="True" />
+                <RadioButton Margin="0,0,0,4" GroupName="Updates" Content="Notify before installing" />
+                <RadioButton Margin="0,0,0,4" GroupName="Updates" Content="Never" />
+                <RadioButton GroupName="Other" Content="Disabled" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="toggleswitch">
+            <StackPanel>
+                <CheckBox Margin="0,0,0,8" Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Content="Synchronise in the background" IsChecked="True" />
+                <CheckBox Margin="0,0,0,8" Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Content="Only on unmetered networks" />
+                <CheckBox Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Content="Keep deleted files (disabled)" IsChecked="True" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="slider">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="62 Mbit/s" />
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Bandwidth limit" />
+                </DockPanel>
+                <Slider Minimum="0" Maximum="100" Value="62" />
+                <TextBlock Margin="0,14,0,6" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Disabled" />
+                <Slider Minimum="0" Maximum="100" Value="30" IsEnabled="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="rangeslider">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="20 – 65 km" />
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Distance" />
+                </DockPanel>
+                <nc:RangeSlider Minimum="0" Maximum="100" LowerValue="20" UpperValue="65" SmallChange="5" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="rating">
+            <StackPanel>
+                <TextBlock Margin="0,0,0,8" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Your rating" />
+                <nc:Rating Value="4" />
+                <TextBlock Margin="0,14,0,8" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Average (read-only)" />
+                <nc:Rating Value="3" IsReadOnly="True" Focusable="False" />
+            </StackPanel>
+        </ContentControl>
+
+        <!-- ======================================================== Lists and data -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="listbox">
+            <ListBox SelectedIndex="0">
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile}"><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Sync}" /></ContentControl>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Synchronisation" />
+                            <TextBlock Margin="0,2,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Keep files up to date across devices" />
+                        </StackPanel>
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile}"><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Shield}" /></ContentControl>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Security" />
+                            <TextBlock Margin="0,2,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Passwords, 2FA and certificates" />
+                        </StackPanel>
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile}"><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Globe}" /></ContentControl>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Network" />
+                            <TextBlock Margin="0,2,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Proxy, DNS and connections" />
+                        </StackPanel>
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="listbox-navigation" Width="300">
+            <ListBox Style="{StaticResource Nocturne.Styles.ListBox.Navigation}" SelectedIndex="0">
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Grid}" /></ContentControl>
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Folder}" /></ContentControl>
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Files" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Database}" /></ContentControl>
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Data" />
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="listview" Width="640">
+            <ListView Height="230" ItemsSource="{Binding Files}" SelectedIndex="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="NAME" Width="220">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <nc:StrokeIcon x:Name="Icon" Style="{StaticResource ItemIcon}" />
+                                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Name}" />
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsFolder}" Value="True">
+                                            <Setter TargetName="Icon" Property="Data" Value="{StaticResource Nocturne.Icons.Folder}" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="MODIFIED" Width="140" DisplayMemberBinding="{Binding Modified}" />
+                        <GridViewColumn Header="KIND" Width="120" DisplayMemberBinding="{Binding Kind}" />
+                        <GridViewColumn Header="SIZE" Width="80" DisplayMemberBinding="{Binding Size}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="treeview" Width="340">
+            <TreeView Height="264" ItemsSource="{Binding Folders}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneTime}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneTime}" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <nc:StrokeIcon Style="{StaticResource ItemIcon}" Data="{StaticResource Nocturne.Icons.Folder}" />
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="datagrid" Width="640">
+            <DataGrid Height="262" ItemsSource="{Binding People}" AutoGenerateColumns="False" IsReadOnly="True" SelectedIndex="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NAME" Width="1.3*" Binding="{Binding Name}" SortDirection="Ascending" />
+                    <DataGridTextColumn Header="ROLE" Width="*" Binding="{Binding Role}" />
+                    <DataGridTextColumn Header="STATUS" Width="*" Binding="{Binding Status}" />
+                    <DataGridTextColumn Header="LAST ACTIVE" Width="*" Binding="{Binding LastActive}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="datagrid-rowheaders">
+            <DataGrid Height="196" ItemsSource="{Binding People}" AutoGenerateColumns="False" IsReadOnly="True"
+                      HeadersVisibility="All" SelectedIndex="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NAME" Width="*" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="ROLE" Width="*" Binding="{Binding Role}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="nocturnegrid" Width="860">
+            <StackPanel>
+                <TextBox Width="280" HorizontalAlignment="Left" Margin="0,0,0,12" Style="{StaticResource Nocturne.Styles.TextBox.Search}" Text="volvo automatic"
+                         nc:ControlHelper.ClearButton="True" />
+                <nc:NocturneGrid x:Name="SearchGrid" Height="300" SelectionMode="Single" SearchText="volvo automatic">
+                    <nc:NocturneGrid.Columns>
+                        <nc:NocturneGridColumn Width="110" Header="STOCK NO." Binding="{Binding StockNo}" />
+                        <nc:NocturneGridColumn Width="110" Header="MAKE" Binding="{Binding Make}" />
+                        <nc:NocturneGridColumn Width="120" Header="MODEL" Binding="{Binding Model}" />
+                        <nc:NocturneGridColumn Width="76" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" />
+                        <nc:NocturneGridColumn Width="92" Header="FUEL" Binding="{Binding Fuel}" />
+                        <nc:NocturneGridColumn Width="116" Header="GEARBOX" Binding="{Binding Gearbox}" />
+                        <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" />
+                    </nc:NocturneGrid.Columns>
+                </nc:NocturneGrid>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="nocturnegrid-filter" Width="640">
+            <nc:NocturneGrid x:Name="FilterGrid" Height="420" VerticalAlignment="Top" demo:Gallery.Open="True">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" />
+                    <nc:NocturneGridColumn Width="140" Header="BODY" Binding="{Binding Body}" FilterText="estate suv" />
+                    <nc:NocturneGridColumn Width="110" Header="FUEL" Binding="{Binding Fuel}" />
+                    <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="nocturnegrid-groups" Width="640">
+            <nc:NocturneGrid x:Name="GroupGrid" Height="330" GroupMemberPath="Make">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" />
+                    <nc:NocturneGridColumn Width="140" Header="MODEL" Binding="{Binding Model}" />
+                    <nc:NocturneGridColumn Width="76" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" />
+                    <nc:NocturneGridCheckBoxColumn Width="80" Header="SOLD" Binding="{Binding IsSold}" />
+                    <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="nocturnegrid-paging" Width="640">
+            <StackPanel>
+                <nc:NocturneGrid x:Name="PagedGrid" Height="300" PageSize="25">
+                    <nc:NocturneGrid.Columns>
+                        <nc:NocturneGridColumn Width="110" Header="STOCK NO." Binding="{Binding StockNo}" />
+                        <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" />
+                        <nc:NocturneGridColumn Width="140" Header="MODEL" Binding="{Binding Model}" />
+                        <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" />
+                    </nc:NocturneGrid.Columns>
+                </nc:NocturneGrid>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="calendar" Width="360">
+            <Calendar x:Name="Calendar" HorizontalAlignment="Left" IsTodayHighlighted="False" />
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="scrollviewer" Width="360">
+            <ScrollViewer Height="160" HorizontalScrollBarVisibility="Auto">
+                <TextBlock Width="460" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}"
+                           Text="Scroll bars are 18px wide, but the drawn bar is a thin 6px line that widens to 10px under the mouse, so a bar along the edge of the window stays clear of its resize border. A wheel turn that the inner scroll viewer cannot use passes on to the page around it. This text is wider and taller than the box, so both bars show." />
+            </ScrollViewer>
+        </ContentControl>
+
+        <!-- ======================================================== Navigation and layout -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="tabcontrol" Width="420">
+            <TabControl>
+                <TabItem Header="General">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,10"><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Nocturne (dark)" /><TextBlock Style="{StaticResource Demo.Key}" Text="Theme" /></DockPanel>
+                        <DockPanel Margin="0,0,0,10"><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Acrylic" /><TextBlock Style="{StaticResource Demo.Key}" Text="Backdrop" /></DockPanel>
+                        <DockPanel><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="Blue" /><TextBlock Style="{StaticResource Demo.Key}" Text="Accent colour" /></DockPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Network" />
+                <TabItem Header="Advanced" />
+            </TabControl>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="tabcontrol-document" Width="440">
+            <TabControl Style="{StaticResource Nocturne.Styles.TabControl.Document}" nc:TabHelper.ShowCloseButton="True" nc:TabHelper.ShowAddButton="True">
+                <TabItem Header="Overview">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,10"><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="1,284" /><TextBlock Style="{StaticResource Demo.Key}" Text="Files" /></DockPanel>
+                        <DockPanel><TextBlock DockPanel.Dock="Right" Style="{StaticResource Demo.Value}" Text="18.6 GB" /><TextBlock Style="{StaticResource Demo.Key}" Text="Total size" /></DockPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Logs" />
+                <TabItem Header="Conflicts" nc:TabHelper.Badge="2" />
+            </TabControl>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="hamburgermenu" Width="640">
+            <Border CornerRadius="10" ClipToBounds="True" BorderThickness="1" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}">
+                <nc:HamburgerMenu Height="300" SelectedIndex="0" Content="{Binding SelectedItem.Content, RelativeSource={RelativeSource Self}}">
+                    <nc:HamburgerMenu.ContentTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="28,22">
+                                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding}" />
+                                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="The page of the selected item goes here." />
+                            </StackPanel>
+                        </DataTemplate>
+                    </nc:HamburgerMenu.ContentTemplate>
+                    <nc:HamburgerMenuItem Content="Dashboard">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Grid}" /></nc:HamburgerMenuItem.Icon>
+                    </nc:HamburgerMenuItem>
+                    <nc:HamburgerMenuItem Content="Files" IsExpanded="True">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Folder}" /></nc:HamburgerMenuItem.Icon>
+                        <nc:HamburgerMenuItem.Items>
+                            <nc:HamburgerMenuItem Content="Recent" />
+                            <nc:HamburgerMenuItem Content="Shared with me" />
+                        </nc:HamburgerMenuItem.Items>
+                    </nc:HamburgerMenuItem>
+                    <nc:HamburgerMenuItem Content="Security">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Shield}" /></nc:HamburgerMenuItem.Icon>
+                    </nc:HamburgerMenuItem>
+                </nc:HamburgerMenu>
+            </Border>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="hamburgermenu-compact" Width="300">
+            <Border CornerRadius="10" ClipToBounds="True" BorderThickness="1" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}">
+                <nc:HamburgerMenu Height="250" SelectedIndex="1" IsPaneOpen="False">
+                    <nc:HamburgerMenuItem Content="Dashboard">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Grid}" /></nc:HamburgerMenuItem.Icon>
+                    </nc:HamburgerMenuItem>
+                    <nc:HamburgerMenuItem Content="Files">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Folder}" /></nc:HamburgerMenuItem.Icon>
+                    </nc:HamburgerMenuItem>
+                    <nc:HamburgerMenuItem Content="Security">
+                        <nc:HamburgerMenuItem.Icon><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Shield}" /></nc:HamburgerMenuItem.Icon>
+                    </nc:HamburgerMenuItem>
+                </nc:HamburgerMenu>
+            </Border>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="expander">
+            <StackPanel>
+                <Expander Header="Advanced settings" IsExpanded="True">
+                    <TextBlock LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}"
+                               Text="The content folds out under the header. IsExpanded turns the chevron with a 150 ms animation." />
+                </Expander>
+                <Expander Margin="0,10,0,0" Header="Logging" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="accordion" Width="400">
+            <nc:Accordion Height="280">
+                <Expander Header="Account" IsExpanded="True">
+                    <TextBlock TextWrapping="Wrap" LineHeight="21" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}"
+                               Text="Opening one section closes the others; the open one takes the height that is left." />
+                </Expander>
+                <Expander Header="Notifications" />
+                <Expander Header="Privacy" />
+            </nc:Accordion>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="groupbox">
+            <GroupBox Header="Synchronisation">
+                <StackPanel>
+                    <CheckBox Margin="0,0,0,8" Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Content="Synchronise in the background" IsChecked="True" />
+                    <CheckBox Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Content="Only on unmetered networks" />
+                </StackPanel>
+            </GroupBox>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="card" Width="560">
+            <StackPanel>
+                <HeaderedContentControl Style="{StaticResource Nocturne.Styles.Card}" Header="SETTINGS" Tag="Card · Tag">
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="A card has a section label (Header) and an optional tag on the right (Tag)." />
+                </HeaderedContentControl>
+                <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+                    <ContentControl Margin="0,0,8,0" Style="{StaticResource Nocturne.Styles.Pill}" Content="Active" />
+                    <ContentControl Margin="0,0,8,0" Style="{StaticResource Nocturne.Styles.Pill.Success}" Content="Synchronised" />
+                    <ContentControl Margin="0,0,8,0" Style="{StaticResource Nocturne.Styles.Pill.Warning}" Content="Invited" />
+                    <ContentControl Margin="0,0,16,0" Style="{StaticResource Nocturne.Styles.Pill.Error}" Content="Blocked" />
+                    <ContentControl Margin="0,0,16,0" Style="{StaticResource Nocturne.Styles.Tag}" Content="Tag" />
+                    <ContentControl VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.Badge}" Content="2" />
+                </StackPanel>
+                <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+                    <ContentControl Margin="0,0,12,0" Style="{StaticResource Nocturne.Styles.IconTile}"><nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Sync}" /></ContentControl>
+                    <ContentControl VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Folder}" /></ContentControl>
+                </StackPanel>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="menu" Width="400">
+            <Menu VerticalAlignment="Top" Margin="0,0,0,150">
+                <MenuItem Header="_File" demo:Gallery.Open="True">
+                    <MenuItem Header="_New" InputGestureText="Ctrl+N" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Plus}" />
+                    <MenuItem Header="_Open…" InputGestureText="Ctrl+O" />
+                    <Separator />
+                    <MenuItem Header="E_xit" />
+                </MenuItem>
+                <MenuItem Header="_Edit" />
+                <MenuItem Header="_View" />
+            </Menu>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="contextmenu" Width="420">
+            <Border Height="300" Padding="14" VerticalAlignment="Top" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Surface.Sunken}"
+                    BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" BorderThickness="1" demo:Gallery.Open="True">
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Cut" InputGestureText="Ctrl+X" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Cut}" />
+                        <MenuItem Header="Copy" InputGestureText="Ctrl+C" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Copy}" />
+                        <MenuItem Header="Paste" InputGestureText="Ctrl+V" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Paste}" />
+                        <Separator />
+                        <MenuItem Header="Show hidden files" IsCheckable="True" IsChecked="True" />
+                        <MenuItem Header="Sort by">
+                            <MenuItem Header="Name" />
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Delete" InputGestureText="Del" Foreground="{DynamicResource Nocturne.Brushes.Error.Text}"
+                                  nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Delete}" />
+                    </ContextMenu>
+                </Border.ContextMenu>
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Right-click here for the context menu." />
+            </Border>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="toolbar" Width="640">
+            <ToolBarTray>
+                <ToolBar>
+                    <Button AutomationProperties.Name="New folder">
+                        <StackPanel Orientation="Horizontal">
+                            <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Plus}" />
+                            <TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Text="New" />
+                        </StackPanel>
+                    </Button>
+                    <Button AutomationProperties.Name="Refresh"><nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Refresh}" /></Button>
+                    <Separator />
+                    <Button AutomationProperties.Name="Cut"><nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Cut}" /></Button>
+                    <Button AutomationProperties.Name="Copy"><nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Copy}" /></Button>
+                    <Separator />
+                    <ToggleButton Content="Details" IsChecked="True" />
+                    <CheckBox Content="Hidden files" />
+                    <Separator />
+                    <ComboBox Width="130" SelectedIndex="0">
+                        <ComboBoxItem Content="Name" />
+                        <ComboBoxItem Content="Size" />
+                    </ComboBox>
+                </ToolBar>
+            </ToolBarTray>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="statusbar" Width="640">
+            <StatusBar>
+                <StatusBarItem Content="7 items" />
+                <Separator />
+                <StatusBarItem Content="1 selected · 388 KB" />
+                <StatusBarItem HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="7" Height="7" Margin="0,0,8,0" Fill="{DynamicResource Nocturne.Brushes.Success}" />
+                        <TextBlock Text="Synchronised today 07:12" />
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="gridsplitter" Width="520">
+            <Grid Height="140">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="9" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Surface.Sunken}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Folders" />
+                </Border>
+                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+                <Border Grid.Column="2" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Surface.Sunken}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Files" />
+                </Border>
+            </Grid>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="tooltip" Width="320">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,40">
+                <Button Style="{StaticResource Nocturne.Styles.Button.Icon}" AutomationProperties.Name="Copy" demo:Gallery.Open="True">
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Copy to clipboard" />
+                            <TextBlock Margin="12,0,0,0" FontSize="12" Foreground="{DynamicResource Nocturne.Brushes.Shortcut}" Text="Ctrl+C" />
+                        </StackPanel>
+                    </Button.ToolTip>
+                    <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Copy}" />
+                </Button>
+            </StackPanel>
+        </ContentControl>
+
+        <!-- ======================================================== Progress and status -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="progressbar">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="64 %" />
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Uploading 128 of 200 files" />
+                </DockPanel>
+                <ProgressBar Value="64" />
+                <TextBlock Margin="0,16,0,6" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Connecting… (IsIndeterminate)" />
+                <ProgressBar IsIndeterminate="True" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="progressring">
+            <StackPanel Orientation="Horizontal">
+                <nc:ProgressRing Width="20" Height="20" Margin="0,0,20,0" VerticalAlignment="Center" />
+                <nc:ProgressRing Margin="0,0,20,0" VerticalAlignment="Center" />
+                <nc:ProgressRing Width="48" Height="48" Margin="0,0,28,0" />
+                <Button VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.Button.Primary}" IsHitTestVisible="False">
+                    <StackPanel Orientation="Horizontal">
+                        <nc:ProgressRing Width="16" Height="16" Margin="0,0,10,0" Foreground="{DynamicResource Nocturne.Brushes.Text.OnAccent}" Background="#33FFFFFF" />
+                        <TextBlock Text="Saving…" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="busyindicator">
+            <nc:BusyIndicator IsBusy="True" BusyContent="Uploading 128 files…">
+                <StackPanel>
+                    <Label Content="Folder" />
+                    <TextBox Text="Projects\Nocturne" />
+                    <Label Margin="0,12,0,0" Content="Destination" />
+                    <TextBox Text="intranet.local/shared" />
+                </StackPanel>
+            </nc:BusyIndicator>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="infobar" Width="720">
+            <StackPanel>
+                <nc:InfoBar Margin="0,0,0,10" Title="Update available." Message="Nocturne can be updated when you restart the app." IsClosable="False">
+                    <Button Content="Restart" />
+                </nc:InfoBar>
+                <nc:InfoBar Margin="0,0,0,10" Severity="Success" Title="Synchronised." Message="128 files were uploaded at 07:12." />
+                <nc:InfoBar Margin="0,0,0,10" Severity="Warning" Title="Almost full." Message="The shared drive has 2.1 GB free." />
+                <nc:InfoBar Severity="Error" Title="Could not connect." Message="intranet.local did not answer within 30 s.">
+                    <Button Content="Try again" />
+                </nc:InfoBar>
+            </StackPanel>
+        </ContentControl>
+
+        <!-- ======================================================== Typography and icons -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="typography" Width="560">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Title" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="Subtitle" />
+                <TextBlock Margin="0,12,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="EYEBROW · SECTION LABEL" />
+                <TextBlock Margin="0,12,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="List title" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Body}" Text="Body text for paragraphs and controls." />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Label above a field" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Caption under a list title" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="Hint text, as under a field" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Error text under an invalid field" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource Nocturne.Styles.TextBlock.Mono}" Text="Mono · Nocturne.Brushes.Accent" />
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="icons" Width="640">
+            <ItemsControl x:Name="Icons" ItemTemplate="{StaticResource IconCell}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ContentControl>
+    </Grid>
+</UserControl>

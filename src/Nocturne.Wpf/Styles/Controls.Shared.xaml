@@ -110,6 +110,9 @@
                 <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Text.Hover}" />
                 <Setter Property="TextDecorations" Value="Underline" />
             </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 
@@ -251,8 +254,8 @@
     </Style>
 
     <!--
-        Icon tile: a rounded square around a StrokeIcon. Inside a selected ListBoxItem it turns
-        accent green.
+        Icon tile: a rounded square around a StrokeIcon. Inside a selected ListBoxItem it fills
+        with the accent.
     -->
     <Style x:Key="Nocturne.Styles.IconTile" TargetType="ContentControl">
         <Setter Property="Focusable" Value="False" />

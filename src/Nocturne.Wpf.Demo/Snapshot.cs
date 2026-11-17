@@ -26,6 +26,20 @@ internal static class Snapshot
     public static async void Run(MainWindow window)
     {
         Directory.CreateDirectory(Folder!);
+        try
+        {
+            await RunAsync(window);
+        }
+        catch (Exception ex)
+        {
+            // tools/update_docs.py reports this file
+            File.WriteAllText(Path.Combine(Folder!, "error.txt"), ex.ToString());
+        }
+        window.Close();
+    }
+
+    private static async Task RunAsync(MainWindow window)
+    {
         window.Backdrop = WindowBackdrop.None;
 
         foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "grid"), (4, "tokens") })
@@ -55,7 +69,9 @@ internal static class Snapshot
         await SaveGrid(window);
         await CheckWheelChaining(window);
         await SaveAccents(window);
-        window.Close();
+
+        // One picture per control for docs/screenshots/controls
+        await GallerySnapshot.SaveAsync(Path.Combine(Folder!, "controls"));
     }
 
     /// <summary>accent-&lt;name&gt;.png: the top of the controls page in every accent but the default.</summary>
@@ -63,13 +79,13 @@ internal static class Snapshot
     {
         window.Navigation.SelectedIndex = 0;
         window.PageScroller.ScrollToTop();
-        foreach (var accent in Enum.GetValues<NocturneAccent>().Where(a => a != NocturneAccent.Green))
+        foreach (var accent in Enum.GetValues<NocturneAccent>().Where(a => a != NocturneAccent.Blue))
         {
             NocturneTheme.SetAccent(accent);
             await Settle(window);
             Save(window, Path.Combine(Folder!, $"accent-{accent.ToString().ToLowerInvariant()}.png"));
         }
-        NocturneTheme.SetAccent(NocturneAccent.Green);
+        NocturneTheme.SetAccent(NocturneAccent.Blue);
     }
 
     /// <summary>
@@ -291,7 +307,7 @@ internal static class Snapshot
         var visual = new DrawingVisual();
         using (var dc = visual.RenderOpen())
         {
-            var ground = new SolidColorBrush(Color.FromRgb(0x1A, 0x2A, 0x21));
+            var ground = new SolidColorBrush(Color.FromRgb(0x1A, 0x21, 0x2C));
             dc.DrawRectangle(ground, null, new Rect(0, 0, w * 2 + 20, h));
             var gradient = new LinearGradientBrush(Color.FromArgb(0x14, 255, 255, 255), Color.FromArgb(0, 255, 255, 255), new Point(0, 0), new Point(1, 1));
             gradient.GradientStops[1].Offset = LightTexture.Reach;
@@ -339,6 +355,10 @@ internal static class Snapshot
         {
             return;
         }
+
+        // Endless animations (ProgressRing, indeterminate ProgressBar) stop at a fixed point, so a
+        // page gives the same picture on every run.
+        Gallery.FreezeAnimations(window);
 
         // Render the whole template (title bar included), not only the content.
         var root = (FrameworkElement)VisualTreeHelper.GetChild(window, 0);

@@ -44,11 +44,16 @@
                         <Trigger Property="IsInactive" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
                         </Trigger>
-                        <Trigger Property="IsToday" Value="True">
+                        <!-- IsToday is set whatever the calendar says; Calendar.IsTodayHighlighted turns the ring off -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsToday, RelativeSource={RelativeSource Self}}" Value="True" />
+                                <Condition Binding="{Binding IsTodayHighlighted, RelativeSource={RelativeSource AncestorType=Calendar}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
                             <Setter TargetName="TodayRing" Property="Visibility" Value="Visible" />
                             <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
                             <Setter Property="FontWeight" Value="SemiBold" />
-                        </Trigger>
+                        </MultiDataTrigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="SelectedBg" Property="Visibility" Value="Visible" />
                             <Setter TargetName="HoverBg" Property="Visibility" Value="Collapsed" />
