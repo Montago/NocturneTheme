@@ -40,7 +40,10 @@ src/Frosted.Wpf/              library (net8.0-windows, NuGet package Frosted.Wpf
   Styles/Brushes.xaml, Fonts.xaml, Icons.xaml
   Styles/Controls.*.xaml      one file per control group
   Themes/Generic.xaml         merges Frosted.xaml (implicit styles don't reach MainWindow : FrostedWindow)
-  Controls/                   FrostedWindow, FrostedTheme (accents), LightTexture, StrokeIcon, TabPanelBorder, NativeMethods
+  Controls/                   FrostedWindow (hosts Flyouts and dialogs), FrostedTheme (accents), LightTexture,
+                              StrokeIcon, TabPanelBorder, NativeMethods; own controls: DropDownButton,
+                              SplitButton, NumericUpDown, ProgressRing, InfoBar, FrostedDialog, Flyout
+                              (styles in Controls.Buttons / Text / Range / Containers / Overlays.xaml)
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
                               (attached properties); Converters (tree indent, splitter direction)
 src/Frosted.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
@@ -55,9 +58,10 @@ dotnet build FrostedTheme.slnx
 src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <scratch folder>
 ```
 
-- `--snapshot` renders the three pages (top and scrolled to the bottom) and the combo box, context
-  menu, tool tip and date picker popups to PNG, and writes `wheel-check.txt` (PASS when a wheel turn over the settings
-  ListBox scrolls the page), then exits. RenderTargetBitmap cannot see Mica, so it switches the
+- `--snapshot` renders the four pages (top and scrolled to the bottom), the combo box, context
+  menu, tool tip, date picker and drop-down button popups, an open dialog and the open flyout to PNG,
+  and writes `wheel-check.txt` (PASS when a wheel turn over the settings ListBox scrolls the page),
+  then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
   out of the repo.
 - The user often runs the demo from Visual Studio, which locks `bin\...`. Do not kill it; build to

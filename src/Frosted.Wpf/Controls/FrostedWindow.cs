@@ -30,14 +30,19 @@ public enum WindowBackdrop
 /// a dark tint and a soft light from the top-left corner, under a 44px
 /// title bar with its own caption buttons. Where the backdrop is not available (Windows 10,
 /// transparency effects off) it paints an opaque ground of the same colour.
+/// It hosts <see cref="Flyout"/> panels (<see cref="Flyouts"/>) and in-window dialogs
+/// (<see cref="ShowDialogAsync"/>).
 /// </summary>
+[TemplatePart(Name = PartDialogHost, Type = typeof(Panel))]
 public class FrostedWindow : Window
 {
     private const string PartRoot = "PART_Root";
     private const string PartLight = "PART_Light";
+    private const string PartDialogHost = "PART_DialogHost";
 
     private FrameworkElement? root;
     private Image? light;
+    private Panel? dialogHost;
     private DispatcherTimer? lightTimer;
     private Color? surfaceColor;
     private bool frameExtended;
@@ -149,9 +154,61 @@ public class FrostedWindow : Window
         set => SetValue(RightWindowCommandsProperty, value);
     }
 
+    public static readonly DependencyProperty FlyoutsProperty = DependencyProperty.Register(
+        nameof(Flyouts), typeof(object), typeof(FrostedWindow), new PropertyMetadata(null));
+
+    /// <summary>The layer above the content (under the title bar) for <see cref="Flyout"/> panels, usually a Grid.</summary>
+    public object? Flyouts
+    {
+        get => GetValue(FlyoutsProperty);
+        set => SetValue(FlyoutsProperty, value);
+    }
+
+    /// <summary>
+    /// Shows <paramref name="dialog"/> over the dimmed content and waits until it is closed.
+    /// Focus goes back to where it was afterwards.
+    /// </summary>
+    public async Task<MessageDialogResult> ShowDialogAsync(FrostedDialog dialog)
+    {
+        if (dialogHost == null)
+        {
+            ApplyTemplate();
+            dialogHost = GetTemplateChild(PartDialogHost) as Panel
+                ?? throw new InvalidOperationException($"The window template has no {PartDialogHost}.");
+        }
+
+        var focused = Keyboard.FocusedElement;
+        dialogHost.Children.Add(dialog);
+        dialogHost.Visibility = Visibility.Visible;
+        try
+        {
+            return await dialog.WaitForResultAsync();
+        }
+        finally
+        {
+            dialogHost.Children.Remove(dialog);
+            if (dialogHost.Children.Count == 0)
+            {
+                dialogHost.Visibility = Visibility.Collapsed;
+            }
+            focused?.Focus();
+        }
+    }
+
+    /// <summary>Shows a message with one button, or two when <paramref name="negativeText"/> is given.</summary>
+    public Task<MessageDialogResult> ShowMessageAsync(string title, string message, string affirmativeText = "OK", string? negativeText = null) =>
+        ShowDialogAsync(new FrostedDialog
+        {
+            Title = title,
+            Content = message,
+            AffirmativeText = affirmativeText,
+            NegativeText = negativeText,
+        });
+
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
+        dialogHost = GetTemplateChild(PartDialogHost) as Panel;
         if (root != null)
         {
             root.SizeChanged -= OnRootSizeChanged;

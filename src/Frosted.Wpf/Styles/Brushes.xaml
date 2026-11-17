@@ -126,4 +126,7 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Caption.Pressed" Color="#0DFFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Close.Hover" Color="#FFC42B1C" />
     <SolidColorBrush x:Key="Frosted.Brushes.Close.Pressed" Color="#FFA82618" />
+
+    <!-- Laid over the page while a dialog is open -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Overlay" Color="#73000000" />
 </ResourceDictionary>

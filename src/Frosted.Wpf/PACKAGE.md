@@ -53,6 +53,10 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
   close buttons, badges and "+"), DataGrid (row headers too), Calendar, DatePicker, RichTextBox,
   ToolBar and ToolBarTray, StatusBar, GridSplitter, ContextMenu, Menu, ToolTip, Hyperlink, Separator,
   ResizeGrip.
+- **Own controls**: `DropDownButton` and `SplitButton` (each also `.Primary`), `NumericUpDown`,
+  `ProgressRing`, `InfoBar` (Info, Success, Warning, Error), `FrostedDialog` (shown in the window with
+  `await window.ShowMessageAsync(...)` or `ShowDialogAsync`) and `Flyout` (in `FrostedWindow.Flyouts`,
+  slides in from an edge). `ControlHelper.ClearButton` puts an × in a TextBox.
 - **Accent colours**: meadow green by default; `FrostedTheme.SetAccent(FrostedAccent.Blue)` (or Orange,
   Yellow, Red) switches the accent, the primary button and the window tint at run time. `FrostedAccent.System` uses
   the accent colour chosen in Windows and follows it when the user changes it.

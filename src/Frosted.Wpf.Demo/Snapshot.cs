@@ -28,7 +28,7 @@ internal static class Snapshot
         Directory.CreateDirectory(Folder!);
         window.Backdrop = WindowBackdrop.None;
 
-        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "tokens") })
+        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "tokens") })
         {
             window.Navigation.SelectedIndex = index;
             await Settle(window);
@@ -45,6 +45,7 @@ internal static class Snapshot
 
         SaveLightSample();
         await SavePopups(window);
+        await SaveOverlays(window);
         await CheckWheelChaining(window);
         await SaveAccents(window);
         window.Close();
@@ -143,6 +144,44 @@ internal static class Snapshot
             SaveOnGround(calendar, Path.Combine(Folder!, "popup-datepicker.png"));
         }
         more.MeetingPicker.IsDropDownOpen = false;
+    }
+
+    /// <summary>
+    /// Custom controls page: the DropDownButton's menu (popup-dropdown.png), an open dialog
+    /// (dialog.png) and the settings flyout (flyout.png) over the page.
+    /// </summary>
+    private static async Task SaveOverlays(MainWindow window)
+    {
+        window.Navigation.SelectedIndex = 2;
+        window.PageScroller.ScrollToTop();
+        await Settle(window);
+
+        var page = window.CustomControlsPage;
+        var menu = page.ExportButton.Menu!;
+        menu.PlacementTarget = page.ExportButton;
+        menu.IsOpen = true;
+        await Settle(window);
+        SaveOnGround(menu, Path.Combine(Folder!, "popup-dropdown.png"));
+        menu.IsOpen = false;
+
+        var dialog = new FrostedDialog
+        {
+            Title = "Discard changes?",
+            Content = "You have changed 3 files since they were last synchronised. Discarding puts back the versions on the server.",
+            AffirmativeText = "Discard",
+            NegativeText = "Keep editing",
+        };
+        var shown = window.ShowDialogAsync(dialog);
+        await Settle(window);
+        Save(window, Path.Combine(Folder!, "dialog.png"));
+        dialog.Close(MessageDialogResult.Canceled);
+        await shown;
+
+        window.SettingsFlyout.IsOpen = true;
+        await Settle(window);
+        Save(window, Path.Combine(Folder!, "flyout.png"));
+        window.SettingsFlyout.IsOpen = false;
+        await Settle(window);
     }
 
     /// <summary>

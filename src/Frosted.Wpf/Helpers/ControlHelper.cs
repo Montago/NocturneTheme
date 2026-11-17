@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Frosted.Wpf.Helpers;
@@ -69,4 +71,41 @@ public static class ControlHelper
     public static Geometry? GetIcon(DependencyObject d) => (Geometry?)d.GetValue(IconProperty);
 
     public static void SetIcon(DependencyObject d, Geometry? value) => d.SetValue(IconProperty, value);
+
+    public static readonly DependencyProperty ShowChevronProperty = DependencyProperty.RegisterAttached(
+        "ShowChevron", typeof(bool), typeof(ControlHelper), new FrameworkPropertyMetadata(false));
+
+    /// <summary>A chevron after a button's content, as on DropDownButton.</summary>
+    public static bool GetShowChevron(DependencyObject d) => (bool)d.GetValue(ShowChevronProperty);
+
+    public static void SetShowChevron(DependencyObject d, bool value) => d.SetValue(ShowChevronProperty, value);
+
+    /// <summary>Empties the TextBox the command is raised in (the clear button of <c>ClearButton</c>).</summary>
+    public static readonly RoutedCommand ClearTextCommand = new(nameof(ClearTextCommand), typeof(ControlHelper));
+
+    public static readonly DependencyProperty ClearButtonProperty = DependencyProperty.RegisterAttached(
+        "ClearButton", typeof(bool), typeof(ControlHelper), new FrameworkPropertyMetadata(false));
+
+    /// <summary>An × button at the end of a TextBox that has text; it empties the box.</summary>
+    public static bool GetClearButton(DependencyObject d) => (bool)d.GetValue(ClearButtonProperty);
+
+    public static void SetClearButton(DependencyObject d, bool value) => d.SetValue(ClearButtonProperty, value);
+
+    static ControlHelper()
+    {
+        CommandManager.RegisterClassCommandBinding(typeof(TextBox), new CommandBinding(ClearTextCommand, OnClearText, OnCanClearText));
+    }
+
+    private static void OnCanClearText(object sender, CanExecuteRoutedEventArgs e) =>
+        e.CanExecute = sender is TextBox { IsReadOnly: false, IsEnabled: true };
+
+    private static void OnClearText(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (sender is TextBox box)
+        {
+            box.Clear();
+            box.Focus();
+            e.Handled = true;
+        }
+    }
 }

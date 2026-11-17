@@ -2,7 +2,9 @@
     TextBox, PasswordBox, RichTextBox, Label. A field is a dark, slightly sunken glass strip with a lighter
     bottom edge; keyboard focus draws a 2px accent line along the bottom, an error a red one.
     ControlHelper.Placeholder shows hint text, ControlHelper.Icon an icon on the left
-    (Frosted.Styles.TextBox.Search sets the magnifier), PasswordBoxHelper.CanReveal an eye button.
+    (Frosted.Styles.TextBox.Search sets the magnifier), ControlHelper.ClearButton an × that empties
+    the box, PasswordBoxHelper.CanReveal an eye button. NumericUpDown is the same field with step
+    buttons.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -30,6 +32,42 @@
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource Frosted.Templates.NoErrorAdorner}" />
     </Style>
 
+    <!-- The small subtle buttons inside a field: the TextBox clear button, the NumericUpDown steps -->
+    <Style x:Key="Frosted.Styles.Button.Field" TargetType="ButtonBase">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text.Secondary}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Subtle.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Item.Selected}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.42" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="TextBox" BasedOn="{StaticResource Frosted.Styles.Field.Base}">
         <Setter Property="CaretBrush" Value="{DynamicResource Frosted.Brushes.Text}" />
         <Setter Property="SelectionBrush" Value="{DynamicResource Frosted.Brushes.Accent.Light}" />
@@ -49,6 +87,10 @@
                         <DockPanel Margin="{TemplateBinding BorderThickness}">
                             <c:StrokeIcon x:Name="Icon" DockPanel.Dock="Left" Width="16" Height="16" Margin="11,0,-4,0" StrokeThickness="2"
                                           Data="{TemplateBinding h:ControlHelper.Icon}" Foreground="{DynamicResource Frosted.Brushes.Text.Hint}" />
+                            <Button x:Name="ClearButton" DockPanel.Dock="Right" Margin="0,0,3,0" Visibility="Collapsed" Style="{StaticResource Frosted.Styles.Button.Field}"
+                                    Command="{x:Static h:ControlHelper.ClearTextCommand}" ToolTip="Clear" AutomationProperties.Name="Clear">
+                                <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Frosted.Icons.Close}" />
+                            </Button>
                             <Grid>
                                 <TextBlock x:Name="Placeholder" Margin="{TemplateBinding Padding}" Padding="2,0,0,0" Visibility="Collapsed"
                                            Text="{TemplateBinding h:ControlHelper.Placeholder}" Foreground="{DynamicResource Frosted.Brushes.Text.Placeholder}"
@@ -62,8 +104,15 @@
                         <Trigger Property="h:ControlHelper.Icon" Value="{x:Null}">
                             <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
                         </Trigger>
+                        <Trigger Property="h:ControlHelper.ClearButton" Value="True">
+                            <Setter TargetName="ClearButton" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsReadOnly" Value="True">
+                            <Setter TargetName="ClearButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
                         <Trigger Property="Text" Value="">
                             <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ClearButton" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Field.Hover}" />
@@ -218,6 +267,96 @@
                     <ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- NumericUpDown: the field with step buttons at the end; the text box inside has no look of its own -->
+    <Style x:Key="Frosted.Styles.TextBox.Inner" TargetType="TextBox">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Frosted.Brushes.Accent.Light}" />
+        <Setter Property="SelectionOpacity" Value="0.45" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Focusable="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Frosted.Styles.RepeatButton.Field" TargetType="RepeatButton" BasedOn="{StaticResource Frosted.Styles.Button.Field}">
+        <Setter Property="Delay" Value="400" />
+        <Setter Property="Interval" Value="60" />
+    </Style>
+
+    <Style TargetType="c:NumericUpDown" BasedOn="{StaticResource Frosted.Styles.Field.Base}">
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:NumericUpDown">
+                    <Grid x:Name="Root" SnapsToDevicePixels="True">
+                        <Border x:Name="Bd" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border x:Name="BottomLine" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Frosted.Brushes.Field.Border.Bottom}" />
+                        <Border x:Name="FocusLine" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Frosted.Brushes.Accent.Light}" Visibility="Collapsed" />
+                        <DockPanel Margin="{TemplateBinding BorderThickness}">
+                            <StackPanel x:Name="Steps" DockPanel.Dock="Right" Margin="0,0,3,0" Orientation="Horizontal">
+                                <RepeatButton x:Name="PART_Down" Style="{StaticResource Frosted.Styles.RepeatButton.Field}" AutomationProperties.Name="Decrease">
+                                    <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Frosted.Icons.ChevronDown}" />
+                                </RepeatButton>
+                                <RepeatButton x:Name="PART_Up" Style="{StaticResource Frosted.Styles.RepeatButton.Field}" AutomationProperties.Name="Increase">
+                                    <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Frosted.Icons.ChevronUp}" />
+                                </RepeatButton>
+                            </StackPanel>
+                            <TextBox x:Name="PART_TextBox" Style="{StaticResource Frosted.Styles.TextBox.Inner}" Padding="{TemplateBinding Padding}"
+                                     Foreground="{TemplateBinding Foreground}" IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                     AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" />
+                        </DockPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HideUpDownButtons" Value="True">
+                            <Setter TargetName="Steps" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsReadOnly" Value="True">
+                            <Setter TargetName="Steps" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Field.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Field.Focus}" />
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Field.Border.Focus}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="FocusLine" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                        </Trigger>
+                        <Trigger Property="h:ControlHelper.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="FocusLine" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Error}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.42" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

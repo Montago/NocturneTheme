@@ -1,0 +1,149 @@
+<UserControl x:Class="Frosted.Wpf.Demo.Views.CustomControlsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fg="urn:frosted-wpf">
+    <StackPanel>
+        <!-- Page header -->
+        <StackPanel Margin="0,0,0,20">
+            <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Title}" Text="Custom controls" />
+            <TextBlock Margin="0,6,0,0" FontSize="14" Foreground="{DynamicResource Frosted.Brushes.Text.Secondary}"
+                       Text="Controls WPF does not have, in frosted glass: menu buttons, number fields, progress rings, message bars, dialogs and flyouts." />
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Column 1 -->
+            <StackPanel>
+                <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="MENU BUTTONS" Tag="fg:DropDownButton · fg:SplitButton">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Drop-down: the whole button opens the menu" />
+                        <WrapPanel>
+                            <fg:DropDownButton x:Name="ExportButton" Margin="0,0,10,10" Content="Export">
+                                <fg:DropDownButton.Menu>
+                                    <ContextMenu>
+                                        <MenuItem Header="PDF document" />
+                                        <MenuItem Header="CSV for Excel" />
+                                        <MenuItem Header="PNG image" />
+                                    </ContextMenu>
+                                </fg:DropDownButton.Menu>
+                            </fg:DropDownButton>
+                            <fg:DropDownButton Margin="0,0,10,10" Style="{StaticResource Frosted.Styles.DropDownButton.Primary}">
+                                <StackPanel Orientation="Horizontal">
+                                    <fg:StrokeIcon Width="16" Height="16" Data="{StaticResource Frosted.Icons.Plus}" />
+                                    <TextBlock Margin="6,0,0,0" Text="New" />
+                                </StackPanel>
+                                <fg:DropDownButton.Menu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Folder" fg:ControlHelper.Icon="{StaticResource Frosted.Icons.Folder}" />
+                                        <MenuItem Header="Document" fg:ControlHelper.Icon="{StaticResource Frosted.Icons.File}" />
+                                    </ContextMenu>
+                                </fg:DropDownButton.Menu>
+                            </fg:DropDownButton>
+                        </WrapPanel>
+
+                        <TextBlock Margin="0,6,0,6" Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Split: the chevron opens the other choices" />
+                        <WrapPanel>
+                            <fg:SplitButton Margin="0,0,10,10" Content="Save">
+                                <fg:SplitButton.Menu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Save as…" InputGestureText="Ctrl+Shift+S" />
+                                        <MenuItem Header="Save all" />
+                                    </ContextMenu>
+                                </fg:SplitButton.Menu>
+                            </fg:SplitButton>
+                            <fg:SplitButton Margin="0,0,10,10" Style="{StaticResource Frosted.Styles.SplitButton.Primary}" Content="Synchronise">
+                                <fg:SplitButton.Menu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Synchronise this folder" />
+                                        <MenuItem Header="Pause for an hour" />
+                                    </ContextMenu>
+                                </fg:SplitButton.Menu>
+                            </fg:SplitButton>
+                            <fg:DropDownButton Margin="0,0,10,10" Content="Disabled" IsEnabled="False" />
+                        </WrapPanel>
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="NUMERICUPDOWN" Tag="fg:NumericUpDown">
+                    <StackPanel>
+                        <Label Content="_Port" Target="{Binding ElementName=PortNumber}" />
+                        <fg:NumericUpDown x:Name="PortNumber" Minimum="1" Maximum="65535" Value="8080" AutomationProperties.Name="Port" />
+
+                        <Label Margin="0,14,0,0" Content="_Timeout (steps of 5, StringFormat)" Target="{Binding ElementName=TimeoutNumber}" />
+                        <fg:NumericUpDown x:Name="TimeoutNumber" Minimum="0" Maximum="300" Interval="5" Value="30" StringFormat="0 's'" AutomationProperties.Name="Timeout" />
+
+                        <Label Margin="0,14,0,0" Content="_Retries (out of range)" Target="{Binding ElementName=RetriesNumber}" />
+                        <fg:NumericUpDown x:Name="RetriesNumber" Value="12" fg:ControlHelper.HasError="True" AutomationProperties.Name="Retries" />
+                        <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Error}" Text="At most 10 retries." />
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 2 -->
+            <StackPanel Grid.Column="2">
+                <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="TEXTBOX · CLEAR BUTTON" Tag="ControlHelper.ClearButton">
+                    <StackPanel>
+                        <Label Content="_Server name" Target="{Binding ElementName=ClearServer}" />
+                        <TextBox x:Name="ClearServer" Text="intranet.local" fg:ControlHelper.ClearButton="True" />
+                        <Label Margin="0,14,0,0" Content="S_earch" Target="{Binding ElementName=ClearSearch}" />
+                        <TextBox x:Name="ClearSearch" Style="{StaticResource Frosted.Styles.TextBox.Search}" Text="frosted"
+                                 fg:ControlHelper.ClearButton="True" fg:ControlHelper.Placeholder="Search files" />
+                        <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Hint}" Text="The × shows while there is text and empties the box." />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="PROGRESSRING" Tag="fg:ProgressRing">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <fg:ProgressRing Width="20" Height="20" Margin="0,0,20,0" />
+                            <fg:ProgressRing Margin="0,0,20,0" />
+                            <fg:ProgressRing Width="48" Height="48" />
+                        </StackPanel>
+                        <TextBlock Margin="0,16,0,8" Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Inside a button" />
+                        <Button HorizontalAlignment="Left" Style="{StaticResource Frosted.Styles.Button.Primary}" IsHitTestVisible="False">
+                            <StackPanel Orientation="Horizontal">
+                                <fg:ProgressRing Width="16" Height="16" Margin="0,0,10,0" Foreground="{DynamicResource Frosted.Brushes.Text.OnAccent}" Background="#33FFFFFF" />
+                                <TextBlock Text="Saving…" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 3 -->
+            <StackPanel Grid.Column="4">
+                <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="DIALOG · FLYOUT" Tag="fg:FrostedDialog · fg:Flyout">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Body}" Foreground="{DynamicResource Frosted.Brushes.Text.Label}" LineHeight="21"
+                                   Text="A dialog dims the page and waits for an answer (await ShowMessageAsync). A flyout slides in from the edge of the window." />
+                        <WrapPanel Margin="0,16,0,0">
+                            <Button Margin="0,0,10,10" Style="{StaticResource Frosted.Styles.Button.Primary}" Content="Show dialog" Click="OnShowDialog" />
+                            <Button Margin="0,0,10,10" Content="Open flyout" Click="OnOpenFlyout" />
+                        </WrapPanel>
+                        <TextBlock x:Name="DialogResultText" Style="{StaticResource Frosted.Styles.TextBlock.Hint}" Text="No answer yet." />
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+        </Grid>
+
+        <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="INFOBAR" Tag="fg:InfoBar · Severity">
+            <StackPanel>
+                <fg:InfoBar Margin="0,0,0,10" Title="Update available." Message="Frosted Glass can be updated when you restart the app." IsClosable="False">
+                    <Button Content="Restart" />
+                </fg:InfoBar>
+                <fg:InfoBar Margin="0,0,0,10" Severity="Success" Title="Synchronised." Message="128 files were uploaded at 07:12." />
+                <fg:InfoBar Margin="0,0,0,10" Severity="Warning" Title="Almost full." Message="The shared drive has 2.1 GB free." />
+                <fg:InfoBar Severity="Error" Title="Could not connect." Message="intranet.local did not answer within 30 s.">
+                    <Button Content="Try again" />
+                </fg:InfoBar>
+            </StackPanel>
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>

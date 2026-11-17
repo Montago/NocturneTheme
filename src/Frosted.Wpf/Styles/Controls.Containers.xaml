@@ -1,5 +1,5 @@
 <!--
-    GroupBox, Expander, TabControl, GridSplitter and StatusBar. The default TabControl is a
+    GroupBox, Expander, TabControl, GridSplitter, StatusBar and InfoBar. The default TabControl is a
     segmented control (tabs share a sunken strip, the selected one has a light fill and a short
     accent bar).
     Frosted.Styles.TabControl.Document gives browser-like document tabs with close buttons
@@ -508,5 +508,77 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!--
+        InfoBar: a rounded strip tinted by its Severity, with the matching icon, a bold title before
+        the message, an optional action (Content) and a close button.
+    -->
+    <Style TargetType="c:InfoBar">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FontFamily" Value="{DynamicResource Frosted.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Frosted.Font.Size.Default}" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Surface2}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="14,6,6,6" />
+        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:InfoBar">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10" Padding="{TemplateBinding Padding}" MinHeight="{TemplateBinding MinHeight}" SnapsToDevicePixels="True">
+                        <DockPanel>
+                            <c:StrokeIcon x:Name="Icon" DockPanel.Dock="Left" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center"
+                                          Data="{DynamicResource Frosted.Icons.Info}" Foreground="{DynamicResource Frosted.Brushes.Accent.Text}" />
+                            <Button x:Name="PART_Close" DockPanel.Dock="Right" Width="32" Height="32" Margin="4,0,0,0" VerticalAlignment="Center"
+                                    Style="{DynamicResource Frosted.Styles.Button.Icon.Subtle}" ToolTip="Close" AutomationProperties.Name="Close">
+                                <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Frosted.Icons.Close}" />
+                            </Button>
+                            <ContentPresenter x:Name="Action" DockPanel.Dock="Right" Margin="12,0,0,0" VerticalAlignment="Center" />
+                            <TextBlock Margin="0,8" VerticalAlignment="Center" TextWrapping="Wrap" LineHeight="20">
+                                <Run FontWeight="SemiBold" Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" />
+                                <Run Foreground="{DynamicResource Frosted.Brushes.Text.Label}" Text="{Binding Message, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" />
+                            </TextBlock>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Severity" Value="Success">
+                            <Setter TargetName="Icon" Property="Data" Value="{DynamicResource Frosted.Icons.CheckCircle}" />
+                            <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource Frosted.Brushes.Success}" />
+                        </Trigger>
+                        <Trigger Property="Severity" Value="Warning">
+                            <Setter TargetName="Icon" Property="Data" Value="{DynamicResource Frosted.Icons.Warning}" />
+                            <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource Frosted.Brushes.Warning}" />
+                        </Trigger>
+                        <Trigger Property="Severity" Value="Error">
+                            <Setter TargetName="Icon" Property="Data" Value="{DynamicResource Frosted.Icons.Error}" />
+                            <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource Frosted.Brushes.Error}" />
+                        </Trigger>
+                        <Trigger Property="IsClosable" Value="False">
+                            <Setter TargetName="PART_Close" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="Content" Value="{x:Null}">
+                            <Setter TargetName="Action" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Severity" Value="Success">
+                <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Success.Background}" />
+            </Trigger>
+            <Trigger Property="Severity" Value="Warning">
+                <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Warning.Background}" />
+            </Trigger>
+            <Trigger Property="Severity" Value="Error">
+                <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Error.Background}" />
+            </Trigger>
+            <Trigger Property="IsOpen" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>
