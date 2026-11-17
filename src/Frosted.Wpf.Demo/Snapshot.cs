@@ -28,13 +28,19 @@ internal static class Snapshot
         Directory.CreateDirectory(Folder!);
         window.Backdrop = WindowBackdrop.None;
 
-        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "tokens") })
+        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "grid"), (4, "tokens") })
         {
             window.Navigation.SelectedIndex = index;
             await Settle(window);
             Save(window, Path.Combine(Folder!, name + ".png"));
 
-            // The rest of a page that does not fit: scrolled to the bottom.
+            // The rest of a page that does not fit: halfway down when it is long, and at the bottom.
+            if (window.PageScroller.ScrollableHeight > window.PageScroller.ViewportHeight)
+            {
+                window.PageScroller.ScrollToVerticalOffset(window.PageScroller.ScrollableHeight / 2);
+                await Settle(window);
+                Save(window, Path.Combine(Folder!, name + "-middle.png"));
+            }
             if (window.PageScroller.ScrollableHeight > 0)
             {
                 window.PageScroller.ScrollToBottom();
@@ -46,6 +52,7 @@ internal static class Snapshot
         SaveLightSample();
         await SavePopups(window);
         await SaveOverlays(window);
+        await SaveGrid(window);
         await CheckWheelChaining(window);
         await SaveAccents(window);
         window.Close();
@@ -182,6 +189,96 @@ internal static class Snapshot
         Save(window, Path.Combine(Folder!, "flyout.png"));
         window.SettingsFlyout.IsOpen = false;
         await Settle(window);
+
+        // The pickers' drop-downs
+        page.MeetingTime.BringIntoView();
+        await Settle(window);
+        await SaveDropDown(page.MeetingTime, open => page.MeetingTime.IsDropDownOpen = open, "popup-timepicker.png");
+        await SaveDropDown(page.LabelColour, open => page.LabelColour.IsDropDownOpen = open, "popup-colorpicker.png");
+        await SaveDropDown(page.OwnerBox, open => page.OwnerBox.IsDropDownOpen = open, "popup-searchcombobox.png");
+
+        // The menu folded to its icons
+        page.DemoMenu.BringIntoView();
+        page.DemoMenu.IsPaneOpen = false;
+        await Settle(window);
+        Save(window, Path.Combine(Folder!, "hamburger-compact.png"));
+        page.DemoMenu.IsPaneOpen = true;
+        await Settle(window);
+    }
+
+    /// <summary>
+    /// Data grid page: the filters of the Body and Registered columns (popup-filter.png,
+    /// popup-filter-dates.png) and the grid grouped by make (grid-grouped.png).
+    /// </summary>
+    private static async Task SaveGrid(MainWindow window)
+    {
+        window.Navigation.SelectedIndex = 3;
+        window.PageScroller.ScrollToTop();
+        await Settle(window);
+
+        var grid = window.GridPage.Cars;
+        foreach (var (header, file) in new[] { ("BODY", "popup-filter.png"), ("REGISTERED", "popup-filter-dates.png") })
+        {
+            // Headers are virtualized with the columns: bring the column into view first.
+            if (grid.Columns.FirstOrDefault(c => Equals(c.Header, header)) is { } column)
+            {
+                grid.ScrollIntoView(grid.Items[0], column);
+                await Settle(window);
+            }
+            if (FindHeader(grid, header) is not { } columnHeader)
+            {
+                continue;
+            }
+            columnHeader.BringIntoView();
+            await Settle(window);
+            if (columnHeader.Template.FindName("PART_FilterButton", columnHeader) is ToggleButton button
+                && columnHeader.Template.FindName("PART_FilterPopup", columnHeader) is Popup { Child: FrameworkElement filter })
+            {
+                button.IsChecked = true;
+                await Settle(window);
+                SaveOnGround(filter, Path.Combine(Folder!, file));
+                button.IsChecked = false;
+            }
+        }
+        // The last columns, with the check boxes GridCheckBox draws (grid-right.png)
+        grid.ScrollIntoView(grid.Items[0], grid.Columns[^1]);
+        await Settle(window);
+        Save(window, Path.Combine(Folder!, "grid-right.png"));
+        grid.ScrollIntoView(grid.Items[0], grid.Columns[0]);
+
+        window.GridPage.GroupBy.SelectedIndex = 1;
+        await Settle(window);
+        Save(window, Path.Combine(Folder!, "grid-grouped.png"));
+        window.GridPage.GroupBy.SelectedIndex = 0;
+        await Settle(window);
+    }
+
+    private static DataGridColumnHeader? FindHeader(DependencyObject parent, string header)
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is DataGridColumnHeader { Column.Header: string text } found && text == header)
+            {
+                return found;
+            }
+            if (FindHeader(child, header) is { } deeper)
+            {
+                return deeper;
+            }
+        }
+        return null;
+    }
+
+    private static async Task SaveDropDown(Control control, Action<bool> setOpen, string file)
+    {
+        setOpen(true);
+        await Settle((Window)Window.GetWindow(control)!);
+        if (control.Template.FindName("PART_Popup", control) is Popup { Child: FrameworkElement child })
+        {
+            SaveOnGround(child, Path.Combine(Folder!, file));
+        }
+        setOpen(false);
     }
 
     /// <summary>

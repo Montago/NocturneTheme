@@ -32,6 +32,44 @@ public sealed class TreeViewIndentConverter : IValueConverter
         throw new NotSupportedException();
 }
 
+/// <summary>A <see cref="Color"/> as a frozen SolidColorBrush (ColorPicker swatches).</summary>
+public sealed class ColorToBrushConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not Color c)
+        {
+            return null;
+        }
+        var brush = new SolidColorBrush(c);
+        brush.Freeze();
+        return brush;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        value is SolidColorBrush b ? b.Color : Binding.DoNothing;
+}
+
+/// <summary>A <see cref="Color"/> as #RRGGBB (#AARRGGBB when not opaque).</summary>
+public sealed class ColorToHexConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value is Color c
+        ? (c.A == 255 ? $"#{c.R:X2}{c.G:X2}{c.B:X2}" : $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}")
+        : string.Empty;
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        try
+        {
+            return value is string s ? (Color)ColorConverter.ConvertFromString(s) : Binding.DoNothing;
+        }
+        catch (FormatException)
+        {
+            return Binding.DoNothing;
+        }
+    }
+}
+
 /// <summary>
 /// The direction a GridSplitter resizes in, with <see cref="GridResizeDirection.Auto"/> worked out
 /// the way GridSplitter does it. Bind ResizeDirection, HorizontalAlignment, VerticalAlignment,

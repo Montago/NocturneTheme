@@ -36,6 +36,10 @@
     <Geometry x:Key="Frosted.Icons.Warning">M10.3,4.6 A2,2 0 0 1 13.7,4.6 L20.8,17 A2,2 0 0 1 19.1,20 H4.9 A2,2 0 0 1 3.2,17 Z M12,9.5 V13.5 M12,16.6 V16.7</Geometry>
     <Geometry x:Key="Frosted.Icons.Error">M3.5,12 A8.5,8.5 0 1 1 20.5,12 A8.5,8.5 0 1 1 3.5,12 Z M9.3,9.3 L14.7,14.7 M14.7,9.3 L9.3,14.7</Geometry>
     <Geometry x:Key="Frosted.Icons.Components">M5,3.5 H9 A1.5,1.5 0 0 1 10.5,5 V9 A1.5,1.5 0 0 1 9,10.5 H5 A1.5,1.5 0 0 1 3.5,9 V5 A1.5,1.5 0 0 1 5,3.5 Z M5,13.5 H9 A1.5,1.5 0 0 1 10.5,15 V19 A1.5,1.5 0 0 1 9,20.5 H5 A1.5,1.5 0 0 1 3.5,19 V15 A1.5,1.5 0 0 1 5,13.5 Z M15,13.5 H19 A1.5,1.5 0 0 1 20.5,15 V19 A1.5,1.5 0 0 1 19,20.5 H15 A1.5,1.5 0 0 1 13.5,19 V15 A1.5,1.5 0 0 1 15,13.5 Z M17,2.8 L21.2,7 L17,11.2 L12.8,7 Z</Geometry>
+    <Geometry x:Key="Frosted.Icons.Filter">M4,5 H20 L14,12.5 V18.5 L10,20.5 V12.5 Z</Geometry>
+    <Geometry x:Key="Frosted.Icons.PageFirst">M17,6 L11,12 L17,18 M7,6 V18</Geometry>
+    <Geometry x:Key="Frosted.Icons.PageLast">M7,6 L13,12 L7,18 M17,6 V18</Geometry>
+    <Geometry x:Key="Frosted.Icons.Menu">M4,7 H20 M4,12 H20 M4,17 H20</Geometry>
     <Geometry x:Key="Frosted.Icons.File">M7,3.5 H13.5 L18.5,8.5 V19 A1.5,1.5 0 0 1 17,20.5 H7 A1.5,1.5 0 0 1 5.5,19 V5 A1.5,1.5 0 0 1 7,3.5 Z M13.5,3.5 V8.5 H18.5</Geometry>
 
     <Geometry x:Key="Frosted.Icons.Caption.Minimize">M0,5.5 H10</Geometry>

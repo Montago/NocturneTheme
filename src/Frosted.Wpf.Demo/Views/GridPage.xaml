@@ -1,0 +1,74 @@
+<UserControl x:Class="Frosted.Wpf.Demo.Views.GridPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:demo="clr-namespace:Frosted.Wpf.Demo"
+             xmlns:fg="urn:frosted-wpf">
+    <StackPanel>
+        <!-- Page header -->
+        <StackPanel Margin="0,0,0,20">
+            <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Title}" Text="Data grid" />
+            <TextBlock Margin="0,6,0,0" MaxWidth="1000" HorizontalAlignment="Left" FontSize="14" TextWrapping="Wrap" LineHeight="21"
+                       Foreground="{DynamicResource Frosted.Brushes.Text.Secondary}"
+                       Text="fg:FrostedGrid with 3,000 used cars in 21 columns. Every word of the search must be found somewhere in a row; the hits are drawn in the light accent in faintly lit cells. Click a header to sort; the funnel keeps only the rows with the values you tick or type, and a column of dates gets a tree of years, months and days. Rows and columns are virtualized." />
+        </StackPanel>
+
+        <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="FROSTEDGRID" Tag="fg:FrostedGrid · fg:FrostedGridColumn">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,14" LastChildFill="False">
+                    <TextBox x:Name="Search" Width="280" Style="{StaticResource Frosted.Styles.TextBox.Search}" Text="volvo automatic"
+                             fg:ControlHelper.Placeholder="Search, e.g. volvo estate automatic" fg:ControlHelper.ClearButton="True" AutomationProperties.Name="Search" />
+                    <TextBlock Margin="20,0,8,0" VerticalAlignment="Center" Style="{StaticResource Demo.Key}" Text="Group by" />
+                    <ComboBox x:Name="GroupBy" Width="130" SelectedIndex="0" AutomationProperties.Name="Group by">
+                        <ComboBoxItem Content="Nothing" Tag="" />
+                        <ComboBoxItem Content="Make" Tag="Make" />
+                        <ComboBoxItem Content="Body" Tag="Body" />
+                        <ComboBoxItem Content="Fuel" Tag="Fuel" />
+                        <ComboBoxItem Content="Dealer" Tag="Dealer" />
+                    </ComboBox>
+                    <TextBlock Margin="20,0,8,0" VerticalAlignment="Center" Style="{StaticResource Demo.Key}" Text="Rows per page" />
+                    <ComboBox x:Name="PageSize" Width="90" SelectedIndex="2" AutomationProperties.Name="Rows per page">
+                        <ComboBoxItem Content="All" Tag="0" />
+                        <ComboBoxItem Content="50" Tag="50" />
+                        <ComboBoxItem Content="100" Tag="100" />
+                        <ComboBoxItem Content="500" Tag="500" />
+                    </ComboBox>
+                    <Button DockPanel.Dock="Right" Content="Clear filters" Command="{x:Static fg:FrostedGrid.ClearFilterCommand}" CommandTarget="{Binding ElementName=Cars}" />
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                    <TextBlock x:Name="Selection" DockPanel.Dock="Right" Style="{StaticResource Frosted.Styles.TextBlock.Caption}" />
+                    <TextBlock x:Name="Status" Style="{StaticResource Frosted.Styles.TextBlock.Caption}" />
+                </DockPanel>
+
+                <fg:FrostedGrid x:Name="Cars" Height="560" ItemsSource="{x:Static demo:CarData.Cars}" FrozenColumnCount="2" SelectionMode="Single"
+                                SearchText="{Binding Text, ElementName=Search}" GroupMemberPath="{Binding SelectedItem.Tag, ElementName=GroupBy}"
+                                PageSize="{Binding SelectedItem.Tag, ElementName=PageSize}"
+                                Filtered="OnFiltered" SelectedItemChanged="OnSelectedItemChanged" AutomationProperties.Name="Cars">
+                    <fg:FrostedGrid.Columns>
+                        <fg:FrostedGridColumn Width="124" Header="STOCK NO." Binding="{Binding StockNo}" />
+                        <fg:FrostedGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" />
+                        <fg:FrostedGridColumn Width="150" Header="MODEL" Binding="{Binding Model}" />
+                        <fg:FrostedGridColumn Width="100" Header="TRIM" Binding="{Binding Trim}" />
+                        <fg:FrostedGridColumn Width="110" Header="BODY" Binding="{Binding Body}" FilterText="estate suv" />
+                        <fg:FrostedGridColumn Width="76" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="150" Header="MILEAGE (KM)" Binding="{Binding Mileage, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="92" Header="FUEL" Binding="{Binding Fuel}" />
+                        <fg:FrostedGridColumn Width="116" Header="GEARBOX" Binding="{Binding Gearbox}" />
+                        <fg:FrostedGridColumn Width="80" Header="DRIVE" Binding="{Binding Drive}" />
+                        <fg:FrostedGridColumn Width="100" Header="POWER" Binding="{Binding Power, StringFormat='{}{0} hp'}" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="96" Header="CO₂" Binding="{Binding Co2, StringFormat='{}{0} g/km'}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="100" Header="COLOUR" Binding="{Binding Colour}" />
+                        <fg:FrostedGridColumn Width="92" Header="DOORS" Binding="{Binding Doors}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="92" Header="SEATS" Binding="{Binding Seats}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="100" Header="OWNERS" Binding="{Binding Owners}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="136" Header="REGISTERED" Binding="{Binding Registered, StringFormat=d}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="136" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" />
+                        <fg:FrostedGridColumn Width="110" Header="DEALER" Binding="{Binding Dealer}" />
+                        <fg:FrostedGridColumn Width="100" Header="STATUS" Binding="{Binding Status}" />
+                        <fg:FrostedGridCheckBoxColumn Width="88" Header="SOLD" Binding="{Binding IsSold}" />
+                    </fg:FrostedGrid.Columns>
+                </fg:FrostedGrid>
+            </DockPanel>
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>

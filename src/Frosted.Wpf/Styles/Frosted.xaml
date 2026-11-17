@@ -16,6 +16,7 @@
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Lists.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Range.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Calendar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Pickers.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Containers.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.DataGrid.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Menu.xaml" />

@@ -1,5 +1,6 @@
 <!--
-    GroupBox, Expander, TabControl, GridSplitter, StatusBar and InfoBar. The default TabControl is a
+    GroupBox, Expander, TabControl, GridSplitter, StatusBar, InfoBar, Badged, BusyIndicator and
+    Accordion. The default TabControl is a
     segmented control (tabs share a sunken strip, the selected one has a light fill and a short
     accent bar).
     Frosted.Styles.TabControl.Document gives browser-like document tabs with close buttons
@@ -580,5 +581,100 @@
                 <Setter Property="Visibility" Value="Collapsed" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Badged: an accent count on the top-right corner of its content -->
+    <Style TargetType="c:Badged">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="BadgeBackground" Value="{DynamicResource Frosted.Brushes.Accent}" />
+        <Setter Property="BadgeForeground" Value="{DynamicResource Frosted.Brushes.Text.OnAccent}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:Badged">
+                    <Grid>
+                        <ContentPresenter />
+                        <Border x:Name="Badge" MinWidth="18" Height="18" Margin="0,-7,-7,0" Padding="5,0" CornerRadius="9" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Background="{TemplateBinding BadgeBackground}" IsHitTestVisible="False">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Badge}"
+                                              TextElement.FontSize="{DynamicResource Frosted.Font.Size.Tag}" TextElement.FontWeight="Bold"
+                                              TextElement.Foreground="{TemplateBinding BadgeForeground}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Badge" Value="{x:Null}">
+                            <Setter TargetName="Badge" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- BusyIndicator: the content blurred and dimmed under a small glass card with a progress ring -->
+    <Style TargetType="c:BusyIndicator">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:BusyIndicator">
+                    <Grid x:Name="Root">
+                        <ContentPresenter x:Name="PART_Content" />
+                        <Border x:Name="Overlay" CornerRadius="10" Background="{DynamicResource Frosted.Brushes.Overlay}" Visibility="Collapsed" />
+                        <Grid x:Name="Card" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                            <Border Margin="1" CornerRadius="12" Background="Black">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="24" ShadowDepth="8" Direction="270" Opacity="0.45" />
+                                </Border.Effect>
+                            </Border>
+                            <Border CornerRadius="12" Padding="16,12,20,12" Background="{DynamicResource Frosted.Brushes.Popup}"
+                                    BorderBrush="{DynamicResource Frosted.Brushes.Popup.Border}" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <c:ProgressRing x:Name="Ring" Width="22" Height="22" Margin="0,0,12,0" IsActive="False" />
+                                    <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding BusyContent}"
+                                                      TextElement.Foreground="{DynamicResource Frosted.Brushes.Text}" TextElement.FontWeight="Medium" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsBusy" Value="True">
+                            <Setter TargetName="Overlay" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Card" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Ring" Property="IsActive" Value="True" />
+                            <Setter TargetName="PART_Content" Property="IsEnabled" Value="False" />
+                            <Setter TargetName="Root" Property="ClipToBounds" Value="True" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Accordion: Expanders 6px apart; opening one closes the others, and the open one fills the height -->
+    <Style x:Key="Frosted.Styles.Expander.Accordion" TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
+        <Setter Property="Margin" Value="0,0,0,6" />
+    </Style>
+
+    <Style TargetType="c:Accordion">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource Frosted.Styles.Expander.Accordion}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <c:AccordionPanel />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:Accordion">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

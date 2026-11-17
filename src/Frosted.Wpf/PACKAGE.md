@@ -56,7 +56,16 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
 - **Own controls**: `DropDownButton` and `SplitButton` (each also `.Primary`), `NumericUpDown`,
   `ProgressRing`, `InfoBar` (Info, Success, Warning, Error), `FrostedDialog` (shown in the window with
   `await window.ShowMessageAsync(...)` or `ShowDialogAsync`) and `Flyout` (in `FrostedWindow.Flyouts`,
-  slides in from an edge). `ControlHelper.ClearButton` puts an × in a TextBox.
+  slides in from an edge), `TimePicker`, `ColorPicker`, `AutoSuggestBox`, `SearchComboBox` (a combo box
+  you can type in to filter thousands of items), `RangeSlider`, `Rating`, `Tile` (also `.Accent`),
+  `Badged`, `BusyIndicator`, `Accordion` and `HamburgerMenu` (a navigation pane that folds to its icons,
+  with groups of sub-items). `ControlHelper.ClearButton` puts an × in a TextBox.
+- **FrostedGrid**: a DataGrid for large lists. Search across all columns (every word must match;
+  hits drawn in the accent), a filter in every column header (tick values with their counts or type
+  them, `*` wildcards, ranges such as `>50000` or `2020-01-01..2020-06-30`, a tree of years, months and
+  days for dates), grouping (`GroupMemberPath`), three-state sorting, paging (`PageSize`), and
+  virtualized rows and columns with text drawn straight from the font. Columns: `FrostedGridColumn`
+  and `FrostedGridCheckBoxColumn`.
 - **Accent colours**: meadow green by default; `FrostedTheme.SetAccent(FrostedAccent.Blue)` (or Orange,
   Yellow, Red) switches the accent, the primary button and the window tint at run time. `FrostedAccent.System` uses
   the accent colour chosen in Windows and follows it when the user changes it.

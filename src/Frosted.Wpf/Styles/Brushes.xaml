@@ -88,6 +88,8 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Row.Hover" Color="#0FFFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Row.Selected" Color="#1AFFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Row.Selected.Hover" Color="#1FFFFFFF" />
+    <!-- FrostedGrid: the cells with search hits (their words in Accent.Text) -->
+    <SolidColorBrush x:Key="Frosted.Brushes.DataGrid.SearchHit" Color="#14FFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Tile" Color="#0FFFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Tile.Border" Color="#29FFFFFF" />
     <SolidColorBrush x:Key="Frosted.Brushes.Tile.Border.Selected" Color="#47FFFFFF" />

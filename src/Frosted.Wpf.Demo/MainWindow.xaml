@@ -91,6 +91,14 @@
                         <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Custom controls" />
                     </StackPanel>
                 </ListBoxItem>
+                <ListBoxItem AutomationProperties.Name="Data grid">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Frosted.Styles.IconTile.Small}">
+                            <fg:StrokeIcon Width="18" Height="18" Data="{StaticResource Frosted.Icons.Database}" />
+                        </ContentControl>
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="Data grid" />
+                    </StackPanel>
+                </ListBoxItem>
                 <ListBoxItem AutomationProperties.Name="Layers and colours">
                     <StackPanel Orientation="Horizontal">
                         <ContentControl Style="{StaticResource Frosted.Styles.IconTile.Small}">
@@ -108,6 +116,7 @@
                 <views:ControlsPage x:Name="ControlsPage" />
                 <views:MoreControlsPage x:Name="MoreControlsPage" Visibility="Collapsed" />
                 <views:CustomControlsPage x:Name="CustomControlsPage" Visibility="Collapsed" />
+                <views:GridPage x:Name="GridPage" Visibility="Collapsed" />
                 <views:TokensPage x:Name="TokensPage" Visibility="Collapsed" />
             </Grid>
         </ScrollViewer>

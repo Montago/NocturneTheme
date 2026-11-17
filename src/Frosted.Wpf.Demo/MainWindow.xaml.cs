@@ -46,7 +46,7 @@ public partial class MainWindow : FrostedWindow
         }
 
         // In the order of the navigation items.
-        UIElement[] pages = [ControlsPage, MoreControlsPage, CustomControlsPage, TokensPage];
+        UIElement[] pages = [ControlsPage, MoreControlsPage, CustomControlsPage, GridPage, TokensPage];
         for (var i = 0; i < pages.Length; i++)
         {
             pages[i].Visibility = i == Math.Max(0, Navigation.SelectedIndex) ? Visibility.Visible : Visibility.Collapsed;

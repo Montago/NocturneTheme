@@ -78,6 +78,14 @@ public class DemoData : INotifyPropertyChanged
         new("Notes.md", "Nov 12", "Markdown file", "4 KB", false),
     ];
 
+    /// <summary>Suggestions for the AutoSuggestBox.</summary>
+    public IReadOnlyList<string> Cities { get; } =
+    [
+        "Aarhus", "Amsterdam", "Athens", "Barcelona", "Berlin", "Bergen", "Brussels", "Copenhagen", "Dublin", "Edinburgh",
+        "Gothenburg", "Hamburg", "Helsinki", "Lisbon", "London", "Madrid", "Malmö", "Milan", "Munich", "Odense",
+        "Oslo", "Paris", "Prague", "Reykjavík", "Rome", "Stockholm", "Tallinn", "Vienna", "Warsaw", "Zurich",
+    ];
+
     /// <summary>Three days from today: selected in the calendar and the date picker.</summary>
     public DateTime? Meeting { get; set; } = DateTime.Today.AddDays(3);
 

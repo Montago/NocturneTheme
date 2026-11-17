@@ -41,9 +41,13 @@ src/Frosted.Wpf/              library (net8.0-windows, NuGet package Frosted.Wpf
   Styles/Controls.*.xaml      one file per control group
   Themes/Generic.xaml         merges Frosted.xaml (implicit styles don't reach MainWindow : FrostedWindow)
   Controls/                   FrostedWindow (hosts Flyouts and dialogs), FrostedTheme (accents), LightTexture,
-                              StrokeIcon, TabPanelBorder, NativeMethods; own controls: DropDownButton,
-                              SplitButton, NumericUpDown, ProgressRing, InfoBar, FrostedDialog, Flyout
-                              (styles in Controls.Buttons / Text / Range / Containers / Overlays.xaml)
+                              StrokeIcon, TabPanelBorder, NativeMethods; own controls (behaviour ported
+                              from JetPack, look new): DropDownButton, SplitButton, Tile (Buttons.xaml),
+                              NumericUpDown (Text), ProgressRing, RangeSlider, Rating (Range), InfoBar,
+                              Badged, BusyIndicator, Accordion (Containers), HamburgerMenu (Lists),
+                              TimePicker, ColorPicker, AutoSuggestBox, SearchComboBox (Pickers.xaml),
+                              FrostedDialog, Flyout (Overlays.xaml), FrostedGrid with FrostedGridColumn,
+                              FrostedGridCheckBoxColumn and its Grid* helpers (DataGrid.xaml; JetPackGrid renamed)
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
                               (attached properties); Converters (tree indent, splitter direction)
 src/Frosted.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
@@ -58,8 +62,10 @@ dotnet build FrostedTheme.slnx
 src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <scratch folder>
 ```
 
-- `--snapshot` renders the four pages (top and scrolled to the bottom), the combo box, context
-  menu, tool tip, date picker and drop-down button popups, an open dialog and the open flyout to PNG,
+- `--snapshot` renders the five pages (top, halfway down a long page, and the bottom), the popups
+  (combo box, context menu, tool tip, date picker, drop-down button, time picker, colour picker,
+  search combo box, two FrostedGrid filters), an open dialog, the open flyout, the folded
+  HamburgerMenu and the grid grouped by make to PNG,
   and writes `wheel-check.txt` (PASS when a wheel turn over the settings ListBox scrolls the page),
   then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
@@ -94,6 +100,11 @@ src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <s
   `RelativeSource TemplatedParent` is one level further up.
 - Calendar binds its day buttons' `Style` to `CalendarDayButtonStyle`; set it (and
   `CalendarButtonStyle`) explicitly, an implicit style alone may not reach them.
+- DataGrid rows choose their template (with or without a row header) from the inherited
+  `DataGridHelper.HeadersVisibility` in triggers, not a binding to the ancestor DataGrid: FrostedGrid
+  refreshes and recycles rows, and an ancestor binding can give up for good. FrostedGrid's code needs
+  the row template's `DGR_Border`, the ScrollViewer template's `PART_ScrubLayer` and
+  `GridColumnHeadersPresenter` (both in the shared `Frosted.Templates.DataGrid.ScrollViewer`).
 - A FlowDocument does not take the RichTextBox's font (justified Georgia); the RichTextBox style
   gives FlowDocument the theme font in its resources.
 - FrostedWindow extends the DWM frame over the whole window (GlassFrameThickness -1) while a backdrop
