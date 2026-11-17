@@ -1,0 +1,123 @@
+<!--
+    Button, RepeatButton, ToggleButton.
+    Default (secondary): a light glass fill. Variants: Frosted.Styles.Button.Primary (accent),
+    .Subtle (no fill until hovered), .Icon and .Icon.Subtle (36 x 36, for a StrokeIcon).
+    The background fades to ControlHelper.HoverBackground in 120 ms.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:h="clr-namespace:Frosted.Wpf.Helpers">
+
+    <ControlTemplate x:Key="Frosted.Templates.Button" TargetType="ButtonBase">
+        <Grid x:Name="Root" SnapsToDevicePixels="True">
+            <!-- Shadow sits on its own layer so the text keeps its rendering -->
+            <Border x:Name="Shadow" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="Black" Visibility="Collapsed">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="270" Opacity="0.3" />
+                </Border.Effect>
+            </Border>
+            <Border x:Name="Bg" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="{TemplateBinding Background}" />
+            <Border x:Name="HoverBg" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="{TemplateBinding h:ControlHelper.HoverBackground}" Opacity="0" />
+            <Border x:Name="PressedBg" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" Background="{TemplateBinding h:ControlHelper.PressedBackground}" Visibility="Collapsed" />
+            <Border x:Name="Highlight" Margin="1" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderThickness="0,1,0,0"
+                    BorderBrush="{TemplateBinding h:ControlHelper.HighlightBrush}" />
+            <Border x:Name="Outline" CornerRadius="{TemplateBinding h:ControlHelper.CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" />
+            <ContentPresenter x:Name="Content" Margin="{TemplateBinding Padding}" Focusable="False" RecognizesAccessKey="True"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="h:ControlHelper.HasShadow" Value="True">
+                <Setter TargetName="Shadow" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="ToggleButton.IsChecked" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Primary}" />
+                <Setter TargetName="HoverBg" Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Primary.Hover}" />
+                <Setter TargetName="PressedBg" Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Primary.Pressed}" />
+                <Setter TargetName="Outline" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Button.Primary.Border}" />
+                <Setter TargetName="Highlight" Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Button.Primary.Highlight}" />
+                <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text.OnAccent}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="HoverBg" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
+                            <DoubleAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.12" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="HoverBg" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.12" />
+                            <DoubleAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="PressedBg" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Highlight" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="Content" Property="Opacity" Value="0.85" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Root" Property="Opacity" Value="0.42" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="Frosted.Styles.Button" TargetType="ButtonBase">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource Frosted.Styles.FocusVisual}" />
+        <Setter Property="FontFamily" Value="{DynamicResource Frosted.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Frosted.Font.Size.Default}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Secondary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Button.Secondary.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Frosted.Brushes.Button.Secondary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Frosted.Brushes.Button.Secondary.Pressed}" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource Frosted.Templates.Button}" />
+    </Style>
+
+    <Style x:Key="Frosted.Styles.Button.Primary" TargetType="ButtonBase" BasedOn="{StaticResource Frosted.Styles.Button}">
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text.OnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Frosted.Brushes.Button.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Frosted.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Frosted.Brushes.Button.Primary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Frosted.Brushes.Button.Primary.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Frosted.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </Style>
+
+    <Style x:Key="Frosted.Styles.Button.Subtle" TargetType="ButtonBase" BasedOn="{StaticResource Frosted.Styles.Button}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Frosted.Brushes.Button.Subtle.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Frosted.Brushes.Surface.Pressed}" />
+    </Style>
+
+    <Style x:Key="Frosted.Styles.Button.Icon" TargetType="ButtonBase" BasedOn="{StaticResource Frosted.Styles.Button}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style x:Key="Frosted.Styles.Button.Icon.Subtle" TargetType="ButtonBase" BasedOn="{StaticResource Frosted.Styles.Button.Subtle}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style TargetType="Button" BasedOn="{StaticResource Frosted.Styles.Button}" />
+    <Style TargetType="RepeatButton" BasedOn="{StaticResource Frosted.Styles.Button}" />
+    <!-- A checked ToggleButton takes the primary look -->
+    <Style TargetType="ToggleButton" BasedOn="{StaticResource Frosted.Styles.Button}" />
+</ResourceDictionary>

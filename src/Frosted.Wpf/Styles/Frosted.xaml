@@ -1,0 +1,23 @@
+<!--
+    Frosted Glass for WPF. Merge this one dictionary in App.xaml:
+
+    <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Frosted.xaml" />
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Brushes.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Icons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Shared.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Buttons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Text.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Toggles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Lists.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Range.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Containers.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.DataGrid.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Menu.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Frosted.Wpf;component/Styles/Controls.Window.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

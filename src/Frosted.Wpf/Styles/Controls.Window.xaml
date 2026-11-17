@@ -1,0 +1,165 @@
+<!--
+    FrostedWindow: backdrop (or the opaque fallback), tint, grain and the light from the top-left
+    corner, under a 44px title bar with 46 x 32 caption buttons.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Frosted.Wpf.Controls">
+
+    <Style x:Key="Frosted.Styles.Button.WindowCaption" TargetType="Button">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                        <Path Width="10" Height="10" Data="{TemplateBinding Content}" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"
+                              SnapsToDevicePixels="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Caption.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Caption.Pressed}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Frosted.Styles.Button.WindowClose" TargetType="Button" BasedOn="{StaticResource Frosted.Styles.Button.WindowCaption}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                        <Path x:Name="Glyph" Width="10" Height="10" Data="{TemplateBinding Content}" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"
+                              SnapsToDevicePixels="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Close.Hover}" />
+                            <Setter TargetName="Glyph" Property="Stroke" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Frosted.Brushes.Close.Pressed}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="c:FrostedWindow">
+        <Setter Property="FontFamily" Value="{DynamicResource Frosted.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Frosted.Font.Size.Default}" />
+        <Setter Property="Foreground" Value="{DynamicResource Frosted.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:FrostedWindow">
+                    <Grid x:Name="PART_Root">
+                        <!-- Layers, from the bottom -->
+                        <Border x:Name="Fallback" Background="{DynamicResource Frosted.Brushes.Window.Fallback}" />
+                        <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{TemplateBinding TintOpacity}" />
+                        <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{TemplateBinding NoiseOpacity}" />
+                        <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Light}" />
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DockPanel x:Name="TitleBar" Height="{TemplateBinding TitleBarHeight}" Background="Transparent">
+                                <StackPanel x:Name="CaptionButtons" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                                    <Button x:Name="MinButton" Style="{StaticResource Frosted.Styles.Button.WindowCaption}" Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                                            Content="{DynamicResource Frosted.Icons.Caption.Minimize}" AutomationProperties.Name="Minimize" />
+                                    <Button x:Name="MaxButton" Style="{StaticResource Frosted.Styles.Button.WindowCaption}" Command="{x:Static SystemCommands.MaximizeWindowCommand}"
+                                            Content="{DynamicResource Frosted.Icons.Caption.Maximize}" AutomationProperties.Name="Maximize" />
+                                    <Button x:Name="RestoreButton" Style="{StaticResource Frosted.Styles.Button.WindowCaption}" Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                                            Content="{DynamicResource Frosted.Icons.Caption.Restore}" AutomationProperties.Name="Restore" Visibility="Collapsed" />
+                                    <Button x:Name="CloseButton" Style="{StaticResource Frosted.Styles.Button.WindowClose}" Command="{x:Static SystemCommands.CloseWindowCommand}"
+                                            Content="{DynamicResource Frosted.Icons.Caption.Close}" AutomationProperties.Name="Close" />
+                                </StackPanel>
+                                <ContentPresenter x:Name="RightCommands" DockPanel.Dock="Right" Margin="0,0,8,0" VerticalAlignment="Center"
+                                                  Content="{TemplateBinding RightWindowCommands}" WindowChrome.IsHitTestVisibleInChrome="True" />
+                                <StackPanel x:Name="TitleArea" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
+                                    <Grid x:Name="IconHost" Width="16" Height="16" Margin="0,0,10,0">
+                                        <Image x:Name="IconImage" Source="{TemplateBinding Icon}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                        <!-- Shown when the window has no Icon -->
+                                        <Canvas x:Name="DefaultIcon" Width="16" Height="16" Visibility="Collapsed">
+                                            <Rectangle Canvas.Left="1" Canvas.Top="1" Width="14" Height="14" RadiusX="4" RadiusY="4" Fill="{DynamicResource Frosted.Brushes.Accent}" />
+                                            <Rectangle Canvas.Left="4.5" Canvas.Top="4.5" Width="7" Height="7" RadiusX="2" RadiusY="2" Stroke="White" StrokeThickness="1.4" />
+                                        </Canvas>
+                                    </Grid>
+                                    <TextBlock x:Name="TitleText" Text="{TemplateBinding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                               FontSize="{DynamicResource Frosted.Font.Size.Small}" FontWeight="Medium" />
+                                </StackPanel>
+                            </DockPanel>
+
+                            <AdornerDecorator Grid.Row="1">
+                                <ContentPresenter />
+                            </AdornerDecorator>
+                        </Grid>
+
+                        <ResizeGrip x:Name="ResizeGrip" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" IsTabStop="False"
+                                    WindowChrome.ResizeGripDirection="BottomRight" Opacity="0.5" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsBackdropActive" Value="True">
+                            <Setter TargetName="Fallback" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="IconImage" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="DefaultIcon" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="ShowIcon" Value="False">
+                            <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ShowMinButton" Value="False">
+                            <Setter TargetName="MinButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="MaxButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="ShowMaxRestoreButton" Value="False">
+                            <Setter TargetName="MaxButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ResizeMode" Value="CanMinimize">
+                            <Setter TargetName="MaxButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ResizeMode" Value="NoResize">
+                            <Setter TargetName="MinButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="MaxButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
+                                <Condition Property="WindowState" Value="Normal" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+                        </MultiTrigger>
+                        <Trigger Property="IsActive" Value="False">
+                            <Setter TargetName="TitleArea" Property="Opacity" Value="0.6" />
+                            <Setter TargetName="CaptionButtons" Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

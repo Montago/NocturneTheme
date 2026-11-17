@@ -1,0 +1,16 @@
+<!-- Type: Segoe UI (the design's Figtree can be swapped in by overriding Frosted.Fonts.Family) -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <FontFamily x:Key="Frosted.Fonts.Family">Segoe UI</FontFamily>
+    <FontFamily x:Key="Frosted.Fonts.Family.Mono">Cascadia Mono, Consolas</FontFamily>
+
+    <sys:Double x:Key="Frosted.Font.Size.Title">30</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.Subtitle">20</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.ListTitle">16</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.Default">14</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.Caption">13</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.Small">12</sys:Double>
+    <sys:Double x:Key="Frosted.Font.Size.Tag">11</sys:Double>
+</ResourceDictionary>

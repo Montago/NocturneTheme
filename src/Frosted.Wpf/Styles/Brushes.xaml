@@ -1,0 +1,126 @@
+<!--
+    Frosted Glass colours. Every surface is a plain SolidColorBrush with alpha over the window's
+    backdrop: there is no blur inside the window. Reference them with DynamicResource.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Frosted.Wpf.Controls">
+
+    <!-- Accent (meadow green) -->
+    <Color x:Key="Frosted.Colors.Accent">#FF1F9D57</Color>
+    <Color x:Key="Frosted.Colors.Accent.Light">#FF3FD27F</Color>
+    <SolidColorBrush x:Key="Frosted.Brushes.Accent" Color="#FF1F9D57" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Accent.Light" Color="#FF3FD27F" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Accent.Text" Color="#FF8EF0B8" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Accent.Text.Hover" Color="#FFC2F7D8" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Text" Color="#FFF2F6F3" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.Secondary" Color="#C7EBF2ED" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.Label" Color="#D6EEF4F0" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.Hint" Color="#BDEBF2ED" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.Placeholder" Color="#9EEBF2ED" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Text.OnAccent" Color="#FFFFFFFF" />
+
+    <!-- Glass surfaces -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface1" Color="#0EFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface1.Border" Color="#1CFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface1.Highlight" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface2" Color="#21FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface.Hover" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface.Pressed" Color="#0AFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Surface.Sunken" Color="#1A000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Stroke" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Stroke.Subtle" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Divider" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Focus" Color="#FFFFFFFF" />
+
+    <!-- Buttons -->
+    <LinearGradientBrush x:Key="Frosted.Brushes.Button.Primary" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FF1A8C50" />
+        <GradientStop Offset="1" Color="#FF157E46" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Frosted.Brushes.Button.Primary.Hover" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FF169457" />
+        <GradientStop Offset="1" Color="#FF13834A" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Primary.Pressed" Color="#FF126E3D" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Primary.Border" Color="#33FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Primary.Highlight" Color="#33FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Secondary" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Secondary.Hover" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Secondary.Pressed" Color="#0DFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Secondary.Border" Color="#26FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Subtle.Hover" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Button.Pressed.Text" Color="#CCF2F6F3" />
+
+    <!-- Input fields -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Field" Color="#33000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Field.Hover" Color="#42000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Field.Focus" Color="#4D000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Field.Border" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Field.Border.Bottom" Color="#57FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Field.Border.Focus" Color="#2EFFFFFF" />
+
+    <!-- Check boxes, radio buttons, switches -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Toggle.Fill" Color="#2E000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Toggle.Border" Color="#73FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Toggle.Border.Hover" Color="#B3FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Switch.Border" Color="#8CFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Switch.Knob" Color="#D9FFFFFF" />
+
+    <!-- Range controls and scroll bars -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Slider.Track" Color="#3DFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Slider.Thumb.Border" Color="#FFEAF2EC" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Progress.Track" Color="#29FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.ScrollBar.Track" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.ScrollBar.Thumb" Color="#66FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.ScrollBar.Thumb.Hover" Color="#8CFFFFFF" />
+
+    <!-- Lists, tabs, menus -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Item.Hover" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Item.Pressed" Color="#0AFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Item.Selected" Color="#21FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Row.Hover" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Row.Selected" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Row.Selected.Hover" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Tile" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Tile.Border" Color="#29FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Tile.Border.Selected" Color="#47FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Tile.Icon" Color="#FFEAF2EC" />
+    <SolidColorBrush x:Key="Frosted.Brushes.TabStrip" Color="#29000000" />
+    <SolidColorBrush x:Key="Frosted.Brushes.TabStrip.Border" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Tab.Text" Color="#C7EEF4F0" />
+    <SolidColorBrush x:Key="Frosted.Brushes.DocumentTab.Hover" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.DocumentTab.Selected" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Expander.Header" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Expander.Header.Hover" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Popup" Color="#F71F2D25" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Popup.Border" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Option.Hover" Color="#17FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Option.Selected" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Shortcut" Color="#B8EBF2ED" />
+
+    <!-- Status -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Error" Color="#FFFF8F85" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Error.Text" Color="#FFFFA59C" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Error.Background" Color="#26FF786E" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Warning" Color="#FFFFD27A" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Warning.Background" Color="#26FFC440" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Success" Color="#FF8EF0B8" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Success.Background" Color="#293FD27F" />
+
+    <!-- Window layers, from the bottom: backdrop (or the fallback ground), tint, grain, light -->
+    <SolidColorBrush x:Key="Frosted.Brushes.Window.Fallback" Color="#FF1E2E25" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Window.Tint" Color="#FF101E16" />
+    <ImageBrush x:Key="Frosted.Brushes.Noise" ImageSource="{x:Static c:NoiseTexture.Image}"
+                TileMode="Tile" Stretch="None" ViewportUnits="Absolute" Viewport="0,0,256,256" />
+    <LinearGradientBrush x:Key="Frosted.Brushes.Window.Light" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#14FFFFFF" />
+        <GradientStop Offset="0.38" Color="#00FFFFFF" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Frosted.Brushes.Caption.Hover" Color="#17FFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Caption.Pressed" Color="#0DFFFFFF" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Close.Hover" Color="#FFC42B1C" />
+    <SolidColorBrush x:Key="Frosted.Brushes.Close.Pressed" Color="#FFA82618" />
+</ResourceDictionary>
