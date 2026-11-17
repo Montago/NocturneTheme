@@ -234,7 +234,7 @@
                 </TabControl>
 
                 <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="LISTBOX" Tag="ListBox · ListBoxItem">
-                    <ListBox SelectedIndex="0" AutomationProperties.Name="Settings">
+                    <ListBox x:Name="SettingsList" SelectedIndex="0" AutomationProperties.Name="Settings">
                         <ListBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Style="{StaticResource Frosted.Styles.IconTile}"><fg:StrokeIcon Data="{StaticResource Frosted.Icons.Sync}" /></ContentControl>

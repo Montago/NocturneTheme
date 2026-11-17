@@ -44,7 +44,39 @@ internal static class Snapshot
         }
 
         await SavePopups(window);
+        await CheckWheelChaining(window);
         window.Close();
+    }
+
+    /// <summary>
+    /// A wheel turn over the settings ListBox (which has nothing to scroll) must scroll the page.
+    /// Writes the result to wheel-check.txt.
+    /// </summary>
+    private static async Task CheckWheelChaining(MainWindow window)
+    {
+        window.Navigation.SelectedIndex = 0;
+        window.PageScroller.ScrollToTop();
+        await Settle(window);
+
+        var target = window.ControlsPage.SettingsList.Items.OfType<ListBoxItem>().First();
+        var before = window.PageScroller.VerticalOffset;
+        var preview = new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
+        {
+            RoutedEvent = UIElement.PreviewMouseWheelEvent,
+        };
+        target.RaiseEvent(preview);
+        if (!preview.Handled)
+        {
+            target.RaiseEvent(new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
+            {
+                RoutedEvent = UIElement.MouseWheelEvent,
+            });
+        }
+        await Settle(window);
+
+        var after = window.PageScroller.VerticalOffset;
+        File.WriteAllText(Path.Combine(Folder!, "wheel-check.txt"),
+            $"{(after > before ? "PASS" : "FAIL")}: page offset {before} -> {after} after a wheel turn over the ListBox");
     }
 
     /// <summary>Opens the combo box, context menu (with a submenu) and tool tip and renders each popup on the window's ground.</summary>

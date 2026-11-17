@@ -42,7 +42,8 @@ src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <s
 ```
 
 - `--snapshot` renders both pages (top and scrolled to the bottom) and the combo box, context menu
-  and tool tip popups to PNG, then exits. RenderTargetBitmap cannot see Mica, so it switches the
+  and tool tip popups to PNG, and writes `wheel-check.txt` (PASS when a wheel turn over the settings
+  ListBox scrolls the page), then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
   out of the repo.
 - The user often runs the demo from Visual Studio, which locks `bin\...`. Do not kill it; build to
@@ -62,6 +63,12 @@ src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe --snapshot <s
   `Margin="{TemplateBinding Padding}"` plus the 2px text inset.
 - A ScrollViewer in a template takes its scroll bar visibility from the templated parent's attached
   `ScrollViewer.*` properties; popups (ContextMenu, MenuItem) set them to Auto, or an empty bar shows.
+- WPF's ScrollViewer swallows every wheel turn, even with nothing to scroll. The Frosted ScrollViewer
+  style turns on `ScrollViewerHelper.ChainMouseWheel`: the innermost scroll viewer under the mouse
+  passes a turn it cannot use to the nearest outer one that can (visual parents only, so popups
+  never scroll the page).
+- Scroll bars are 18px wide with a thumb that fills that width (the drawn bar is 6px, 10px under
+  the mouse), so a bar along the window edge stays clear of the 6px resize border.
 - Effects (DropShadowEffect) sit on separate background layers, never on text.
 - FrostedWindow extends the DWM frame over the whole window (GlassFrameThickness -1) while a backdrop
   is active and removes WS_SYSMENU so Windows does not draw its own caption buttons (same approach
