@@ -52,6 +52,8 @@ src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.W
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
                               (attached properties); Converters (tree indent, splitter direction)
 src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot
+tools/generate_icon.ps1       draws src/Nocturne.Wpf/icon.png, the package icon (System.Drawing)
+.github/workflows/            ci.yml (build and pack on every push and PR), release.yml (version tags)
 ```
 
 XAML namespace `urn:nocturne-wpf`, prefix `nc`. Brushes are referenced with `DynamicResource`.
@@ -75,6 +77,17 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
   another folder: `dotnet build src/Nocturne.Wpf.Demo -o <scratch>/out`.
 - On-screen captures (`CopyFromScreen`) fail while the RDP window is minimised ("The handle is
   invalid"); use `--snapshot` then.
+
+## Releases
+
+- Repo: github.com/Montago/NocturneTheme, default branch `master`.
+- A tag `v1.2.3` runs `release.yml`: it packs Nocturne.Wpf with that version (the tag overrides
+  `<Version>` in the csproj) and creates a GitHub release with the `.nupkg` and `.snupkg` attached.
+  Tag with `git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"` and push the tag; tag and push only when the
+  user asks.
+- nuget.org (Trusted Publishing) is off until the user turns it on: the push runs only when the
+  repository variable `NUGET_PUBLISH` is `true` and the secret `NUGET_USER` is set. The user sets
+  both; never add API keys or secrets to the repo.
 
 ## WPF gotchas (same as JetPack)
 

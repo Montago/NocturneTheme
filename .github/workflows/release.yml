@@ -1,0 +1,68 @@
+# Publishes Nocturne.Wpf when a version tag is pushed:
+#   git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"; git push origin v1.2.3
+#
+# - A GitHub release with the .nupkg and .snupkg attached (assets are replaced if the release exists,
+#   so the workflow can be re-run for the same tag).
+# - nuget.org: with Trusted Publishing (no API key stored anywhere). Runs only when the repository
+#   variable NUGET_PUBLISH is 'true' and the repository secret NUGET_USER holds the nuget.org profile
+#   name. Needs a Trusted Publishing policy on nuget.org: owner Montago, repository NocturneTheme,
+#   workflow file release.yml; the first release of the package needs a policy that allows new packages.
+#   https://learn.microsoft.com/nuget/nuget-org/trusted-publishing
+
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+  id-token: write # OIDC token for nuget.org Trusted Publishing
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    env:
+      PUBLISH_NUGET: ${{ vars.NUGET_PUBLISH == 'true' && secrets.NUGET_USER != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Version from tag
+        id: version
+        shell: bash
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Pack
+        run: dotnet pack src/Nocturne.Wpf/Nocturne.Wpf.csproj -c Release -o artifacts -p:Version=${{ steps.version.outputs.value }}
+
+      # Exchanges the GitHub OIDC token for a nuget.org API key that is valid for one hour
+      - name: nuget.org login (Trusted Publishing)
+        if: env.PUBLISH_NUGET == 'true'
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to nuget.org
+        if: env.PUBLISH_NUGET == 'true'
+        shell: bash
+        # bash expands the glob; dotnet nuget push does not on the Windows runner
+        run: |
+          for pkg in artifacts/*.nupkg; do
+            dotnet nuget push "$pkg" --source https://api.nuget.org/v3/index.json --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate
+          done
+
+      - name: GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" artifacts/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" artifacts/* --title "Nocturne.Wpf ${{ steps.version.outputs.value }}" --generate-notes
+          fi

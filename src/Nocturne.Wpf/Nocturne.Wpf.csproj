@@ -12,7 +12,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
-  <!-- NuGet package. A release workflow can override Version from the git tag (v1.2.3 -> 1.2.3). -->
+  <!-- NuGet package. The release workflow overrides Version from the git tag (v1.2.3 -> 1.2.3). -->
   <PropertyGroup>
     <PackageId>Nocturne.Wpf</PackageId>
     <Version>0.1.0</Version>
@@ -23,6 +23,7 @@
     <PackageProjectUrl>https://github.com/Montago/NocturneTheme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Montago/NocturneTheme</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -36,6 +37,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Drawn by tools/generate_icon.ps1 -->
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="PACKAGE.md" Pack="true" PackagePath="\README.md" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
