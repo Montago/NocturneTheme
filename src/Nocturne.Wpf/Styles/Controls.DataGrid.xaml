@@ -1,0 +1,622 @@
+<!--
+    DataGrid: no frame and no vertical lines; small bold column headers over a light rule,
+    42px rows divided by faint lines, a light fill on the selected row. Row headers are off by
+    default (HeadersVisibility is Column); with HeadersVisibility All or Row they are a narrow
+    column that shows an accent bar on the selected rows.
+    NocturneGrid (a DataGrid that searches, filters, groups and pages large lists) adds a funnel
+    to each column header that opens a filter, group header rows and a pager.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Nocturne.Wpf.Controls"
+                    xmlns:h="clr-namespace:Nocturne.Wpf.Helpers"
+                    xmlns:nc="urn:nocturne-wpf">
+
+    <!--
+        Binding paths use nc: rather than c: (a clr-namespace without an assembly points at the app's
+        assembly at run time). Rows read the grid's HeadersVisibility from DataGridHelper, inherited from
+        the grid, in triggers: a binding that looks for the DataGrid as an ancestor can give up for good
+        when NocturneGrid refreshes its rows, and a recycled row then shows its row header anywhere.
+    -->
+
+    <Style x:Key="Nocturne.Styles.DataGrid.HeaderGripper" TargetType="Thumb">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Width" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="SizeWE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border Background="{TemplateBinding Background}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Nocturne.Styles.DataGridColumnHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Label}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <StackPanel Margin="{TemplateBinding Padding}" Orientation="Horizontal"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            <c:StrokeIcon x:Name="SortArrow" Width="12" Height="12" Margin="4,0,0,0" StrokeThickness="2.4" Visibility="Collapsed"
+                                          Data="{DynamicResource Nocturne.Icons.ChevronUp}" Foreground="{TemplateBinding Foreground}" />
+                        </StackPanel>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="SortArrow" Property="Data" Value="{DynamicResource Nocturne.Icons.ChevronDown}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="CanUserSort" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DataGridRowHeader">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridRowHeader">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Border x:Name="Bar" Width="3" Height="16" CornerRadius="1.5" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Background="{DynamicResource Nocturne.Brushes.Accent.Light}" Visibility="Collapsed" />
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Thumb x:Name="PART_TopHeaderGripper" Width="NaN" Height="6" VerticalAlignment="Top" Cursor="SizeNS"
+                               Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                        <Thumb x:Name="PART_BottomHeaderGripper" Width="NaN" Height="6" VerticalAlignment="Bottom" Cursor="SizeNS"
+                               Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsRowSelected" Value="True">
+                            <Setter TargetName="Bar" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- The corner above the row headers: selects every row -->
+    <Style x:Key="Nocturne.Styles.DataGrid.SelectAll" TargetType="Button">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="Transparent" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" BorderThickness="0,0,0,1" SnapsToDevicePixels="True" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Hover}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter VerticalAlignment="Center" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- NocturneGrid: a cell with search hits. TargetNullValue keeps it hit-testable when the brush is null. -->
+            <Trigger Property="c:NocturneGrid.IsSearchHit" Value="True">
+                <Setter Property="Background" Value="{Binding Path=(nc:NocturneGrid.HighlightCellBackground), RelativeSource={RelativeSource Self}, TargetNullValue={x:Static Brushes.Transparent}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        A row without a row header (HeadersVisibility Column or None, the default); the row style switches
+        to the template after it for Row and All. NocturneGrid's thumb-drag preview sets DGR_Border's background.
+    -->
+    <ControlTemplate x:Key="Nocturne.Templates.DataGridRow" TargetType="DataGridRow">
+        <Border x:Name="DGR_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                SnapsToDevicePixels="True">
+            <SelectiveScrollingGrid>
+                <SelectiveScrollingGrid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </SelectiveScrollingGrid.RowDefinitions>
+                <DataGridCellsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                <DataGridDetailsPresenter Grid.Row="1" Visibility="{TemplateBinding DetailsVisibility}"
+                                          SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" />
+            </SelectiveScrollingGrid>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="Nocturne.Templates.DataGridRow.WithHeader" TargetType="DataGridRow">
+        <Border x:Name="DGR_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                SnapsToDevicePixels="True">
+            <SelectiveScrollingGrid>
+                <SelectiveScrollingGrid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </SelectiveScrollingGrid.ColumnDefinitions>
+                <SelectiveScrollingGrid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </SelectiveScrollingGrid.RowDefinitions>
+                <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                <DataGridDetailsPresenter Grid.Row="1" Grid.Column="1" Visibility="{TemplateBinding DetailsVisibility}"
+                                          SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" />
+                <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" />
+            </SelectiveScrollingGrid>
+        </Border>
+    </ControlTemplate>
+
+    <Style TargetType="DataGridRow">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke.Subtle}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="ValidationErrorTemplate" Value="{x:Null}" />
+        <Setter Property="Template" Value="{StaticResource Nocturne.Templates.DataGridRow}" />
+        <Style.Triggers>
+            <Trigger Property="h:DataGridHelper.HeadersVisibility" Value="Row">
+                <Setter Property="Template" Value="{StaticResource Nocturne.Templates.DataGridRow.WithHeader}" />
+            </Trigger>
+            <Trigger Property="h:DataGridHelper.HeadersVisibility" Value="All">
+                <Setter Property="Template" Value="{StaticResource Nocturne.Templates.DataGridRow.WithHeader}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Hover}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Selected}" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsSelected" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Selected.Hover}" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Column headers, rows, scroll bars and the select-all corner; shared by DataGrid and NocturneGrid -->
+    <ControlTemplate x:Key="Nocturne.Templates.DataGrid.ScrollViewer" TargetType="ScrollViewer">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!-- The corner above the row headers, as wide as they are -->
+            <Button Command="{x:Static DataGrid.SelectAllCommand}" Style="{StaticResource Nocturne.Styles.DataGrid.SelectAll}"
+                    Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                    Visibility="{Binding HeadersVisibility, RelativeSource={RelativeSource AncestorType=DataGrid},
+                                 Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.All}}" />
+            <c:GridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter" Grid.Column="1" Grid.ColumnSpan="2"
+                                          Visibility="{Binding HeadersVisibility, RelativeSource={RelativeSource AncestorType=DataGrid},
+                                                       Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}}" />
+            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.Row="1" Grid.ColumnSpan="2" CanContentScroll="{TemplateBinding CanContentScroll}" />
+            <!-- The group headers of a thumb drag over a grouped NocturneGrid (NocturneGrid.Scrolling.cs) -->
+            <Canvas x:Name="PART_ScrubLayer" Grid.Row="1" Grid.ColumnSpan="2" ClipToBounds="True" IsHitTestVisible="False" />
+            <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Row="1" Grid.Column="2" Orientation="Vertical"
+                       Maximum="{TemplateBinding ScrollableHeight}" ViewportSize="{TemplateBinding ViewportHeight}"
+                       Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ScrollBar x:Name="PART_HorizontalScrollBar" Grid.Column="1" Orientation="Horizontal"
+                           Maximum="{TemplateBinding ScrollableWidth}" ViewportSize="{TemplateBinding ViewportWidth}"
+                           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
+            </Grid>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="DataGrid">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="RowBackground" Value="Transparent" />
+        <Setter Property="AlternatingRowBackground" Value="Transparent" />
+        <Setter Property="GridLinesVisibility" Value="None" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="MinRowHeight" Value="42" />
+        <Setter Property="CanUserResizeRows" Value="False" />
+        <Setter Property="SelectionUnit" Value="FullRow" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <Setter Property="ScrollViewer.PanningMode" Value="Both" />
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
+        <!-- Inherited by the rows (see the top of the file) -->
+        <Setter Property="h:DataGridHelper.HeadersVisibility" Value="{Binding HeadersVisibility, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="h:DataGridHelper.AreRowDetailsFrozen" Value="{Binding AreRowDetailsFrozen, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="h:DataGridHelper.SelectionUnit" Value="{Binding SelectionUnit, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGrid">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="DG_ScrollViewer" Focusable="False" Template="{StaticResource Nocturne.Templates.DataGrid.ScrollViewer}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsGrouping" Value="True">
+                <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ===================== NocturneGrid ===================== -->
+
+    <!-- The funnel in a column header: faint until hovered, light accent while the column is filtered -->
+    <Style x:Key="Nocturne.Styles.NocturneGrid.FilterButton" TargetType="ToggleButton">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="ToolTip" Value="Filter" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
+                        <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.Filter}" Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+            </Trigger>
+            <DataTrigger Binding="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.HasFilter), RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        The column header with the funnel and its filter: the column's values to tick (with their counts),
+        a tree of years, months and days for a column of dates, and a box to type values in.
+        The template binds to NocturneGrid.HeaderColumn, which GridColumnHeadersPresenter fills
+        (DataGridColumnHeader.Column does not notify).
+    -->
+    <Style x:Key="Nocturne.Styles.NocturneGrid.ColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource Nocturne.Styles.DataGridColumnHeader}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid x:Name="Root">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <DockPanel Margin="{TemplateBinding Padding}">
+                            <ToggleButton x:Name="PART_FilterButton" DockPanel.Dock="Right" Margin="4,0,-6,0" VerticalAlignment="Center" Visibility="Collapsed"
+                                          Style="{StaticResource Nocturne.Styles.NocturneGrid.FilterButton}" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" />
+                                <c:StrokeIcon x:Name="SortArrow" Width="12" Height="12" Margin="4,0,0,0" StrokeThickness="2.4" Visibility="Collapsed"
+                                              Data="{DynamicResource Nocturne.Icons.ChevronUp}" Foreground="{TemplateBinding Foreground}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource Nocturne.Styles.DataGrid.HeaderGripper}" />
+                        <Popup x:Name="PART_FilterPopup" AllowsTransparency="True" Placement="Bottom" PlacementTarget="{Binding ElementName=Root}" HorizontalOffset="-14"
+                               StaysOpen="False" Focusable="False" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                               IsOpen="{Binding IsChecked, ElementName=PART_FilterButton, Mode=TwoWay}">
+                            <ContentControl Template="{DynamicResource Nocturne.Templates.PopupSurface}" Padding="16,14,16,16" Focusable="False" IsTabStop="False"
+                                            TextElement.Foreground="{DynamicResource Nocturne.Brushes.Text}" TextElement.FontWeight="Normal"
+                                            TextElement.FontSize="{DynamicResource Nocturne.Font.Size.Default}">
+                                <StackPanel Width="260">
+                                    <TextBlock Margin="0,0,0,10" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                               Text="{Binding (nc:NocturneGrid.HeaderColumn).Header, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, StringFormat='Filter {0}'}" />
+                                    <!-- The column's values to tick, when it has few enough of them (NocturneGrid.FilterListLimit) -->
+                                    <Border x:Name="FilterList" Margin="0,0,0,10" Padding="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Nocturne.Brushes.Divider}">
+                                        <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                                            <ItemsControl Focusable="False"
+                                                          ItemsSource="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.FilterOptions), RelativeSource={RelativeSource TemplatedParent}}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <CheckBox IsChecked="{Binding IsChecked}">
+                                                            <TextBlock TextTrimming="CharacterEllipsis">
+                                                                <Run Text="{Binding Text, Mode=OneWay}" />
+                                                                <Run Text="{Binding Count, Mode=OneWay, StringFormat='{}{0:N0}'}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                                                     FontSize="{DynamicResource Nocturne.Font.Size.Small}" />
+                                                            </TextBlock>
+                                                        </CheckBox>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Border>
+                                    <!-- A column of dates: years (or decades) with their months and days to tick -->
+                                    <Border x:Name="DateTree" Margin="0,0,0,10" Padding="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Nocturne.Brushes.Divider}">
+                                        <TreeView MaxHeight="240" Focusable="False" ItemContainerStyle="{DynamicResource Nocturne.Styles.NocturneGrid.DateFilterItem}"
+                                                  ItemsSource="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.FilterDateTree), RelativeSource={RelativeSource TemplatedParent}}">
+                                            <TreeView.ItemTemplate>
+                                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                                    <!-- Not focusable: a focused check box would select its tree item -->
+                                                    <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" MinHeight="28">
+                                                        <TextBlock TextTrimming="CharacterEllipsis">
+                                                            <Run Text="{Binding Text, Mode=OneWay}" />
+                                                            <Run Text="{Binding Count, Mode=OneWay, StringFormat='{}{0:N0}'}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                                                 FontSize="{DynamicResource Nocturne.Font.Size.Small}" />
+                                                        </TextBlock>
+                                                    </CheckBox>
+                                                </HierarchicalDataTemplate>
+                                            </TreeView.ItemTemplate>
+                                        </TreeView>
+                                    </Border>
+                                    <TextBox x:Name="PART_FilterBox" h:ControlHelper.Placeholder="Values, e.g. volvo saab" h:ControlHelper.ClearButton="True"
+                                             h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Filter}"
+                                             Text="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.FilterText), RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="17" FontSize="{DynamicResource Nocturne.Font.Size.Small}"
+                                               Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                               Text="Tick values or type them, separated by spaces or commas. Quote values with spaces; * matches any text. Numbers and dates: &gt;100, &lt;=2019, 2020-01-01..2020-06-30." />
+                                    <StackPanel Margin="0,14,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button MinWidth="80" Content="Clear" Command="{x:Static c:NocturneGrid.ClearFilterCommand}"
+                                                CommandParameter="{Binding (nc:NocturneGrid.HeaderColumn), RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <Button MinWidth="80" Margin="8,0,0,0" Content="Done" Style="{DynamicResource Nocturne.Styles.Button.Primary}"
+                                                Command="{x:Static c:NocturneGrid.CloseFilterCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </ContentControl>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="SortArrow" Property="Data" Value="{DynamicResource Nocturne.Icons.ChevronDown}" />
+                        </Trigger>
+                        <!-- The filler header after the last column has no Column, so it never gets the funnel -->
+                        <DataTrigger Binding="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.IsFilterable), RelativeSource={RelativeSource Self}}" Value="True">
+                            <Setter TargetName="PART_FilterButton" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <!-- Too many different values (or none read yet): only the text box -->
+                        <DataTrigger Binding="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.FilterOptions), RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter TargetName="FilterList" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding (nc:NocturneGrid.HeaderColumn).(nc:NocturneGrid.FilterDateTree), RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter TargetName="DateTree" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A group header row: a faint strip with a chevron, the group's value and its row count -->
+    <Style x:Key="Nocturne.Styles.NocturneGrid.GroupHeader" TargetType="ToggleButton">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bg" Background="{DynamicResource Nocturne.Brushes.Expander.Header}" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}"
+                            BorderThickness="0,0,0,1" SnapsToDevicePixels="True">
+                        <StackPanel Margin="12,0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <c:StrokeIcon x:Name="Chevron" Width="12" Height="12" Margin="0,0,10,0" StrokeThickness="2.4" Data="{DynamicResource Nocturne.Icons.ChevronRight}"
+                                          Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}" RenderTransformOrigin="0.5,0.5" />
+                            <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="{DynamicResource Nocturne.Font.Size.Small}"
+                                       Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}" Text="{Binding ItemCount, StringFormat='{}{0:N0}'}" />
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Nocturne.Brushes.Expander.Header.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Chevron" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="90" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--
+        Group header rows (NocturneGrid groups in its flat list of rows, NocturneGrid.Groups.cs): the header as
+        wide as the rows area, kept in view when the columns scroll sideways. DataContext: the GridGroupRow.
+        UpdateSourceTrigger is explicit: the DataGrid puts bindings to the row's item in the row's
+        BindingGroup, and with the default trigger IsExpanded would only be set when the row is committed,
+        which a header row never is.
+    -->
+    <ControlTemplate x:Key="Nocturne.Templates.NocturneGrid.GroupRow" TargetType="DataGridRow">
+        <SelectiveScrollingGrid>
+            <ToggleButton HorizontalAlignment="Left" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                          Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+                          IsChecked="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Nocturne.Styles.NocturneGrid.GroupHeader}" />
+        </SelectiveScrollingGrid>
+    </ControlTemplate>
+
+    <!-- Pager buttons: small subtle icon buttons -->
+    <Style x:Key="Nocturne.Styles.NocturneGrid.PagerButton" TargetType="Button">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
+                        <c:StrokeIcon x:Name="Glyph" Width="16" Height="16" StrokeThickness="2" Data="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Pressed}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Glyph" Property="Opacity" Value="0.35" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Nocturne.Styles.NocturneGrid" TargetType="c:NocturneGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <Setter Property="CanUserDeleteRows" Value="False" />
+        <Setter Property="EnableRowVirtualization" Value="True" />
+        <Setter Property="EnableColumnVirtualization" Value="True" />
+        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+        <Setter Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="True" />
+        <!-- Search hits: light accent text in faintly lit cells (HighlightBrush, a background behind the words, is unset) -->
+        <Setter Property="HighlightForeground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
+        <Setter Property="HighlightCellBackground" Value="{DynamicResource Nocturne.Brushes.DataGrid.SearchHit}" />
+        <Setter Property="ColumnHeaderStyle" Value="{StaticResource Nocturne.Styles.NocturneGrid.ColumnHeader}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- The DataGrid template with a pager below the rows, shown while there is more than one page -->
+                <ControlTemplate TargetType="c:NocturneGrid">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <DockPanel>
+                            <Border x:Name="Pager" DockPanel.Dock="Bottom" Padding="4,6,4,0" Visibility="Collapsed" BorderThickness="0,1,0,0"
+                                    BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" TextElement.FontSize="{DynamicResource Nocturne.Font.Size.Caption}">
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Right" Margin="12,0,4,0" VerticalAlignment="Center" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:N0}–{1:N0} of {2:N0}">
+                                                <Binding Path="PageFirstRow" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="PageLastRow" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="FilteredItemCount" RelativeSource="{RelativeSource TemplatedParent}" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}" Command="{x:Static c:NocturneGrid.FirstPageCommand}"
+                                                ToolTip="First page" AutomationProperties.Name="First page" Content="{DynamicResource Nocturne.Icons.PageFirst}" />
+                                        <Button Style="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}" Command="{x:Static c:NocturneGrid.PreviousPageCommand}"
+                                                ToolTip="Previous page" AutomationProperties.Name="Previous page" Content="{DynamicResource Nocturne.Icons.ChevronLeft}" />
+                                        <TextBlock Margin="10,0" VerticalAlignment="Center" Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}Page {0:N0} of {1:N0}">
+                                                    <Binding Path="PageNumber" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                    <Binding Path="PageCount" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <Button Style="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}" Command="{x:Static c:NocturneGrid.NextPageCommand}"
+                                                ToolTip="Next page" AutomationProperties.Name="Next page" Content="{DynamicResource Nocturne.Icons.ChevronRight}" />
+                                        <Button Style="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}" Command="{x:Static c:NocturneGrid.LastPageCommand}"
+                                                ToolTip="Last page" AutomationProperties.Name="Last page" Content="{DynamicResource Nocturne.Icons.PageLast}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+                            <!-- The thumb is deferred: while it is dragged the rows in view show the rows at the thumb
+                                 (NocturneGrid.Scrolling.cs), and the grid scrolls when it is released -->
+                            <ScrollViewer x:Name="DG_ScrollViewer" Focusable="False" IsDeferredScrollingEnabled="True"
+                                          Template="{StaticResource Nocturne.Templates.DataGrid.ScrollViewer}">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPaging" Value="True">
+                            <Setter TargetName="Pager" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <!-- An implicit DataGridColumnHeader style in the app wins over ColumnHeaderStyle; this one is found first -->
+            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource Nocturne.Styles.NocturneGrid.ColumnHeader}" />
+        </Style.Resources>
+        <Style.Triggers>
+            <!-- CollectionView groups an app adds itself (GroupMemberPath groups in the grid's flat list instead): keep virtualizing -->
+            <Trigger Property="IsGrouping" Value="True">
+                <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource Nocturne.Styles.DataGridColumnHeader}" />
+    <Style TargetType="c:NocturneGrid" BasedOn="{StaticResource Nocturne.Styles.NocturneGrid}" />
+</ResourceDictionary>

@@ -1,28 +1,28 @@
-# Frosted Glass for WPF
+# Nocturne for WPF
 
-A dark, frosted-glass theme for WPF (.NET 8+), built from the "Frosted Glass" design: the Windows 11
+A dark theme for WPF (.NET 8+): the Windows 11
 backdrop (Acrylic by default, or Mica / Mica Alt) under a dark tint and a soft light from the top-left
-corner, with glass cards and controls on top. The accent is meadow green; `FrostedTheme.SetAccent`
+corner, with translucent cards and controls on top. The accent is meadow green; `NocturneTheme.SetAccent`
 switches it to orange, blue, yellow, red or the Windows accent colour.
 
-This is the first, basic control set. See [src/Frosted.Wpf/PACKAGE.md](src/Frosted.Wpf/PACKAGE.md)
+This is the first, basic control set. See [src/Nocturne.Wpf/PACKAGE.md](src/Nocturne.Wpf/PACKAGE.md)
 for how to use the package.
 
 ## Layout
 
 ```
-src/Frosted.Wpf/          the library (NuGet package Frosted.Wpf)
-src/Frosted.Wpf.Demo/     the demo app: Controls, More controls, Custom controls, Data grid and Layers & colours pages
+src/Nocturne.Wpf/          the library (NuGet package Nocturne.Wpf)
+src/Nocturne.Wpf.Demo/     the demo app: Controls, More controls, Custom controls, Data grid and Layers & colours pages
 ```
 
 ## Build and run
 
 ```bash
-dotnet build FrostedTheme.slnx
-src/Frosted.Wpf.Demo/bin/Debug/net8.0-windows/Frosted.Wpf.Demo.exe
+dotnet build NocturneTheme.slnx
+src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe
 ```
 
-`Frosted.Wpf.Demo.exe --snapshot <folder>` renders both pages and the popups to PNG and exits.
+`Nocturne.Wpf.Demo.exe --snapshot <folder>` renders both pages and the popups to PNG and exits.
 
 ## Licence
 

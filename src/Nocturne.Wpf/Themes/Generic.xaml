@@ -1,0 +1,10 @@
+<!--
+    Theme dictionary: default styles for the Nocturne controls (including classes derived from
+    NocturneWindow, which implicit styles do not reach).
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Nocturne.Wpf;component/Styles/Nocturne.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
