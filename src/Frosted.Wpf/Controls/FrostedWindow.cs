@@ -1,10 +1,12 @@
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Shell;
+using System.Windows.Threading;
 
 namespace Frosted.Wpf.Controls;
 
@@ -34,9 +36,12 @@ public class FrostedWindow : Window
 {
     private const string PartRoot = "PART_Root";
     private const string PartGrain = "PART_Grain";
+    private const string PartLight = "PART_Light";
 
     private FrameworkElement? root;
     private Shape? grain;
+    private Image? light;
+    private DispatcherTimer? lightTimer;
     private Color? surfaceColor;
     private bool frameExtended;
     private bool transparencyEnabled = true;
@@ -174,16 +179,69 @@ public class FrostedWindow : Window
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
+        if (root != null)
+        {
+            root.SizeChanged -= OnRootSizeChanged;
+        }
         root = GetTemplateChild(PartRoot) as FrameworkElement;
         grain = GetTemplateChild(PartGrain) as Shape;
+        light = GetTemplateChild(PartLight) as Image;
+        if (root != null)
+        {
+            root.SizeChanged += OnRootSizeChanged;
+        }
         UpdateMaximizedMargin();
         UpdateGrain();
+        UpdateLight();
     }
 
     protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
     {
         base.OnDpiChanged(oldDpi, newDpi);
         UpdateGrain();
+        UpdateLight();
+    }
+
+    private void OnRootSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (light == null)
+        {
+            return;
+        }
+
+        // While the window is being resized, stretch the light drawn for the old size and draw a
+        // new one once the size has settled for a moment.
+        var region = LightTexture.Region(e.NewSize.Width, e.NewSize.Height);
+        light.Width = region.Width;
+        light.Height = region.Height;
+        lightTimer ??= new DispatcherTimer(TimeSpan.FromMilliseconds(150), DispatcherPriority.Background, (_, _) =>
+        {
+            lightTimer!.Stop();
+            UpdateLight();
+        }, Dispatcher);
+        lightTimer.Stop();
+        lightTimer.Start();
+    }
+
+    /// <summary>
+    /// Draws the light from the top-left corner as a dithered bitmap for the current size and
+    /// display scaling, placed pixel for pixel (a gradient brush shows diagonal bands).
+    /// </summary>
+    private void UpdateLight()
+    {
+        if (light == null || root == null || root.ActualWidth <= 0 || root.ActualHeight <= 0)
+        {
+            return;
+        }
+
+        var dpi = VisualTreeHelper.GetDpi(this);
+        var bitmap = LightTexture.Create(
+            (int)Math.Round(root.ActualWidth * dpi.DpiScaleX),
+            (int)Math.Round(root.ActualHeight * dpi.DpiScaleY));
+        light.Source = bitmap;
+        light.Width = bitmap.PixelWidth / dpi.DpiScaleX;
+        light.Height = bitmap.PixelHeight / dpi.DpiScaleY;
+        RenderOptions.SetBitmapScalingMode(light, BitmapScalingMode.NearestNeighbor);
     }
 
     /// <summary>

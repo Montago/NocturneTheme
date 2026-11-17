@@ -70,7 +70,7 @@
                         </Grid>
                     </Border>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="4 · Light" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Window.Light: 8 % white from the top-left corner" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="8 % white from the top-left corner, dithered (LightTexture) so it shows no bands" />
                 </StackPanel>
                 <StackPanel>
                     <Border Style="{StaticResource LayerSample}">

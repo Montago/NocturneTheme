@@ -17,6 +17,10 @@ dictionary, MahApps-style resource keys with a `Frosted.` prefix.
   rejected embossed "hammered glass" bumps). `NoiseTexture` hashes every pixel (SplitMix64; the
   seeded `System.Random` showed diagonal streaks), blurs to `GrainSize` (default 1: one speck per screen pixel, chosen by the user), and
   `FrostedWindow` draws the 512px tile 1:1 to screen pixels at any display scaling.
+- The light from the top-left corner is drawn dithered (`Controls/LightTexture.cs`, `PART_Light`),
+  pixel for pixel and redrawn 150 ms after a resize. As a plain gradient (8 % to 0) it has ~20
+  steps that show as diagonal bands, worst over RDP, which smooths the grain away. `--snapshot`
+  writes `light.png` (gradient left, dithered right; stretch the contrast to compare).
 - Everything is MIT. The grain is drawn in code (`Controls/NoiseTexture.cs`); no third-party images
   or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
   `Frosted.Fonts.Family`).

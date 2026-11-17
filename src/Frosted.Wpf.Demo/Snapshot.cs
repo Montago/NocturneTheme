@@ -44,6 +44,7 @@ internal static class Snapshot
         }
 
         SaveGrainSamples();
+        SaveLightSample();
         await SavePopups(window);
         await CheckWheelChaining(window);
         window.Close();
@@ -146,6 +147,33 @@ internal static class Snapshot
             using var stream = File.Create(Path.Combine(Folder!, $"grain-{size}.png"));
             encoder.Save(stream);
         }
+    }
+
+    /// <summary>
+    /// light.png: the window light on the tinted ground without grain, as a plain gradient brush
+    /// (left, shows bands) and dithered as FrostedWindow draws it (right).
+    /// </summary>
+    private static void SaveLightSample()
+    {
+        const int w = 600, h = 400;
+        var visual = new DrawingVisual();
+        using (var dc = visual.RenderOpen())
+        {
+            var ground = new SolidColorBrush(Color.FromRgb(0x1A, 0x2A, 0x21));
+            dc.DrawRectangle(ground, null, new Rect(0, 0, w * 2 + 20, h));
+            var gradient = new LinearGradientBrush(Color.FromArgb(0x14, 255, 255, 255), Color.FromArgb(0, 255, 255, 255), new Point(0, 0), new Point(1, 1));
+            gradient.GradientStops[1].Offset = LightTexture.Reach;
+            dc.DrawRectangle(gradient, null, new Rect(0, 0, w, h));
+            var light = LightTexture.Create(w, h);
+            dc.DrawImage(light, new Rect(w + 20, 0, light.PixelWidth, light.PixelHeight));
+        }
+
+        var bitmap = new RenderTargetBitmap(w * 2 + 20, h, 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(visual);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(Path.Combine(Folder!, "light.png"));
+        encoder.Save(stream);
     }
 
     private static void SaveOnGround(FrameworkElement element, string path)

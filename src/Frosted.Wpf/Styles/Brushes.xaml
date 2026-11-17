@@ -115,6 +115,7 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Window.Tint" Color="#FF101E16" />
     <ImageBrush x:Key="Frosted.Brushes.Noise" ImageSource="{x:Static c:NoiseTexture.Image}"
                 TileMode="Tile" Stretch="None" ViewportUnits="Absolute" Viewport="0,0,512,512" />
+    <!-- The light as a brush, for own templates. FrostedWindow draws it dithered instead (LightTexture), as a gradient this faint shows bands -->
     <LinearGradientBrush x:Key="Frosted.Brushes.Window.Light" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#14FFFFFF" />
         <GradientStop Offset="0.38" Color="#00FFFFFF" />

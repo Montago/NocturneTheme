@@ -73,7 +73,8 @@
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{TemplateBinding TintOpacity}" />
                         <!-- FrostedWindow fills it with a tile for the display scaling and GrainSize -->
                         <Rectangle x:Name="PART_Grain" Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{TemplateBinding NoiseOpacity}" />
-                        <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Light}" />
+                        <!-- The light from the top-left corner: FrostedWindow draws it dithered for the window's size -->
+                        <Image x:Name="PART_Light" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" IsHitTestVisible="False" />
 
                         <Grid>
                             <Grid.RowDefinitions>
