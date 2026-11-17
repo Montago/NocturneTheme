@@ -52,7 +52,7 @@
                         </Grid>
                     </Border>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="3 · Grain" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Noise 256 × 256, tiled × NoiseOpacity (0.3); shown at full strength here" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Noise 512 × 512, specks GrainSize (1) across, tiled × NoiseOpacity (0.3); shown at full strength here" />
                 </StackPanel>
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}">

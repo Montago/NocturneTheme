@@ -114,7 +114,7 @@
     <SolidColorBrush x:Key="Frosted.Brushes.Window.Fallback" Color="#FF1E2E25" />
     <SolidColorBrush x:Key="Frosted.Brushes.Window.Tint" Color="#FF101E16" />
     <ImageBrush x:Key="Frosted.Brushes.Noise" ImageSource="{x:Static c:NoiseTexture.Image}"
-                TileMode="Tile" Stretch="None" ViewportUnits="Absolute" Viewport="0,0,256,256" />
+                TileMode="Tile" Stretch="None" ViewportUnits="Absolute" Viewport="0,0,512,512" />
     <LinearGradientBrush x:Key="Frosted.Brushes.Window.Light" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Offset="0" Color="#14FFFFFF" />
         <GradientStop Offset="0.38" Color="#00FFFFFF" />

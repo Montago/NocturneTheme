@@ -13,6 +13,10 @@ dictionary, MahApps-style resource keys with a `Frosted.` prefix.
   spec; `Styles/Brushes.xaml` holds the colours.
 - Window defaults chosen by the user after trying them on screen (they differ from the design's
   Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.3, `NoiseOpacity` 0.3.
+- The grain should look sandblasted: fine, even, soft specks with no direction (the user tried and
+  rejected embossed "hammered glass" bumps). `NoiseTexture` hashes every pixel (SplitMix64; the
+  seeded `System.Random` showed diagonal streaks), blurs to `GrainSize` (default 1: one speck per screen pixel, chosen by the user), and
+  `FrostedWindow` draws the 512px tile 1:1 to screen pixels at any display scaling.
 - Everything is MIT. The grain is drawn in code (`Controls/NoiseTexture.cs`); no third-party images
   or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
   `Frosted.Fonts.Family`).

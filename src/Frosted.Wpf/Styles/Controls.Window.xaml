@@ -71,7 +71,8 @@
                         <!-- Layers, from the bottom -->
                         <Border x:Name="Fallback" Background="{DynamicResource Frosted.Brushes.Window.Fallback}" />
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{TemplateBinding TintOpacity}" />
-                        <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{TemplateBinding NoiseOpacity}" />
+                        <!-- FrostedWindow fills it with a tile for the display scaling and GrainSize -->
+                        <Rectangle x:Name="PART_Grain" Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{TemplateBinding NoiseOpacity}" />
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Light}" />
 
                         <Grid>

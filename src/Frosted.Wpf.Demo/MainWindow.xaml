@@ -29,8 +29,14 @@
                     <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding NoiseOpacity, ElementName=Window, StringFormat={}{0:P0}}" />
                     <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Grain" />
                 </DockPanel>
-                <Slider Margin="8,0,0,0" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                <Slider Margin="8,0,0,10" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
                         Value="{Binding NoiseOpacity, ElementName=Window}" AutomationProperties.Name="Grain" />
+                <DockPanel Margin="8,0,0,0">
+                    <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding GrainSize, ElementName=Window, StringFormat={}{0:0.#} px}" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Label}" Text="Grain size" />
+                </DockPanel>
+                <Slider Margin="8,0,0,0" Minimum="1" Maximum="6" SmallChange="0.5" LargeChange="1" IsSnapToTickEnabled="True" TickFrequency="0.5"
+                        Value="{Binding GrainSize, ElementName=Window}" AutomationProperties.Name="Grain size" />
             </StackPanel>
 
             <TextBlock DockPanel.Dock="Top" Margin="8,8,8,12" Style="{StaticResource Frosted.Styles.TextBlock.Eyebrow}" Text="LIBRARY" />

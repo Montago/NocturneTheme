@@ -43,6 +43,7 @@ internal static class Snapshot
             }
         }
 
+        SaveGrainSamples();
         await SavePopups(window);
         await CheckWheelChaining(window);
         window.Close();
@@ -115,6 +116,36 @@ internal static class Snapshot
         await Settle(window);
         SaveOnGround(tip, Path.Combine(Folder!, "popup-tooltip.png"));
         tip.IsOpen = false;
+    }
+
+    /// <summary>
+    /// grain-&lt;size&gt;.png: a 320 x 240 piece of the grain per speck size on the tinted ground,
+    /// at the default strength (left) and at full strength (right).
+    /// </summary>
+    private static void SaveGrainSamples()
+    {
+        foreach (var size in new[] { 1.0, 1.5, 2, 3 })
+        {
+            var tile = NoiseTexture.Get(size);
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                var ground = new SolidColorBrush(Color.FromRgb(0x1A, 0x2A, 0x21));
+                dc.DrawRectangle(ground, null, new Rect(0, 0, 660, 240));
+                var piece = new CroppedBitmap(tile, new Int32Rect(0, 0, 320, 240));
+                dc.PushOpacity(0.3);
+                dc.DrawImage(piece, new Rect(0, 0, 320, 240));
+                dc.Pop();
+                dc.DrawImage(piece, new Rect(340, 0, 320, 240));
+            }
+
+            var bitmap = new RenderTargetBitmap(660, 240, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(visual);
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using var stream = File.Create(Path.Combine(Folder!, $"grain-{size}.png"));
+            encoder.Save(stream);
+        }
     }
 
     private static void SaveOnGround(FrameworkElement element, string path)

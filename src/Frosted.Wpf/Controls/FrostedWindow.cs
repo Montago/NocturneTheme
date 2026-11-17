@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Shell;
 
 namespace Frosted.Wpf.Controls;
@@ -32,8 +33,10 @@ public enum WindowBackdrop
 public class FrostedWindow : Window
 {
     private const string PartRoot = "PART_Root";
+    private const string PartGrain = "PART_Grain";
 
     private FrameworkElement? root;
+    private Shape? grain;
     private Color? surfaceColor;
     private bool frameExtended;
     private bool transparencyEnabled = true;
@@ -99,6 +102,20 @@ public class FrostedWindow : Window
         set => SetValue(NoiseOpacityProperty, value);
     }
 
+    public static readonly DependencyProperty GrainSizeProperty = DependencyProperty.Register(
+        nameof(GrainSize), typeof(double), typeof(FrostedWindow),
+        new PropertyMetadata(NoiseTexture.DefaultGrainSize, (d, _) => ((FrostedWindow)d).UpdateGrain()));
+
+    /// <summary>
+    /// Size of the sandblasted grain's specks in device-independent pixels (1 = single-pixel noise, 1 to 16).
+    /// The texture is drawn pixel for pixel on the screen at any display scaling.
+    /// </summary>
+    public double GrainSize
+    {
+        get => (double)GetValue(GrainSizeProperty);
+        set => SetValue(GrainSizeProperty, value);
+    }
+
     public static readonly DependencyProperty TitleBarHeightProperty = DependencyProperty.Register(
         nameof(TitleBarHeight), typeof(double), typeof(FrostedWindow), new PropertyMetadata(44d, OnTitleBarHeightChanged));
 
@@ -158,7 +175,42 @@ public class FrostedWindow : Window
     {
         base.OnApplyTemplate();
         root = GetTemplateChild(PartRoot) as FrameworkElement;
+        grain = GetTemplateChild(PartGrain) as Shape;
         UpdateMaximizedMargin();
+        UpdateGrain();
+    }
+
+    protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+    {
+        base.OnDpiChanged(oldDpi, newDpi);
+        UpdateGrain();
+    }
+
+    /// <summary>
+    /// Fills the grain layer with a tile made for the current display scaling, sized so one
+    /// texture pixel covers exactly one screen pixel: a scaled tile would be resampled, which
+    /// blurs the specks and makes faint regular patterns.
+    /// </summary>
+    private void UpdateGrain()
+    {
+        if (grain == null)
+        {
+            return;
+        }
+
+        var dpi = VisualTreeHelper.GetDpi(this);
+        var tile = NoiseTexture.Get(GrainSize * dpi.DpiScaleX);
+        var size = NoiseTexture.Size / dpi.DpiScaleX;
+        var brush = new ImageBrush(tile)
+        {
+            TileMode = TileMode.Tile,
+            Stretch = Stretch.Fill,
+            ViewportUnits = BrushMappingMode.Absolute,
+            Viewport = new Rect(0, 0, size, size),
+        };
+        brush.Freeze();
+        grain.Fill = brush;
+        RenderOptions.SetBitmapScalingMode(grain, BitmapScalingMode.NearestNeighbor);
     }
 
     protected override void OnSourceInitialized(EventArgs e)
