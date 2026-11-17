@@ -1,7 +1,7 @@
 ﻿# Frosted Glass for WPF
 
-A dark, frosted-glass theme for WPF on .NET 8 and later. The Windows 11 backdrop (Mica, Mica Alt or
-Acrylic) shows through a tinted, grainy window; cards and controls are light glass surfaces on top.
+A dark, frosted-glass theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic, Mica or
+Mica Alt) shows through a tinted, grainy window; cards and controls are light glass surfaces on top.
 One resource dictionary styles the standard controls; `FrostedWindow` gives the frame.
 
 ## Getting started
@@ -29,7 +29,7 @@ Make the main window a `FrostedWindow`:
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:fg="urn:frosted-wpf"
-                  Title="My app" Backdrop="Mica">
+                  Title="My app">
     <HeaderedContentControl Style="{StaticResource Frosted.Styles.Card}" Header="SETTINGS">
         <Button Style="{StaticResource Frosted.Styles.Button.Primary}" Content="Save" />
     </HeaderedContentControl>
@@ -42,7 +42,7 @@ public partial class MainWindow : Frosted.Wpf.Controls.FrostedWindow { ... }
 
 ## What is in it
 
-- **FrostedWindow**: `Backdrop` (Mica, MicaAlt, Acrylic, None), `TintOpacity`, `NoiseOpacity`,
+- **FrostedWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` and `NoiseOpacity` (0.3 each),
   44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2 or with
   transparency effects off it paints an opaque ground of the same colour.
 - **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,

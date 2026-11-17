@@ -13,18 +13,18 @@ public enum WindowBackdrop
     /// <summary>No system material: the window paints an opaque dark ground.</summary>
     None,
 
-    /// <summary>Mica: a soft tint taken from the wallpaper (the default).</summary>
+    /// <summary>Mica: a soft tint taken from the wallpaper.</summary>
     Mica,
 
     /// <summary>Mica Alt: a stronger wallpaper tint, as in tabbed apps.</summary>
     MicaAlt,
 
-    /// <summary>Acrylic: the windows and desktop behind it, blurred.</summary>
+    /// <summary>Acrylic: the windows and desktop behind it, blurred (the default).</summary>
     Acrylic,
 }
 
 /// <summary>
-/// Window with the Frosted Glass frame: a Windows 11 backdrop (Mica, Mica Alt or Acrylic),
+/// Window with the Frosted Glass frame: a Windows 11 backdrop (Acrylic by default, or Mica / Mica Alt),
 /// a dark tint, a grain texture and a soft light from the top-left corner, under a 44px
 /// title bar with its own caption buttons. Where the backdrop is not available (Windows 10,
 /// transparency effects off) it paints an opaque ground of the same colour.
@@ -62,7 +62,7 @@ public class FrostedWindow : Window
 
     public static readonly DependencyProperty BackdropProperty = DependencyProperty.Register(
         nameof(Backdrop), typeof(WindowBackdrop), typeof(FrostedWindow),
-        new PropertyMetadata(WindowBackdrop.Mica, (d, _) => ((FrostedWindow)d).ApplyBackdrop()));
+        new PropertyMetadata(WindowBackdrop.Acrylic, (d, _) => ((FrostedWindow)d).ApplyBackdrop()));
 
     /// <summary>The system material behind the window. Needs Windows 11 22H2 with transparency effects on.</summary>
     public WindowBackdrop Backdrop
@@ -80,7 +80,7 @@ public class FrostedWindow : Window
     public bool IsBackdropActive => (bool)GetValue(IsBackdropActiveProperty);
 
     public static readonly DependencyProperty TintOpacityProperty = DependencyProperty.Register(
-        nameof(TintOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.55));
+        nameof(TintOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.3));
 
     /// <summary>How strongly the dark tint (<c>Frosted.Brushes.Window.Tint</c>) covers the backdrop.</summary>
     public double TintOpacity
@@ -90,7 +90,7 @@ public class FrostedWindow : Window
     }
 
     public static readonly DependencyProperty NoiseOpacityProperty = DependencyProperty.Register(
-        nameof(NoiseOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.8));
+        nameof(NoiseOpacity), typeof(double), typeof(FrostedWindow), new PropertyMetadata(0.3));
 
     /// <summary>Strength of the grain that makes the glass look matte; 0 turns it off.</summary>
     public double NoiseOpacity

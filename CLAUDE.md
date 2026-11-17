@@ -11,6 +11,8 @@ dictionary, MahApps-style resource keys with a `Frosted.` prefix.
   messages. The user chats in Danish; replies can be Danish.
 - Keep the design's values (colours, radii, sizes, 120/150 ms transitions). The Tokens board is the
   spec; `Styles/Brushes.xaml` holds the colours.
+- Window defaults chosen by the user after trying them on screen (they differ from the design's
+  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.3, `NoiseOpacity` 0.3.
 - Everything is MIT. The grain is drawn in code (`Controls/NoiseTexture.cs`); no third-party images
   or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
   `Frosted.Fonts.Family`).

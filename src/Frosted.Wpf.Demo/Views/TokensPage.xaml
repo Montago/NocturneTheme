@@ -35,30 +35,30 @@
                     <Border Style="{StaticResource LayerSample}" Background="Transparent" />
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="1 · Backdrop" />
                     <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap"
-                               Text="Backdrop = Mica, MicaAlt, Acrylic or None (opaque Window.Fallback)" />
+                               Text="Backdrop = Acrylic (default), Mica, MicaAlt or None (opaque Window.Fallback)" />
                 </StackPanel>
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}">
                         <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                     </Border>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="2 · Tint" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Window.Tint #101E16 × TintOpacity (0.55)" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Window.Tint #101E16 × TintOpacity (0.3)" />
                 </StackPanel>
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}">
                         <Grid>
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="0.55" />
+                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                             <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="1" />
                         </Grid>
                     </Border>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="3 · Grain" />
-                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Noise 256 × 256, tiled × NoiseOpacity (0.8)" />
+                    <TextBlock Style="{StaticResource Frosted.Styles.TextBlock.Mono}" Margin="0,4,0,0" TextWrapping="Wrap" Text="Noise 256 × 256, tiled × NoiseOpacity (0.3); shown at full strength here" />
                 </StackPanel>
                 <StackPanel Margin="0,0,16,0">
                     <Border Style="{StaticResource LayerSample}">
                         <Grid>
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="0.55" />
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="0.8" />
+                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
+                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{Binding NoiseOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                             <Rectangle>
                                 <Rectangle.Fill>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -75,8 +75,8 @@
                 <StackPanel>
                     <Border Style="{StaticResource LayerSample}">
                         <Grid>
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="0.55" />
-                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="0.8" />
+                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Window.Tint}" Opacity="{Binding TintOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
+                            <Rectangle Fill="{DynamicResource Frosted.Brushes.Noise}" Opacity="{Binding NoiseOpacity, RelativeSource={RelativeSource AncestorType=fg:FrostedWindow}}" />
                             <Border Margin="14,22" CornerRadius="10" Background="{DynamicResource Frosted.Brushes.Surface1}"
                                     BorderBrush="{DynamicResource Frosted.Brushes.Surface1.Border}" BorderThickness="1">
                                 <Border Margin="10,0" Height="28" CornerRadius="7" Background="{DynamicResource Frosted.Brushes.Surface2}" />
