@@ -7,15 +7,14 @@ nav_order: 2
 
 ## Install
 
-Nocturne.Wpf is published as a NuGet package on each
-[GitHub release](https://github.com/Montago/NocturneTheme/releases) (download the `.nupkg` and add its
-folder as a package source); nuget.org follows. Once it is there:
+Nocturne.Wpf is a [NuGet package on nuget.org](https://www.nuget.org/packages/Nocturne.Wpf); each
+[GitHub release](https://github.com/Montago/NocturneTheme/releases) has the `.nupkg` too.
 
 ```bash
 dotnet add package Nocturne.Wpf
 ```
 
-The project must target `net8.0-windows` or later with `<UseWPF>true</UseWPF>`.
+The project must target `net10.0-windows` or later with `<UseWPF>true</UseWPF>`.
 
 ## Merge the theme
 

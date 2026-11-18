@@ -1,10 +1,11 @@
 # Nocturne for WPF
 
 [![CI](https://github.com/Montago/NocturneTheme/actions/workflows/ci.yml/badge.svg)](https://github.com/Montago/NocturneTheme/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/Nocturne.Wpf)](https://www.nuget.org/packages/Nocturne.Wpf)
 [![Release](https://img.shields.io/github/v/release/Montago/NocturneTheme?label=release)](https://github.com/Montago/NocturneTheme/releases)
 [![Licence: MIT AND Apache-2.0](https://img.shields.io/badge/licence-MIT%20AND%20Apache--2.0-blue)](NOTICE.md)
 
-A dark theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic by default, or Mica /
+A dark theme for WPF on .NET 10 and later. The Windows 11 backdrop (Acrylic by default, or Mica /
 Mica Alt) shows through a tinted window with a soft light from the top-left corner, and cards and
 controls sit on top as light, translucent surfaces. One resource dictionary styles every standard
 control; the package adds the controls a desktop app usually needs on top.
@@ -42,14 +43,14 @@ control; the package adds the controls a desktop app usually needs on top.
 
 ## Install
 
-The package `Nocturne.Wpf` is attached to each [GitHub release](https://github.com/Montago/NocturneTheme/releases)
-(download the `.nupkg` and add its folder as a package source); nuget.org follows. Once it is there:
+The package [`Nocturne.Wpf`](https://www.nuget.org/packages/Nocturne.Wpf) is on nuget.org (each
+[GitHub release](https://github.com/Montago/NocturneTheme/releases) has the `.nupkg` too):
 
 ```bash
 dotnet add package Nocturne.Wpf
 ```
 
-The project must target `net8.0-windows` or later with `<UseWPF>true</UseWPF>`. The backdrop needs
+The project must target `net10.0-windows` or later with `<UseWPF>true</UseWPF>`. The backdrop needs
 Windows 11 22H2 with transparency effects on; elsewhere the window paints an opaque ground of the
 same colour.
 

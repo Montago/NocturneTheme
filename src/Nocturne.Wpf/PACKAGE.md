@@ -1,6 +1,6 @@
 ﻿# Nocturne for WPF
 
-A dark theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic, Mica or
+A dark theme for WPF on .NET 10 and later. The Windows 11 backdrop (Acrylic, Mica or
 Mica Alt) shows through a tinted window; cards and controls are light translucent surfaces on top.
 One resource dictionary styles the standard controls; `NocturneWindow` gives the frame.
 

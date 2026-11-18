@@ -6,7 +6,7 @@ permalink: /
 
 # Nocturne for WPF
 
-Nocturne is a dark theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic by default,
+Nocturne is a dark theme for WPF on .NET 10 and later. The Windows 11 backdrop (Acrylic by default,
 or Mica / Mica Alt) shows through a tinted window with a soft light from the top-left corner, and
 cards and controls sit on top as light, translucent surfaces. One resource dictionary styles every
 standard control; the package adds the controls a desktop app usually needs on top.
@@ -15,8 +15,8 @@ standard control; the package adds the controls a desktop app usually needs on t
 
 | | |
 | --- | --- |
-| Package | [Nocturne.Wpf](https://github.com/Montago/NocturneTheme/releases) (GitHub releases; nuget.org follows) |
-| Needs | .NET 8 or later, Windows 10 or 11. The backdrop needs Windows 11 22H2 with transparency effects on; elsewhere the window paints an opaque ground of the same colour. |
+| Package | [Nocturne.Wpf](https://www.nuget.org/packages/Nocturne.Wpf) on nuget.org (and on each [GitHub release](https://github.com/Montago/NocturneTheme/releases)) |
+| Needs | .NET 10 or later, Windows 10 or 11. The backdrop needs Windows 11 22H2 with transparency effects on; elsewhere the window paints an opaque ground of the same colour. |
 | Namespace | `xmlns:nc="urn:nocturne-wpf"` |
 | Start with | [Getting started](getting-started.md) |
 
