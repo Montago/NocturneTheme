@@ -84,6 +84,7 @@
                         <PasswordBox x:Name="PasswordBox" nc:PasswordBoxHelper.CanReveal="True" nc:ControlHelper.Placeholder="Password" />
 
                         <Label Margin="0,14,0,0" Content="P_ort" Target="{Binding ElementName=PortBox}" />
+                        <!-- The message shows in the error callout (Nocturne.Templates.ValidationError) on focus or hover -->
                         <TextBox x:Name="PortBox">
                             <TextBox.Text>
                                 <Binding Path="Port" UpdateSourceTrigger="PropertyChanged">
@@ -93,18 +94,6 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=PortBox}">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource Nocturne.Styles.TextBlock.Error}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding (Validation.HasError), ElementName=PortBox}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
                     </StackPanel>
                 </HeaderedContentControl>
 

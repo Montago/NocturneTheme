@@ -17,6 +17,42 @@
         <AdornedElementPlaceholder />
     </ControlTemplate>
 
+    <!--
+        Validation.ErrorTemplate of the fields: the field draws its own red frame (Validation.HasError
+        in its template); while it has the keyboard focus or the mouse, a callout under it shows the
+        first error message. Nocturne.Templates.NoErrorAdorner leaves the callout out, for a form
+        that shows the messages itself.
+    -->
+    <ControlTemplate x:Key="Nocturne.Templates.ValidationError">
+        <Grid>
+            <AdornedElementPlaceholder x:Name="Placeholder" />
+            <Popup x:Name="Callout" AllowsTransparency="True" Placement="Bottom" HorizontalOffset="-14" VerticalOffset="2"
+                   PopupAnimation="Fade" Focusable="False" PlacementTarget="{Binding ElementName=Placeholder}">
+                <Popup.Style>
+                    <Style TargetType="Popup">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AdornedElement.IsKeyboardFocusWithin, ElementName=Placeholder}" Value="True">
+                                <Setter Property="IsOpen" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding AdornedElement.IsMouseOver, ElementName=Placeholder}" Value="True">
+                                <Setter Property="IsOpen" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Popup.Style>
+                <ContentControl Template="{DynamicResource Nocturne.Templates.PopupSurface}" Padding="10,8,12,8" Focusable="False" IsTabStop="False">
+                    <DockPanel MaxWidth="300">
+                        <c:StrokeIcon DockPanel.Dock="Left" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Top" StrokeThickness="1.8"
+                                      Data="{DynamicResource Nocturne.Icons.Error}" Foreground="{DynamicResource Nocturne.Brushes.Error}" />
+                        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="{DynamicResource Nocturne.Fonts.Family}"
+                                   FontSize="{DynamicResource Nocturne.Font.Size.Caption}" Foreground="{DynamicResource Nocturne.Brushes.Error.Text}"
+                                   Text="{Binding AdornedElement.(Validation.Errors)/ErrorContent, ElementName=Placeholder}" />
+                    </DockPanel>
+                </ContentControl>
+            </Popup>
+        </Grid>
+    </ControlTemplate>
+
     <Style x:Key="Nocturne.Styles.Field.Base" TargetType="Control">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -29,7 +65,7 @@
         <Setter Property="Padding" Value="10,0" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource Nocturne.Templates.NoErrorAdorner}" />
+        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource Nocturne.Templates.ValidationError}" />
     </Style>
 
     <!-- The small subtle buttons inside a field: the TextBox clear button, the NumericUpDown steps -->

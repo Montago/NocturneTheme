@@ -40,7 +40,7 @@ public partial class EmployeesView : UserControl
             Content = $"{employee.Name} will be removed from the staff list. Approved timesheets stay in the archive.",
             AffirmativeText = "Delete",
             NegativeText = "Cancel",
-            AffirmativeButtonStyle = (Style)FindResource("Sample.Button.Danger"),
+            AffirmativeButtonStyle = (Style)FindResource("Nocturne.Styles.Button.Danger"),
         };
         if (await window.ShowDialogAsync(dialog) == MessageDialogResult.Affirmative)
         {

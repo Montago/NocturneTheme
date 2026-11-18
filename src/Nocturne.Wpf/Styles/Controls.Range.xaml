@@ -1,6 +1,7 @@
 ﻿<!--
-    ScrollViewer / ScrollBar (thin rounded bars without arrows that widen under the mouse; the
-    mouse wheel passes on to an outer scroll viewer when this one cannot scroll), Slider and
+    ScrollViewer / ScrollBar (thin rounded bars without arrows that widen under the mouse and fade
+    out while it is away; the mouse wheel passes on to an outer scroll viewer when this one cannot
+    scroll), Slider and
     ProgressBar (with an indeterminate runner), ProgressRing, RangeSlider (two Slider thumbs) and
     Rating.
 -->
@@ -142,6 +143,8 @@
     <Style TargetType="ScrollViewer">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="h:ScrollViewerHelper.ChainMouseWheel" Value="True" />
+        <!-- The bars fade out while the mouse is away and in when it comes or the content scrolls -->
+        <Setter Property="h:ScrollViewerHelper.AutoHide" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">

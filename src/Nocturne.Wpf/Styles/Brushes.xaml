@@ -51,6 +51,16 @@
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Pressed" Color="#FF134F8C" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Border" Color="#33FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Highlight" Color="#33FFFFFF" />
+    <!-- Danger: red whatever the accent (the red accent palette's primary values) -->
+    <LinearGradientBrush x:Key="Nocturne.Brushes.Button.Danger" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FFC03030" />
+        <GradientStop Offset="1" Color="#FFAB2828" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Nocturne.Brushes.Button.Danger.Hover" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FFCB3636" />
+        <GradientStop Offset="1" Color="#FFB52D2D" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Nocturne.Brushes.Button.Danger.Pressed" Color="#FF942222" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Secondary" Color="#14FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Secondary.Hover" Color="#24FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Secondary.Pressed" Color="#0DFFFFFF" />

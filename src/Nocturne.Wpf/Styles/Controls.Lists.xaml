@@ -157,7 +157,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
-        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
+        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Nocturne.Templates.ValidationError}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -243,6 +243,12 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+                            <Setter TargetName="BottomLine" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="FocusLine" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="FocusLine" Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
                         </Trigger>
                         <Trigger Property="h:ControlHelper.HasError" Value="True">
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
@@ -417,6 +423,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="h:ScrollViewerHelper.ChainMouseWheel" Value="True" />
+        <Setter Property="h:ScrollViewerHelper.AutoHide" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
