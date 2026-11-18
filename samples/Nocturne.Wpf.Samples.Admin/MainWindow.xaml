@@ -15,13 +15,14 @@
 
     <nc:NocturneWindow.RightWindowCommands>
         <StackPanel Orientation="Horizontal">
-            <nc:Badged Badge="4" VerticalAlignment="Center">
-                <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Timesheets waiting for approval"
-                        AutomationProperties.Name="Timesheets waiting for approval"
-                        Command="NavigationCommands.GoToPage" CommandParameter="Timesheets">
+            <!-- The badge sits on the bell, not on the button's corner, which would put it above the window's top edge -->
+            <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Timesheets waiting for approval"
+                    AutomationProperties.Name="Timesheets waiting for approval"
+                    Command="NavigationCommands.GoToPage" CommandParameter="Timesheets">
+                <nc:Badged Badge="4" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Bell}" />
-                </Button>
-            </nc:Badged>
+                </nc:Badged>
+            </Button>
             <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" Margin="6,0,0,0" ToolTip="Settings"
                     AutomationProperties.Name="Settings" Click="OnSettingsClick">
                 <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Settings}" />
