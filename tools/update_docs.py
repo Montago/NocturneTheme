@@ -51,7 +51,7 @@ GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Wpf.Demo', 'Views', 'GalleryPage.x
 # accent-system.png is left out: it shows whatever accent the machine's Windows uses.
 DEMO_PAGES = [
     'controls.png', 'more.png', 'custom.png', 'grid.png', 'tokens.png', 'icons.png', 'dialog.png', 'flyout.png',
-    'accent-green.png', 'accent-orange.png', 'accent-yellow.png', 'accent-red.png',
+    'accent-green.png', 'accent-orange.png', 'accent-yellow.png', 'accent-teal.png',
     'titlebar-separated.png', 'titlebar-accent.png',
 ]
 

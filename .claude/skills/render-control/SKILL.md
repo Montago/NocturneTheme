@@ -56,7 +56,7 @@ Options (both commands):
 | --- | --- |
 | `--scale 4` | more pixels per WPF unit. Use 3–4 for strokes, radii and alignment; 1 for how it really looks |
 | `--time 0,250,500` | where the endless animations (ProgressRing, indeterminate ProgressBar) stop, in ms (700 by default). With several values `--render` writes one picture each, `ring-250.png` (`--render-gallery` uses the first) |
-| `--accent Green` | Blue (default), Green, Orange, Yellow, Red, System |
+| `--accent Green` | Blue (default), Green, Orange, Yellow, Teal, System |
 | `--card` | `--render` only: put the snippet on a card, as the gallery samples are |
 
 Exit code 0 means the picture is there. On 1, read `<out.png>.error.txt` (for `--render-gallery`:

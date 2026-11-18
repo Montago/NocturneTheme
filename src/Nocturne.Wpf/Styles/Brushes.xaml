@@ -51,8 +51,7 @@
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Pressed" Color="#FF134F8C" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Border" Color="#33FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Button.Primary.Highlight" Color="#33FFFFFF" />
-    <!-- Danger: a deep red whatever the accent, darker than the red accent's primary button so the
-         two stay apart when the accent is red -->
+    <!-- Danger: a deep red whatever the accent (there is no red accent, so the two never meet) -->
     <LinearGradientBrush x:Key="Nocturne.Brushes.Button.Danger" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Offset="0" Color="#FF9E2121" />
         <GradientStop Offset="1" Color="#FF861B1B" />

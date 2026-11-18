@@ -18,7 +18,8 @@ public enum NocturneAccent
     /// <summary>Gold; text on it is dark, as white on yellow is hard to read.</summary>
     Yellow,
 
-    Red,
+    /// <summary>Teal (it took the place of red, which could not be told from the danger buttons).</summary>
+    Teal,
 
     /// <summary>
     /// The accent colour chosen in Windows (Settings, Personalisation, Colours), followed while the
@@ -52,10 +53,10 @@ public static class NocturneTheme
             accent: "#D1A112", light: "#F5CB3A", text: "#FFE08A", textHover: "#FFEDBD", onAccent: "#1E1A0C",
             primary: ("#D4A514", "#C29510"), primaryHover: ("#DDB01E", "#CB9E16"), primaryPressed: "#A98410",
             fallback: "#2E2A1E", tint: "#1E1A0F", popup: "#2D291E"),
-        [NocturneAccent.Red] = Palette.FromHex(
-            accent: "#D13A3A", light: "#FF6B6B", text: "#FFA3A3", textHover: "#FFCDCD", onAccent: "#FFFFFF",
-            primary: ("#C03030", "#AB2828"), primaryHover: ("#CB3636", "#B52D2D"), primaryPressed: "#942222",
-            fallback: "#2E1E1F", tint: "#1E1011", popup: "#2D1F20"),
+        [NocturneAccent.Teal] = Palette.FromHex(
+            accent: "#17A398", light: "#3FD9CB", text: "#8EEFE5", textHover: "#C2F7F1", onAccent: "#FFFFFF",
+            primary: ("#14897F", "#107B72"), primaryHover: ("#16938A", "#13857B"), primaryPressed: "#0F6A62",
+            fallback: "#1E2D2C", tint: "#101E1D", popup: "#1F2D2C"),
     };
 
     private static ResourceDictionary? target;

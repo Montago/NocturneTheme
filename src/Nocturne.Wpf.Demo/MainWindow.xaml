@@ -87,8 +87,8 @@
                                  IsChecked="True" ToolTip="Blue" AutomationProperties.Name="Blue" Checked="OnAccentChecked" />
                     <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Yellow}" Background="#D1A112"
                                  ToolTip="Yellow" AutomationProperties.Name="Yellow" Checked="OnAccentChecked" />
-                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Red}" Background="#D13A3A"
-                                 ToolTip="Red" AutomationProperties.Name="Red" Checked="OnAccentChecked" />
+                    <RadioButton Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.Teal}" Background="#17A398"
+                                 ToolTip="Teal" AutomationProperties.Name="Teal" Checked="OnAccentChecked" />
                     <!-- Filled from code with the colour chosen in Windows -->
                     <RadioButton x:Name="SystemSwatch" Style="{StaticResource Demo.AccentSwatch}" GroupName="Accent" Tag="{x:Static nc:NocturneAccent.System}"
                                  ToolTip="Windows accent colour" AutomationProperties.Name="Windows accent colour" Checked="OnAccentChecked" />

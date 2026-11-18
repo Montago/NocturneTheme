@@ -22,7 +22,7 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 - Accents: `NocturneTheme.SetAccent` (`Controls/NocturneTheme.cs`) writes the accent brushes,
   `Text.OnAccent`, primary button, `Popup`, `Window.Tint` and `Window.Fallback` for blue (the
   default, chosen by the user; `Brushes.xaml` holds its values), green (the design's colour),
-  orange, yellow (dark text on it), red or `System` into the app's resources. `System` reads
+  orange, yellow (dark text on it), teal or `System` into the app's resources. `System` reads
   Windows' 7-shade `AccentPalette` from HKCU\...\Explorer\Accent (no Windows SDK target needed),
   derives the ground from its hue and picks white or dark `OnAccent` by luminance; NocturneWindow's
   WndProc (WM_SETTINGCHANGE, WM_DWMCOLORIZATIONCOLORCHANGED) makes it follow live. New
