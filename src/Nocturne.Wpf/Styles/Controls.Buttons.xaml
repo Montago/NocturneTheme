@@ -108,6 +108,17 @@
         <Setter Property="h:ControlHelper.HasShadow" Value="True" />
     </Style>
 
+    <!-- Danger: shaped like Primary, red whatever the accent, for destructive commands (Delete, Remove) -->
+    <Style x:Key="Nocturne.Styles.Button.Danger" TargetType="ButtonBase" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Danger}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Danger.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Danger.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </Style>
+
     <Style x:Key="Nocturne.Styles.Button.Subtle" TargetType="ButtonBase" BasedOn="{StaticResource Nocturne.Styles.Button}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />

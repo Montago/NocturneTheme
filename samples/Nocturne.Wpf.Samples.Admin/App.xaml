@@ -25,13 +25,6 @@
             <Style x:Key="Page.Caption" TargetType="TextBlock" BasedOn="{StaticResource Nocturne.Styles.TextBlock.Caption}">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            <!-- A button for actions that cannot be undone, as on the Buttons page of the docs -->
-            <Style x:Key="Sample.Button.Danger" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}">
-                <Setter Property="Foreground" Value="#FF2A0E0B" />
-                <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Error}" />
-                <Setter Property="nc:ControlHelper.HoverBackground" Value="#FFFFA39C" />
-                <Setter Property="nc:ControlHelper.PressedBackground" Value="#FFE07A72" />
-            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

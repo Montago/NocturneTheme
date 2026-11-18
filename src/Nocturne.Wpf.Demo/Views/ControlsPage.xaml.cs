@@ -12,6 +12,23 @@ public partial class ControlsPage : UserControl
         InitializeComponent();
     }
 
+    /// <summary>Asks first, with the Danger style on the dialog's confirm button.</summary>
+    private async void OnDeleteClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (System.Windows.Window.GetWindow(this) is not Nocturne.Wpf.Controls.NocturneWindow window)
+        {
+            return;
+        }
+        await window.ShowDialogAsync(new Nocturne.Wpf.Controls.NocturneDialog
+        {
+            Title = "Delete project?",
+            Content = "The project and its files are removed for everyone. This cannot be undone.",
+            AffirmativeText = "Delete",
+            NegativeText = "Cancel",
+            AffirmativeButtonStyle = (System.Windows.Style)FindResource("Nocturne.Styles.Button.Danger"),
+        });
+    }
+
     /// <summary>The "+" after the document tabs: add an empty tab and select it.</summary>
     private void OnAddTab(object sender, ExecutedRoutedEventArgs e)
     {

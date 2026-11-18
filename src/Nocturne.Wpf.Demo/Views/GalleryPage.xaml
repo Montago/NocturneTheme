@@ -55,6 +55,20 @@
             </WrapPanel>
         </ContentControl>
 
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="button-danger">
+            <WrapPanel>
+                <Button Margin="0,0,10,0" Content="Cancel" />
+                <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Danger}" Content="Delete" />
+                <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Danger}">
+                    <StackPanel Orientation="Horizontal">
+                        <nc:NocturneIcon Kind="Delete" Width="16" Height="16" Margin="0,0,8,0" />
+                        <TextBlock Text="Delete employee" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource Nocturne.Styles.Button.Danger}" Content="Disabled" IsEnabled="False" />
+            </WrapPanel>
+        </ContentControl>
+
         <ContentControl Style="{StaticResource Demo.Sample}" Tag="toggle-button">
             <StackPanel Orientation="Horizontal">
                 <ToggleButton Margin="0,0,10,0" Content="Off" />
@@ -121,6 +135,22 @@
                 <Label Margin="0,14,0,0" Content="Port" />
                 <TextBox Text="99999" nc:ControlHelper.HasError="True" />
                 <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Must be a number from 1 to 65535." />
+            </StackPanel>
+        </ContentControl>
+
+        <!-- A binding with a ValidationRule: the field's red frame and, open here, the error callout -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="validation">
+            <StackPanel Margin="0,0,0,44">
+                <Label Content="Port" />
+                <TextBox demo:Gallery.Open="True" Tag="99999">
+                    <TextBox.Text>
+                        <Binding Path="Tag" RelativeSource="{RelativeSource Self}" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <demo:PortRule ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
         </ContentControl>
 

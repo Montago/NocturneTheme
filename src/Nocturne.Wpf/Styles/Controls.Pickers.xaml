@@ -113,7 +113,7 @@
         <Setter Property="Padding" Value="10,0" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Nocturne.Templates.NoErrorAdorner}" />
+        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Nocturne.Templates.ValidationError}" />
     </Style>
 
     <!-- TimePicker: type a time or pick one from the list under the clock button -->

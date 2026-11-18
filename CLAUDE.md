@@ -59,7 +59,7 @@ src/Nocturne.Wpf/              library (net10.0-windows, NuGet package Nocturne.
   Themes/Generic.xaml         merges Nocturne.xaml (implicit styles don't reach MainWindow : NocturneWindow)
   Controls/                   NocturneWindow (hosts Flyouts and dialogs), NocturneTheme (accents), LightTexture,
                               StrokeIcon, NocturneIcon (+ Icon/IconGeometry extensions; NocturneIconKind.g.cs
-                              generated), TabPanelBorder, NativeMethods; own controls (behaviour ported
+                              generated), TabPanelBorder, TabSelectionIndicator, NativeMethods; own controls (behaviour ported
                               from JetPack, look new): DropDownButton, SplitButton, Tile (Buttons.xaml),
                               NumericUpDown (Text), ProgressRing, RangeSlider, Rating (Range), InfoBar,
                               Badged, BusyIndicator, Accordion (Containers), HamburgerMenu (Lists),
@@ -148,6 +148,17 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
   never scroll the page).
 - Scroll bars are 18px wide with a thumb that fills that width (the drawn bar is 6px, 10px under
   the mouse), so a bar along the window edge stays clear of the 6px resize border.
+  `ScrollViewerHelper.AutoHide` (on in the ScrollViewer styles) fades the bars out while the mouse
+  is away and in on hover or scrolling; their room stays. Snapshots show no bars for that reason.
+- The segmented TabControl draws the selected pill and stripe with `TabSelectionIndicator` (code,
+  `CompositionTarget.Rendering`), which glides them to a new tab; the TabItem template hides its own
+  while the inherited `TabSelectionIndicator.DrawsSelection` is true. Like the theme's other
+  transitions it ignores Windows' animation effects setting, which is off in most RDP sessions.
+- Fields use `Nocturne.Templates.ValidationError` (Text.xaml): the field draws its red frame on
+  `Validation.HasError`, and a popup callout under it shows the first error on focus or hover.
+  `demo:Gallery.Open` opens it for a picture. `Nocturne.Templates.NoErrorAdorner` leaves it out.
+- Switches stay a style (`Nocturne.Styles.ToggleSwitch`) on WPF's ToggleButton / CheckBox: the user
+  wants WPF's own controls rather than new classes that only rename them.
 - Effects (DropShadowEffect) sit on separate background layers, never on text.
 - ToolBar gives its children the styles under `ToolBar.*StyleKey`, not the implicit ones. Each lives
   in the file of its base style (Buttons, Lists, Text, Toggles), since `BasedOn` cannot cross files.

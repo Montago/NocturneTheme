@@ -383,7 +383,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="IsTodayHighlighted" Value="True" />
         <Setter Property="CalendarStyle" Value="{StaticResource Nocturne.Styles.Calendar.Popup}" />
-        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Nocturne.Templates.NoErrorAdorner}" />
+        <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource Nocturne.Templates.ValidationError}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DatePicker">

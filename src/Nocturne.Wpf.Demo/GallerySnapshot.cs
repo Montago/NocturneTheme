@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -123,6 +124,17 @@ internal static class GallerySnapshot
     {
         switch (element)
         {
+            case not null when Validation.GetHasError(element):
+                // The error callout of Nocturne.Templates.ValidationError, which opens on focus or hover
+                foreach (var adorner in AdornerLayer.GetAdornerLayer(element)?.GetAdorners(element) ?? [])
+                {
+                    foreach (var popup in Gallery.Descendants(adorner).OfType<Popup>().Where(p => p.Name == "Callout"))
+                    {
+                        popup.IsOpen = true;
+                        closers.Add(() => popup.ClearValue(Popup.IsOpenProperty));
+                    }
+                }
+                break;
             case ComboBox combo:
                 combo.IsDropDownOpen = true;
                 closers.Add(() => combo.IsDropDownOpen = false);

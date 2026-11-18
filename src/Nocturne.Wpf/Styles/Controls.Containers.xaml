@@ -200,6 +200,11 @@
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
                             <Setter TargetName="HeaderPresenter" Property="TextElement.Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Selected}" />
                         </Trigger>
+                        <!-- The TabControl's TabSelectionIndicator draws the pill and stripe and slides them -->
+                        <Trigger Property="c:TabSelectionIndicator.DrawsSelection" Value="True">
+                            <Setter TargetName="SelectedBg" Property="Opacity" Value="0" />
+                            <Setter TargetName="Indicator" Property="Opacity" Value="0" />
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Root" Property="Opacity" Value="0.42" />
                         </Trigger>
@@ -223,7 +228,11 @@
                         </Grid.RowDefinitions>
                         <Border CornerRadius="10" Padding="2,4" Background="{DynamicResource Nocturne.Brushes.TabStrip}"
                                 BorderBrush="{DynamicResource Nocturne.Brushes.TabStrip.Border}" BorderThickness="1">
-                            <UniformGrid x:Name="HeaderPanel" Rows="1" IsItemsHost="True" KeyboardNavigation.TabIndex="1" />
+                            <Grid>
+                                <!-- Draws the selected tab's pill and stripe and glides them to a new tab -->
+                                <c:TabSelectionIndicator PillBrush="{DynamicResource Nocturne.Brushes.Item.Selected}" StripeBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                                <UniformGrid x:Name="HeaderPanel" Rows="1" IsItemsHost="True" KeyboardNavigation.TabIndex="1" />
+                            </Grid>
                         </Border>
                         <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}"
                                           KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" />
