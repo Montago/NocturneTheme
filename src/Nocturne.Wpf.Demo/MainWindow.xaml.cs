@@ -11,6 +11,8 @@ public partial class MainWindow : NocturneWindow
     {
         InitializeComponent();
         BackdropBox.ItemsSource = Enum.GetValues<WindowBackdrop>();
+        TitleBarBox.ItemsSource = Enum.GetValues<TitleBarStyle>();
+        CornerBox.ItemsSource = Enum.GetValues<WindowCornerStyle>();
         DataContext = new DemoData();
         ShowSystemAccent();
         NocturneTheme.SystemAccentChanged += (_, _) => ShowSystemAccent();
@@ -37,6 +39,26 @@ public partial class MainWindow : NocturneWindow
         }
     }
 
+    private readonly Stack<int> history = new();
+    private bool goingBack;
+
+    private void OnBackClick(object sender, RoutedEventArgs e)
+    {
+        if (history.Count > 0)
+        {
+            goingBack = true;
+            Navigation.SelectedIndex = history.Pop();
+            goingBack = false;
+        }
+    }
+
+    private void OnNavigationToggleClick(object sender, RoutedEventArgs e)
+    {
+        var show = NavigationPane.Visibility != Visibility.Visible;
+        NavigationPane.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        NavigationColumn.Width = show ? new GridLength(248) : new GridLength(24);
+    }
+
     private void OnNavigationChanged(object sender, SelectionChangedEventArgs e)
     {
         // SelectionChanged fires during InitializeComponent, before the pages exist.
@@ -44,6 +66,13 @@ public partial class MainWindow : NocturneWindow
         {
             return;
         }
+
+        // Remember the page that was left, for the back button in the title bar.
+        if (!goingBack && e.RemovedItems.Count > 0 && e.RemovedItems[0] is { } left && Navigation.Items.IndexOf(left) is >= 0 and var index)
+        {
+            history.Push(index);
+        }
+        BackButton.IsEnabled = history.Count > 0;
 
         // In the order of the navigation items.
         UIElement[] pages = [ControlsPage, MoreControlsPage, CustomControlsPage, GridPage, TokensPage, IconsPage];

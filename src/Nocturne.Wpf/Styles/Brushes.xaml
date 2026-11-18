@@ -7,7 +7,7 @@
 
     <!--
         Accent (blue). NocturneTheme.SetAccent switches the accent brushes, Text.OnAccent, the
-        primary button, Popup and the window's Tint and Fallback to another hue.
+        primary button, Popup, the window's Tint and Fallback and the Accent title bar to another hue.
     -->
 
     <Color x:Key="Nocturne.Colors.Accent">#FF1F78D1</Color>
@@ -135,6 +135,14 @@
         <GradientStop Offset="0" Color="#14FFFFFF" />
         <GradientStop Offset="0.38" Color="#00FFFFFF" />
     </LinearGradientBrush>
+    <!-- Title bar strips (NocturneWindow.TitleBarStyle Separated and Accent), each with a hairline under it -->
+    <SolidColorBrush x:Key="Nocturne.Brushes.TitleBar.Separated" Color="#38000000" />
+    <SolidColorBrush x:Key="Nocturne.Brushes.TitleBar.Separated.Border" Color="#14FFFFFF" />
+    <LinearGradientBrush x:Key="Nocturne.Brushes.TitleBar.Accent" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#4D1F78D1" />
+        <GradientStop Offset="1" Color="#381F78D1" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Nocturne.Brushes.TitleBar.Accent.Border" Color="#384DA3FF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Caption.Hover" Color="#17FFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Caption.Pressed" Color="#0DFFFFFF" />
     <SolidColorBrush x:Key="Nocturne.Brushes.Close.Hover" Color="#FFC42B1C" />

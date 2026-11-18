@@ -25,6 +25,32 @@ public enum WindowBackdrop
     Acrylic,
 }
 
+/// <summary>How a <see cref="NocturneWindow"/>'s title bar stands apart from the content.</summary>
+public enum TitleBarStyle
+{
+    /// <summary>The title bar lies on the window's own ground, one with the content (the default).</summary>
+    Seamless,
+
+    /// <summary>A slightly darker strip with a hairline under it, for apps with busy content at the top.</summary>
+    Separated,
+
+    /// <summary>A strip tinted with the accent colour (it follows <see cref="NocturneTheme.SetAccent"/>).</summary>
+    Accent,
+}
+
+/// <summary>The corners Windows 11 draws for a <see cref="NocturneWindow"/>. A maximised window is always square.</summary>
+public enum WindowCornerStyle
+{
+    /// <summary>Rounded, 8px (the default).</summary>
+    Round,
+
+    /// <summary>Slightly rounded, 4px, for small tool windows.</summary>
+    RoundSmall,
+
+    /// <summary>Square, as on Windows 10.</summary>
+    Square,
+}
+
 /// <summary>
 /// Window with the Nocturne frame: a Windows 11 backdrop (Acrylic by default, or Mica / Mica Alt),
 /// a dark tint and a soft light from the top-left corner, under a 44px
@@ -175,6 +201,40 @@ public class NocturneWindow : Window
         set => SetValue(RightWindowCommandsProperty, value);
     }
 
+    public static readonly DependencyProperty LeftWindowCommandsProperty = DependencyProperty.Register(
+        nameof(LeftWindowCommands), typeof(object), typeof(NocturneWindow), new PropertyMetadata(null));
+
+    /// <summary>
+    /// Content shown at the start of the title bar, before the icon and the title, such as a back
+    /// button or one that folds the navigation out. A thin divider separates it from the title.
+    /// </summary>
+    public object? LeftWindowCommands
+    {
+        get => GetValue(LeftWindowCommandsProperty);
+        set => SetValue(LeftWindowCommandsProperty, value);
+    }
+
+    public static readonly DependencyProperty TitleBarStyleProperty = DependencyProperty.Register(
+        nameof(TitleBarStyle), typeof(TitleBarStyle), typeof(NocturneWindow), new PropertyMetadata(TitleBarStyle.Seamless));
+
+    /// <summary>How the title bar stands apart from the content (<see cref="Controls.TitleBarStyle.Seamless"/> by default).</summary>
+    public TitleBarStyle TitleBarStyle
+    {
+        get => (TitleBarStyle)GetValue(TitleBarStyleProperty);
+        set => SetValue(TitleBarStyleProperty, value);
+    }
+
+    public static readonly DependencyProperty CornerStyleProperty = DependencyProperty.Register(
+        nameof(CornerStyle), typeof(WindowCornerStyle), typeof(NocturneWindow),
+        new PropertyMetadata(WindowCornerStyle.Round, (d, _) => ((NocturneWindow)d).ApplyCornerStyle()));
+
+    /// <summary>The window's corners on Windows 11 (<see cref="WindowCornerStyle.Round"/> by default). Windows 10 draws them square.</summary>
+    public WindowCornerStyle CornerStyle
+    {
+        get => (WindowCornerStyle)GetValue(CornerStyleProperty);
+        set => SetValue(CornerStyleProperty, value);
+    }
+
     public static readonly DependencyProperty FlyoutsProperty = DependencyProperty.Register(
         nameof(Flyouts), typeof(object), typeof(NocturneWindow), new PropertyMetadata(null));
 
@@ -299,10 +359,27 @@ public class NocturneWindow : Window
         HwndSource.FromHwnd(hwnd)?.AddHook(WndProc);
         NativeMethods.RegisterSessionNotification(hwnd, true);
 
-        // The theme is always dark: dark system frame and dark materials. Rounded corners on Windows 11.
+        // The theme is always dark: dark system frame and dark materials.
         NativeMethods.SetDwmAttribute(hwnd, NativeMethods.DwmwaUseImmersiveDarkMode, 1);
-        NativeMethods.SetDwmAttribute(hwnd, NativeMethods.DwmwaWindowCornerPreference, NativeMethods.DwmwcpRound);
+        ApplyCornerStyle();
         ApplyBackdrop();
+    }
+
+    private void ApplyCornerStyle()
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        if (hwnd == IntPtr.Zero)
+        {
+            return;
+        }
+
+        // Windows 11 draws the corners; before Windows 11 the attribute fails and they stay square.
+        NativeMethods.SetDwmAttribute(hwnd, NativeMethods.DwmwaWindowCornerPreference, CornerStyle switch
+        {
+            WindowCornerStyle.RoundSmall => NativeMethods.DwmwcpRoundSmall,
+            WindowCornerStyle.Square => NativeMethods.DwmwcpDoNotRound,
+            _ => NativeMethods.DwmwcpRound,
+        });
     }
 
     private void ApplyBackdrop()

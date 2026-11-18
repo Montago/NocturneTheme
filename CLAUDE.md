@@ -66,8 +66,8 @@ src/Nocturne.Wpf/              library (net10.0-windows, NuGet package Nocturne.
                               TimePicker, ColorPicker, AutoSuggestBox, SearchComboBox (Pickers.xaml),
                               NocturneDialog, Flyout (Overlays.xaml), NocturneGrid with NocturneGridColumn,
                               NocturneGridCheckBoxColumn and its Grid* helpers (DataGrid.xaml; JetPackGrid renamed)
-  Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
-                              (attached properties); Converters (tree indent, splitter direction)
+  Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper,
+                              ContextMenuHelper (attached properties); Converters (tree indent, splitter direction)
 src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot, RenderCommand.cs for
                               --render / --render-gallery (one control, no demo window); Views/GalleryPage.xaml
                               has one Demo.Sample per control (Tag = file name), GallerySnapshot.cs renders
@@ -102,7 +102,7 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 - `--snapshot` renders the six pages (controls, more, custom, grid, tokens, icons: top, halfway down a long page, and the bottom), the popups
   (combo box, context menu, tool tip, date picker, drop-down button, time picker, colour picker,
   search combo box, two NocturneGrid filters), an open dialog, the open flyout, the folded
-  HamburgerMenu and the grid grouped by make to PNG, one picture per gallery sample into `controls/`,
+  HamburgerMenu, the grid grouped by make and the Separated and Accent title bars to PNG, one picture per gallery sample into `controls/`,
   and writes `wheel-check.txt` (PASS when a wheel turn over the settings ListBox scrolls the page),
   then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
@@ -175,6 +175,15 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
   `GridColumnHeadersPresenter` (both in the shared `Nocturne.Templates.DataGrid.ScrollViewer`).
 - A FlowDocument does not take the RichTextBox's font (justified Georgia); the RichTextBox style
   gives FlowDocument the theme font in its resources.
+- NocturneWindow's title bar: `LeftWindowCommands` (before the icon, with a divider), `TitleBarStyle`
+  (Seamless, Separated, Accent: a strip `TitleBarBg` behind it; the Accent brushes are in the accent
+  palettes) and `CornerStyle` (DWMWA_WINDOW_CORNER_PREFERENCE: Round, RoundSmall, Square).
+- Text fields get `Nocturne.ContextMenu.Text` (Menu.xaml, `x:Shared="False"`; PasswordBox gets
+  `.Password`, Paste only). A MenuItem in a ContextMenu runs its command on itself and does not
+  re-ask CanExecute when a `CommandTarget` binding arrives later, so `ContextMenuHelper.TargetsPlacement`
+  points the items at `PlacementTarget` on every opening. Read-only fields hide the editing items
+  (DataTrigger on `PlacementTarget.IsReadOnly`); with `SpellCheck.IsEnabled` the field keeps WPF's own
+  menu, which lists the suggestions.
 - NocturneWindow extends the DWM frame over the whole window (GlassFrameThickness -1) while a backdrop
   is active and removes WS_SYSMENU so Windows does not draw its own caption buttons (same approach
   as JetPackWindow).
