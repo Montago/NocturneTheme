@@ -5,7 +5,7 @@ Mica Alt) shows through a tinted window; cards and controls are light translucen
 One resource dictionary styles the standard controls; `NocturneWindow` gives the frame.
 
 Documentation, with a picture and XAML for every control:
-https://github.com/Montago/NocturneTheme/tree/master/docs
+https://montago.github.io/NocturneTheme/
 
 ## Getting started
 
