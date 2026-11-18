@@ -184,6 +184,14 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
   points the items at `PlacementTarget` on every opening. Read-only fields hide the editing items
   (DataTrigger on `PlacementTarget.IsReadOnly`); with `SpellCheck.IsEnabled` the field keeps WPF's own
   menu, which lists the suggestions.
+- A grouped NocturneGrid alternates its rows within each group through the attached
+  `NocturneGrid.GroupRowBackground`, which the DataGridRow style binds as its `Background`. Never set a
+  row's `Background` locally: a local value hides the style's hover and selection triggers.
+- Flyout ignores Windows' animation setting like the other transitions, moves keyboard focus to its first
+  field on opening and gives it back on closing. TimePicker and ColorPicker take the keyboard as a
+  ComboBox does (Alt+Down / F4 open, arrows move the highlight only, Enter takes, Escape closes).
+- On-screen tests drive the real mouse and keyboard: check that the demo is the foreground window and
+  under the pointer before every key or click (it was not once, and the keys went into another app).
 - NocturneWindow extends the DWM frame over the whole window (GlassFrameThickness -1) while a backdrop
   is active and removes WS_SYSMENU so Windows does not draw its own caption buttons (same approach
   as JetPackWindow).

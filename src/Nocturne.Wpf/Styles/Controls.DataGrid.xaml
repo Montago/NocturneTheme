@@ -195,7 +195,8 @@
     <Style TargetType="DataGridRow">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="Transparent" />
+        <!-- A grouped NocturneGrid alternates the rows within each group (GroupRowBackground); the triggers below draw hover and selection over it -->
+        <Setter Property="Background" Value="{Binding Path=(nc:NocturneGrid.GroupRowBackground), RelativeSource={RelativeSource Self}, TargetNullValue={x:Static Brushes.Transparent}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke.Subtle}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
         <Setter Property="SnapsToDevicePixels" Value="True" />

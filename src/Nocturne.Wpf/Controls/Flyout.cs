@@ -18,7 +18,8 @@ public enum FlyoutPosition
 /// <summary>
 /// A glass panel that slides in from an edge of the window (220 ms), with a header and a close
 /// button. Put flyouts in <see cref="NocturneWindow.Flyouts"/> (usually a Grid) and open them with
-/// <see cref="IsOpen"/>; Escape closes an open one.
+/// <see cref="IsOpen"/>; Escape closes an open one. Opening moves keyboard focus to the first field in the
+/// flyout, and closing gives it back to the element that had it.
 /// </summary>
 [TemplatePart(Name = PartClose, Type = typeof(Button))]
 public class Flyout : HeaderedContentControl
@@ -28,6 +29,7 @@ public class Flyout : HeaderedContentControl
     private readonly TranslateTransform slide = new();
     private DispatcherTimer? autoClose;
     private Button? close;
+    private IInputElement? returnFocus;
 
     static Flyout()
     {
@@ -156,6 +158,17 @@ public class Flyout : HeaderedContentControl
     private void Apply(bool open, bool animate)
     {
         RestartAutoClose();
+        if (animate)
+        {
+            if (open)
+            {
+                ReceiveFocus();
+            }
+            else
+            {
+                GiveFocusBack();
+            }
+        }
 
         var vertical = Position is FlyoutPosition.Top or FlyoutPosition.Bottom;
         var axis = vertical ? TranslateTransform.YProperty : TranslateTransform.XProperty;
@@ -174,7 +187,9 @@ public class Flyout : HeaderedContentControl
         }
 
         var hidden = HiddenOffset(vertical);
-        if (!animate || !IsLoaded || !SystemParameters.ClientAreaAnimation)
+        // Like the theme's other transitions, the slide ignores Windows' animation effects setting,
+        // which is off in most Remote Desktop sessions.
+        if (!animate || !IsLoaded)
         {
             slide.BeginAnimation(axis, null);
             slide.SetValue(axis, open ? 0.0 : hidden);
@@ -189,17 +204,7 @@ public class Flyout : HeaderedContentControl
             Duration = TimeSpan.FromMilliseconds(220),
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
         };
-        if (open)
-        {
-            animation.Completed += (_, _) =>
-            {
-                if (IsOpen && !IsKeyboardFocusWithin)
-                {
-                    MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
-                }
-            };
-        }
-        else
+        if (!open)
         {
             animation.Completed += (_, _) =>
             {
@@ -210,6 +215,53 @@ public class Flyout : HeaderedContentControl
             };
         }
         slide.BeginAnimation(axis, animation);
+    }
+
+    /// <summary>
+    /// Moves keyboard focus into the flyout once it is laid out: to the first field of its content, or
+    /// the close button when the content has none. The element that had focus gets it back on closing.
+    /// </summary>
+    private void ReceiveFocus()
+    {
+        if (!IsKeyboardFocusWithin)
+        {
+            returnFocus = Keyboard.FocusedElement;
+        }
+        Dispatcher.BeginInvoke(() =>
+        {
+            if (!IsOpen || IsKeyboardFocusWithin)
+            {
+                return;
+            }
+            var target = (Content as DependencyObject is { } content ? FirstFocusable(content) : null) ?? FirstFocusable(this, skipSelf: true);
+            target?.Focus();
+        }, DispatcherPriority.Loaded);
+    }
+
+    private void GiveFocusBack()
+    {
+        var back = returnFocus;
+        returnFocus = null;
+        if (IsKeyboardFocusWithin && back is UIElement { IsVisible: true, IsEnabled: true } element)
+        {
+            element.Focus();
+        }
+    }
+
+    private static UIElement? FirstFocusable(DependencyObject parent, bool skipSelf = false)
+    {
+        if (!skipSelf && parent is UIElement { Focusable: true, IsEnabled: true, IsVisible: true } self && KeyboardNavigation.GetIsTabStop(self))
+        {
+            return self;
+        }
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            if (VisualTreeHelper.GetChild(parent, i) is UIElement { IsVisible: true } child && FirstFocusable(child) is { } found)
+            {
+                return found;
+            }
+        }
+        return null;
     }
 
     /// <summary>The offset that puts the flyout, shadow included, just outside its edge.</summary>

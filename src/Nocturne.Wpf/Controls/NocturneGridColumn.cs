@@ -112,6 +112,24 @@ public class NocturneGridColumn : DataGridTextColumn
         base.RefreshCellContent(element, propertyName);
     }
 
+    /// <summary>
+    /// Copying puts the text the cell shows on the clipboard, with the binding's format (09/20/2015, 183,140,
+    /// 145 hp), rather than the bound value as .NET writes it (a date with midnight as its time). A column with
+    /// its own <see cref="DataGridColumn.ClipboardContentBinding"/> copies that instead, and so does a
+    /// <see cref="DataGridColumn.CopyingCellClipboardContent"/> handler that changes the content.
+    /// </summary>
+    public override object? OnCopyingCellClipboardContent(object item)
+    {
+        var content = base.OnCopyingCellClipboardContent(item);
+        if (ReferenceEquals(ClipboardContentBinding, Binding) && DataGridOwner is { } grid
+            && NocturneGrid.ColumnReader.ForCell(this, grid.Language.GetSpecificCulture()) is { } reader
+            && Equals(content, reader.GetValue(item)))
+        {
+            return reader.GetText(item);
+        }
+        return content;
+    }
+
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
         // One element and one binding (the text) per cell. The search words come down from the grid by inheritance.

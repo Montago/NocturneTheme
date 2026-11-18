@@ -8,7 +8,11 @@ using System.Windows.Media;
 
 namespace Nocturne.Wpf.Controls;
 
-/// <summary>A time field: type a time (09:30, 9.30 or 9) or pick one from a drop-down list in <see cref="MinuteStep"/> steps.</summary>
+/// <summary>
+/// A time field: type a time (09:30, 9.30 or 9) or pick one from a drop-down list in <see cref="MinuteStep"/>
+/// steps. As in a ComboBox, Alt+Down or F4 opens the list; while it is open the arrow keys move through it,
+/// Enter takes the time and Escape closes it.
+/// </summary>
 [TemplatePart(Name = "PART_TextBox", Type = typeof(TextBox))]
 [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
 [TemplatePart(Name = "PART_List", Type = typeof(ListBox))]
@@ -60,6 +64,7 @@ public class TimePicker : Control
         {
             textBox.LostKeyboardFocus += (_, _) => Commit();
             textBox.KeyDown += (_, e) => { if (e.Key == Key.Enter) Commit(); };
+            textBox.PreviewKeyDown += OnTextPreviewKeyDown;
         }
         if (list != null)
         {
@@ -67,13 +72,68 @@ public class TimePicker : Control
             {
                 if (!updating && list.SelectedItem is TimeSpan t)
                 {
+                    var hadFocus = list.IsKeyboardFocusWithin;
                     SelectedTime = t;
                     IsDropDownOpen = false;
+                    if (hadFocus)
+                    {
+                        textBox?.Focus();
+                    }
                 }
             };
         }
         FillList();
         UpdateText();
+    }
+
+    private void OnTextPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        if (key == Key.F4 || (key is Key.Down or Key.Up && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)))
+        {
+            if (!IsDropDownOpen)
+            {
+                Commit();
+            }
+            IsDropDownOpen = !IsDropDownOpen;
+            e.Handled = true;
+            return;
+        }
+        if (!IsDropDownOpen || list == null || list.Items.Count == 0)
+        {
+            return;
+        }
+
+        switch (key)
+        {
+            case Key.Down:
+            case Key.Up:
+            case Key.PageDown:
+            case Key.PageUp:
+                // Moves the highlight only; the time is taken with Enter or a click.
+                var step = key switch { Key.Down => 1, Key.Up => -1, Key.PageDown => 8, _ => -8 };
+                var index = list.SelectedIndex < 0 ? (step > 0 ? 0 : list.Items.Count - 1) : list.SelectedIndex + step;
+                updating = true;
+                list.SelectedIndex = Math.Clamp(index, 0, list.Items.Count - 1);
+                updating = false;
+                list.ScrollIntoView(list.SelectedItem);
+                e.Handled = true;
+                break;
+            case Key.Enter:
+                if (list.SelectedItem is TimeSpan t)
+                {
+                    SelectedTime = t;
+                    UpdateText();
+                    textBox?.SelectAll();
+                }
+                IsDropDownOpen = false;
+                e.Handled = true;
+                break;
+            case Key.Escape:
+                IsDropDownOpen = false;
+                e.Handled = true;
+                break;
+        }
     }
 
     private static void OnDropDownChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -136,7 +196,11 @@ public class TimePicker : Control
     }
 }
 
-/// <summary>A colour field that opens a grid of swatches (<see cref="Palette"/>; <see cref="DefaultPalette"/> by default).</summary>
+/// <summary>
+/// A colour field that opens a grid of swatches (<see cref="Palette"/>; <see cref="DefaultPalette"/> by default).
+/// A click takes a colour. From the keyboard, Space, Alt+Down or F4 opens the grid with the current colour
+/// focused; the arrow keys move, Enter, Space or Tab takes the colour and Escape closes without a change.
+/// </summary>
 [TemplatePart(Name = "PART_Palette", Type = typeof(ListBox))]
 public class ColorPicker : Control
 {
@@ -174,7 +238,8 @@ public class ColorPicker : Control
     }
 
     public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register(
-        nameof(IsDropDownOpen), typeof(bool), typeof(ColorPicker), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        nameof(IsDropDownOpen), typeof(bool), typeof(ColorPicker),
+        new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, (d, e) => ((ColorPicker)d).OnDropDownChanged((bool)e.NewValue)));
 
     public bool IsDropDownOpen
     {
@@ -190,14 +255,96 @@ public class ColorPicker : Control
         {
             palette.SelectionChanged += (_, _) =>
             {
+                // The arrow keys only move the highlight; a click takes the colour.
+                if (InputManager.Current.MostRecentInputDevice is KeyboardDevice)
+                {
+                    return;
+                }
                 if (palette.SelectedItem is Color c && c != SelectedColor)
                 {
-                    SelectedColor = c;
-                    IsDropDownOpen = false;
+                    Choose(c);
                 }
             };
+            palette.PreviewKeyDown += OnPalettePreviewKeyDown;
         }
         Sync();
+    }
+
+    protected override void OnPreviewKeyDown(KeyEventArgs e)
+    {
+        base.OnPreviewKeyDown(e);
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        if (!IsDropDownOpen && (key is Key.F4 or Key.Space || (key is Key.Down or Key.Up && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))))
+        {
+            IsDropDownOpen = true;
+            e.Handled = true;
+        }
+    }
+
+    private void OnPalettePreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        switch (key)
+        {
+            case Key.Enter:
+            case Key.Space:
+            case Key.Tab:
+                if (palette?.SelectedItem is Color c)
+                {
+                    Choose(c);
+                }
+                else
+                {
+                    IsDropDownOpen = false;
+                }
+                e.Handled = true;
+                break;
+            case Key.Escape:
+            case Key.F4:
+                IsDropDownOpen = false;
+                e.Handled = true;
+                break;
+            case Key.Up or Key.Down when Keyboard.Modifiers.HasFlag(ModifierKeys.Alt):
+                IsDropDownOpen = false;
+                e.Handled = true;
+                break;
+        }
+    }
+
+    private void Choose(Color color)
+    {
+        SelectedColor = color;
+        IsDropDownOpen = false;
+    }
+
+    private void OnDropDownChanged(bool open)
+    {
+        if (palette == null)
+        {
+            return;
+        }
+        if (open)
+        {
+            // Focus the current colour (or the first) once the popup is shown, so the arrow keys work.
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (!IsDropDownOpen || palette.Items.Count == 0)
+                {
+                    return;
+                }
+                var item = palette.SelectedItem ?? palette.Items[0];
+                (palette.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem)?.Focus();
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+        else
+        {
+            var hadFocus = palette.IsKeyboardFocusWithin;
+            Sync();
+            if (hadFocus)
+            {
+                Focus();
+            }
+        }
     }
 
     private void Sync()

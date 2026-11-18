@@ -382,7 +382,8 @@
         </Setter>
     </Style>
 
-    <!-- RangeSlider: the Slider's track and thumbs, with the light accent between the two thumbs -->
+    <!-- RangeSlider: the Slider's track and thumbs, with the light accent between the two thumbs. Each thumb is a
+         tab stop (the Slider's thumb style turns that off), so both values can be reached from the keyboard. -->
     <Style TargetType="c:RangeSlider">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
@@ -395,9 +396,9 @@
                         <Border Height="4" Margin="10,0" CornerRadius="2" VerticalAlignment="Center" Background="{DynamicResource Nocturne.Brushes.Slider.Track}" />
                         <Canvas x:Name="PART_Track">
                             <Border x:Name="PART_Fill" Canvas.Top="9" Height="4" CornerRadius="2" Background="{DynamicResource Nocturne.Brushes.Accent.Light}" />
-                            <Thumb x:Name="PART_LowerThumb" Canvas.Top="1" Style="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True"
+                            <Thumb x:Name="PART_LowerThumb" Canvas.Top="1" Style="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True" IsTabStop="True"
                                    FocusVisualStyle="{StaticResource Nocturne.Styles.FocusVisual.Round}" AutomationProperties.Name="Lower value" />
-                            <Thumb x:Name="PART_UpperThumb" Canvas.Top="1" Style="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True"
+                            <Thumb x:Name="PART_UpperThumb" Canvas.Top="1" Style="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True" IsTabStop="True"
                                    FocusVisualStyle="{StaticResource Nocturne.Styles.FocusVisual.Round}" AutomationProperties.Name="Upper value" />
                         </Canvas>
                     </Grid>

@@ -401,18 +401,32 @@ public partial class NocturneGrid
         }
     }
 
+    public static readonly DependencyProperty GroupRowBackgroundProperty = DependencyProperty.RegisterAttached(
+        "GroupRowBackground", typeof(Brush), typeof(NocturneGrid), new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// The background of a data row in a grouped grid: <see cref="DataGrid.RowBackground"/> or
+    /// <see cref="DataGrid.AlternatingRowBackground"/>, alternating within each group. The row style draws
+    /// it under the hover and selection fills.
+    /// </summary>
+    public static Brush? GetGroupRowBackground(DependencyObject element) => (Brush?)element.GetValue(GroupRowBackgroundProperty);
+
+    public static void SetGroupRowBackground(DependencyObject element, Brush? value) => element.SetValue(GroupRowBackgroundProperty, value);
+
     // The rows alternate their background within each group, as the rows of a GroupItem did; WPF's own
-    // alternation would count the headers.
+    // alternation would count the headers. The brush goes on GroupRowBackground, which the row style
+    // turns into the row's Background: set on Background itself, a local value would hide the style's
+    // hover and selection triggers.
     private void SetRowBackground(DataGridRow row, object item)
     {
         if (grouped != null)
         {
-            row.SetBinding(BackgroundProperty, grouped.IsAlternate(item) ? alternatingBackground ??= new Binding(nameof(AlternatingRowBackground)) { Source = this }
+            row.SetBinding(GroupRowBackgroundProperty, grouped.IsAlternate(item) ? alternatingBackground ??= new Binding(nameof(AlternatingRowBackground)) { Source = this }
                 : rowBackground ??= new Binding(nameof(RowBackground)) { Source = this });
         }
-        else if (row.ReadLocalValue(BackgroundProperty) is BindingExpression)
+        else if (row.ReadLocalValue(GroupRowBackgroundProperty) is BindingExpression)
         {
-            row.ClearValue(BackgroundProperty);
+            row.ClearValue(GroupRowBackgroundProperty);
         }
     }
 

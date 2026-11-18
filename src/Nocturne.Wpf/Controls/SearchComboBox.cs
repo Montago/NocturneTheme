@@ -195,6 +195,7 @@ public class SearchComboBox : Control
             textBox.TextChanged -= OnTextChanged;
             textBox.PreviewKeyDown -= OnTextKeyDown;
             textBox.GotKeyboardFocus -= OnTextGotFocus;
+            textBox.PreviewMouseLeftButtonDown -= OnTextMouseDown;
         }
         if (list != null)
         {
@@ -209,6 +210,7 @@ public class SearchComboBox : Control
             textBox.TextChanged += OnTextChanged;
             textBox.PreviewKeyDown += OnTextKeyDown;
             textBox.GotKeyboardFocus += OnTextGotFocus;
+            textBox.PreviewMouseLeftButtonDown += OnTextMouseDown;
         }
         if (list != null)
         {
@@ -238,9 +240,21 @@ public class SearchComboBox : Control
         }
     }
 
+    // The first click into the box selects the text, so typing searches anew instead of adding to the
+    // selected item's name; a click in a box that already has focus places the caret as usual.
+    private void OnTextMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (!textBox!.IsKeyboardFocusWithin)
+        {
+            textBox.Focus();
+            textBox.SelectAll();
+            e.Handled = true;
+        }
+    }
+
     private void OnTextGotFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
-        // Tabbing in selects the text so typing replaces it; a click places the caret as usual.
+        // Tabbing in selects the text so typing replaces it (a first click does the same, OnTextMouseDown).
         if (Mouse.LeftButton == MouseButtonState.Released)
         {
             textBox!.SelectAll();
