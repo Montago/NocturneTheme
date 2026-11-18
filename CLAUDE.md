@@ -60,9 +60,16 @@ src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.W
 src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot; Views/GalleryPage.xaml
                               has one Demo.Sample per control (Tag = file name), GallerySnapshot.cs renders
                               each to controls/<Tag>.png with popups marked demo:Gallery.Open drawn open
+samples/                      two sample apps built with the theme, in the solution: Nocturne.Wpf.Samples.Admin
+                              (HamburgerMenu; dashboard, employees, timesheets, projects, settings flyout,
+                              delete dialog) and .Portal (ListBox.Navigation side bar; home, products, orders,
+                              customers, about). Fixed data in SampleData.cs, one UserControl per page in Views/;
+                              Shared/ has WindowSnapshot.cs (--snapshot: admin-*.png / portal-*.png) and
+                              SampleIcons.xaml (Sample.Icons.*, icons the theme lacks)
 docs/                         GitHub Pages site (Just the Docs, colour scheme in _sass); pages per control
                               group, screenshots/ (pages) and screenshots/controls/ (gallery)
-tools/update_docs.py          builds the demo, runs --snapshot, copies the pictures to docs/, regenerates
+tools/update_docs.py          builds the demo and the samples, runs --snapshot, copies the pictures to docs/
+                              (samples to screenshots/samples/), regenerates
                               docs/resource-keys.md (generate_resource_keys.py) and runs the checks
                               (StaticResource order, images, every control documented); --check: checks only
 tools/generate_icon.ps1       draws src/Nocturne.Wpf/icon.png, the package icon (System.Drawing)
@@ -86,6 +93,8 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
   then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
   out of the repo.
+- The sample apps take `--snapshot <folder>` too (one picture per page, off screen at 1280×800).
+  A change to a control or style shows in them as well, so check them after visual changes.
 - The user often runs the demo from Visual Studio, which locks `bin\...`. Do not kill it; build to
   another folder: `dotnet build src/Nocturne.Wpf.Demo -o <scratch>/out`.
 - On-screen captures (`CopyFromScreen`) fail while the RDP window is minimised ("The handle is

@@ -1,0 +1,105 @@
+<nc:NocturneWindow x:Class="Nocturne.Wpf.Samples.Admin.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:nc="urn:nocturne-wpf"
+                   xmlns:v="clr-namespace:Nocturne.Wpf.Samples.Admin.Views"
+                   x:Name="Window"
+                   Title="Contoso Staffing · Administration"
+                   Width="1280" Height="800" MinWidth="960" MinHeight="600"
+                   WindowStartupLocation="CenterScreen">
+
+    <!-- Pages ask for navigation with NavigationCommands.GoToPage and the page name as parameter -->
+    <nc:NocturneWindow.CommandBindings>
+        <CommandBinding Command="NavigationCommands.GoToPage" Executed="OnGoToPage" />
+    </nc:NocturneWindow.CommandBindings>
+
+    <nc:NocturneWindow.RightWindowCommands>
+        <StackPanel Orientation="Horizontal">
+            <nc:Badged Badge="4" VerticalAlignment="Center">
+                <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Timesheets waiting for approval"
+                        AutomationProperties.Name="Timesheets waiting for approval"
+                        Command="NavigationCommands.GoToPage" CommandParameter="Timesheets">
+                    <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Bell}" />
+                </Button>
+            </nc:Badged>
+            <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" Margin="6,0,0,0" ToolTip="Settings"
+                    AutomationProperties.Name="Settings" Click="OnSettingsClick">
+                <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Settings}" />
+            </Button>
+        </StackPanel>
+    </nc:NocturneWindow.RightWindowCommands>
+
+    <nc:NocturneWindow.Flyouts>
+        <Grid>
+            <nc:Flyout x:Name="Settings" Header="Settings" Width="320">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="APPEARANCE" Margin="0,0,0,12" />
+                    <Label Content="_Accent" Target="{Binding ElementName=AccentBox}" />
+                    <ComboBox x:Name="AccentBox" SelectionChanged="OnAccentChanged" />
+                    <Label Margin="0,14,0,0" Content="_Backdrop" Target="{Binding ElementName=BackdropBox}" />
+                    <ComboBox x:Name="BackdropBox" SelectedItem="{Binding Backdrop, ElementName=Window}" />
+                    <CheckBox Style="{StaticResource Nocturne.Styles.ToggleSwitch}" Margin="0,16,0,0" Content="Show page names"
+                              IsChecked="{Binding IsPaneOpen, ElementName=Navigation}" />
+
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="ACCOUNT" Margin="0,28,0,12" />
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Style="{StaticResource Nocturne.Styles.IconTile}">
+                            <nc:StrokeIcon Data="{StaticResource Sample.Icons.User}" />
+                        </ContentControl>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Ida Kragh" />
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Controller · Finance" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="Sign out" HorizontalAlignment="Left" Margin="0,16,0,0" />
+                </StackPanel>
+            </nc:Flyout>
+        </Grid>
+    </nc:NocturneWindow.Flyouts>
+
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem Content="Ready" />
+            <Separator />
+            <StatusBarItem Content="Signed in as Ida Kragh" />
+            <StatusBarItem x:Name="Version" HorizontalAlignment="Right" />
+        </StatusBar>
+
+        <!-- The navigation pane: each item carries its page in Tag, and the content area shows it -->
+        <nc:HamburgerMenu x:Name="Navigation" SelectedIndex="0"
+                          Content="{Binding SelectedItem.Tag, RelativeSource={RelativeSource Self}}">
+            <nc:HamburgerMenuItem Content="Dashboard">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Grid}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:DashboardView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Employees">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Sample.Icons.People}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:EmployeesView x:Name="EmployeesView" />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Timesheets">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Clock}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:TimesheetsView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Projects">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Sample.Icons.Briefcase}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:ProjectsView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+        </nc:HamburgerMenu>
+    </DockPanel>
+</nc:NocturneWindow>

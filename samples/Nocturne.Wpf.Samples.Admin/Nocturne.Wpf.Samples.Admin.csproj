@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nocturne.Wpf\Nocturne.Wpf.csproj" />
+    <!-- Icons the theme does not have, shared by both samples -->
+    <Page Include="..\Shared\SampleIcons.xaml" Link="SampleIcons.xaml" />
+    <!-- Renders every page to PNG for the documentation; see App.OnStartup -->
+    <Compile Include="..\Shared\WindowSnapshot.cs" Link="WindowSnapshot.cs" />
+  </ItemGroup>
+
+</Project>

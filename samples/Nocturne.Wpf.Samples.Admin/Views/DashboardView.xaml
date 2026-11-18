@@ -1,0 +1,84 @@
+<UserControl x:Class="Nocturne.Wpf.Samples.Admin.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf"
+             xmlns:local="clr-namespace:Nocturne.Wpf.Samples.Admin">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,12,28,28">
+            <TextBlock Style="{StaticResource Page.Title}" Text="Dashboard" />
+            <TextBlock Style="{StaticResource Page.Intro}" Text="Wednesday 18 November · week 47" />
+
+            <nc:InfoBar Severity="Warning" Title="4 timesheets" Message="for week 47 are waiting for your approval." Margin="0,0,0,18">
+                <Button Content="Review" Command="NavigationCommands.GoToPage" CommandParameter="Timesheets" />
+            </nc:InfoBar>
+
+            <!-- Key figures; each tile opens the page behind it -->
+            <UniformGrid Rows="1" Margin="-6,0,-6,18">
+                <nc:Tile Title="Active employees" Count="8" Style="{StaticResource Nocturne.Styles.Tile.Accent}" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Employees">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.People}" />
+                </nc:Tile>
+                <nc:Tile Title="Running projects" Count="5" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Projects">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Briefcase}" />
+                </nc:Tile>
+                <nc:Tile Title="Hours this week" Count="296" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Timesheets">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Clock}" />
+                </nc:Tile>
+                <nc:Tile Title="Awaiting approval" Count="4" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Timesheets">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Bell}" />
+                </nc:Tile>
+            </UniformGrid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <HeaderedContentControl Style="{StaticResource Nocturne.Styles.Card}" Header="PROJECT BUDGETS" Tag="Hours">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.Projects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="local:Project">
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                                        <TextBlock Style="{StaticResource Page.Caption}" Margin="8,0,0,0" Text="{Binding Customer}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Page.Caption}">
+                                        <Run Text="{Binding UsedHours, Mode=OneWay}" /> of <Run Text="{Binding BudgetHours, Mode=OneWay}" />
+                                    </TextBlock>
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0" Value="{Binding Progress, Mode=OneWay}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Grid.Column="2" Style="{StaticResource Nocturne.Styles.Card}" Header="RECENT ACTIVITY">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.RecentActivity}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="local:Activity">
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Text}" />
+                                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Hint}" Margin="0,2,0,0" Text="{Binding Time}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

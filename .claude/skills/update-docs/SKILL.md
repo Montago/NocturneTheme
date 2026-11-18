@@ -14,10 +14,10 @@ match the code. Work in the repository root.
 python tools/update_docs.py
 ```
 
-It builds the demo into a scratch folder (never into `bin/`, which Visual Studio may have locked),
-runs it with `--snapshot`, copies the page pictures to `docs/screenshots/` and the gallery to
-`docs/screenshots/controls/`, regenerates `docs/resource-keys.md` and runs the checks. It takes about
-a minute.
+It builds the demo and the two sample apps into a scratch folder (never into `bin/`, which Visual
+Studio may have locked), runs them with `--snapshot`, copies the page pictures to `docs/screenshots/`,
+the gallery to `docs/screenshots/controls/` and the sample apps' pages to `docs/screenshots/samples/`,
+regenerates `docs/resource-keys.md` and runs the checks. It takes a minute or two.
 
 - **"pictures ... are blank"**: the screen is off or the session is locked, and WPF then renders
   nothing. Ask the user to turn the screen on or connect with RDP, then run it again. Do not commit
@@ -43,7 +43,7 @@ the ones the text has not caught up with yet:
 
 ```bash
 git log -1 --format="%h %s" -- docs
-git diff --stat <that commit>..HEAD -- src
+git diff --stat <that commit>..HEAD -- src samples
 git log --oneline <that commit>..HEAD
 git diff HEAD -- docs/resource-keys.md
 ```
@@ -58,6 +58,10 @@ Then, for each change:
 - **Changed look or behaviour**: the description under the control's heading still matches the new
   picture (colours, sizes, what happens on hover or click).
 - **Removed things**: no page mentions them any more.
+- **Sample apps** (`samples/`): `docs/samples.md` describes both apps page by page with their
+  pictures from `screenshots/samples/` (the script warns about pictures no page shows). If the page
+  does not exist yet, write it: how to run each app, then one section per page saying which controls
+  it shows, with its picture.
 - `README.md` and `src/Nocturne.Wpf/PACKAGE.md` (the nuget.org page) still match, including the list
   of own controls.
 - `CLAUDE.md` gets any new pitfall that was found along the way.

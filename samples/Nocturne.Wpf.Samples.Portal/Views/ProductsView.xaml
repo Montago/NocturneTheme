@@ -1,0 +1,101 @@
+<UserControl x:Class="Nocturne.Wpf.Samples.Portal.Views.ProductsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf"
+             xmlns:local="clr-namespace:Nocturne.Wpf.Samples.Portal">
+    <UserControl.Resources>
+        <ContextMenu x:Key="ReorderMenu">
+            <MenuItem Header="Order the usual quantity" />
+            <MenuItem Header="Order from another supplier…" />
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <Grid Margin="20,12,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.ColumnSpan="3" Style="{StaticResource Page.Title}" Text="Products" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource Page.Intro}" Text="14 products from 10 suppliers" />
+
+        <!-- Search and category filter above the list -->
+        <Grid Grid.Row="2" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="Search" Style="{StaticResource Nocturne.Styles.TextBox.Search}" nc:ControlHelper.Placeholder="Search products"
+                     nc:ControlHelper.ClearButton="True" AutomationProperties.Name="Search products" TextChanged="OnFilterChanged" />
+            <ComboBox x:Name="Category" Grid.Column="2" SelectedIndex="0" ItemsSource="{x:Static local:SampleData.Categories}"
+                      AutomationProperties.Name="Category" SelectionChanged="OnFilterChanged" />
+        </Grid>
+
+        <ListBox x:Name="List" Grid.Row="3" AutomationProperties.Name="Products">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="local:Product">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Price, StringFormat=C}" VerticalAlignment="Center" />
+                        <StackPanel>
+                            <TextBlock FontWeight="SemiBold" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="{Binding Category}" />
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Details of the selected product -->
+        <StackPanel Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" DataContext="{Binding SelectedItem, ElementName=List}">
+            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Name}" />
+            <TextBlock Style="{StaticResource Page.Caption}" Margin="0,2,0,16">
+                <Run Text="{Binding Category, Mode=OneWay}" /> · supplied by <Run Text="{Binding Supplier, Mode=OneWay}" />
+            </TextBlock>
+
+            <nc:InfoBar x:Name="LowStock" Severity="Warning" Title="Low stock." Message="Fewer units than the reorder level are left."
+                        IsClosable="False" Margin="0,0,0,16" />
+
+            <HeaderedContentControl Style="{StaticResource Nocturne.Styles.Card}" Header="STOCK AND PRICE">
+                <StackPanel>
+                    <!-- Short number fields side by side, each with its label above -->
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Width="130">
+                            <Label Content="_Price" Target="{Binding ElementName=PriceBox}" />
+                            <nc:NumericUpDown x:Name="PriceBox" Value="{Binding Price, Mode=OneWay}" Minimum="0" Interval="0.5" StringFormat="C" />
+                        </StackPanel>
+                        <StackPanel Width="110" Margin="16,0,0,0">
+                            <Label Content="Units in _stock" Target="{Binding ElementName=StockBox}" />
+                            <nc:NumericUpDown x:Name="StockBox" Value="{Binding InStock, Mode=OneWay}" Minimum="0" />
+                        </StackPanel>
+                        <StackPanel Width="110" Margin="16,0,0,0">
+                            <Label Content="_Reorder level" Target="{Binding ElementName=ReorderBox}" />
+                            <nc:NumericUpDown x:Name="ReorderBox" Value="{Binding ReorderLevel, Mode=OneWay}" Minimum="0" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                        <TextBlock Style="{StaticResource Page.Caption}" Text="Customer rating" Margin="0,0,12,0" />
+                        <nc:Rating Value="{Binding Rating, Mode=OneWay}" VerticalAlignment="Center" />
+                        <CheckBox Content="Discontinued" IsChecked="{Binding Discontinued, Mode=OneWay}" Margin="32,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </HeaderedContentControl>
+
+            <Expander Header="Description" IsExpanded="True" Margin="0,16,0,0">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
+            </Expander>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <nc:SplitButton Content="Reorder" Menu="{StaticResource ReorderMenu}" />
+                <Button Style="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" MinWidth="80" Margin="8,0,0,0" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,89 @@
+<UserControl x:Class="Nocturne.Wpf.Samples.Portal.Views.OrdersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf"
+             xmlns:local="clr-namespace:Nocturne.Wpf.Samples.Portal">
+    <UserControl.Resources>
+        <ContextMenu x:Key="ExportMenu">
+            <MenuItem Header="Excel (.xlsx)" />
+            <MenuItem Header="CSV" />
+            <MenuItem Header="Packing slips (PDF)" />
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <Grid Margin="20,12,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Style="{StaticResource Page.Title}" Text="Orders" />
+        <TextBlock Grid.Row="1" Style="{StaticResource Page.Intro}" Text="Orders from 1 to 18 November. The column headers filter by status and country." />
+
+        <DockPanel Grid.Row="2" Style="{StaticResource Page.Toolbar}">
+            <TextBlock Style="{StaticResource Page.Caption}" Text="From" Margin="0,0,8,0" />
+            <DatePicker x:Name="From" Width="140" SelectedDateFormat="Short" AutomationProperties.Name="From" />
+            <TextBlock Style="{StaticResource Page.Caption}" Text="to" Margin="10,0,8,0" />
+            <DatePicker x:Name="To" Width="140" SelectedDateFormat="Short" AutomationProperties.Name="To" />
+            <nc:AutoSuggestBox x:Name="CustomerBox" Width="230" Margin="16,0,0,0" ItemsSource="{x:Static local:SampleData.CustomerNames}"
+                               nc:ControlHelper.Placeholder="Customer" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Search}"
+                               AutomationProperties.Name="Customer" />
+
+            <nc:DropDownButton DockPanel.Dock="Right" Content="Export" Menu="{StaticResource ExportMenu}" />
+        </DockPanel>
+
+        <nc:NocturneGrid x:Name="OrderGrid" Grid.Row="3" IsReadOnly="True" SelectionMode="Single"
+                         ItemsSource="{x:Static local:SampleData.Orders}" SearchText="{Binding Text, ElementName=CustomerBox}">
+            <nc:NocturneGrid.Columns>
+                <nc:NocturneGridColumn Header="ORDER" Binding="{Binding Number}" Width="110" />
+                <nc:NocturneGridColumn Header="CUSTOMER" Binding="{Binding Customer}" Width="*" />
+                <nc:NocturneGridColumn Header="SHIP TO" Binding="{Binding ShipTo}" Width="180" IsSearchable="False" />
+                <nc:NocturneGridColumn Header="DATE" Binding="{Binding Date, StringFormat=d}" Width="120" TextAlignment="Right" IsSearchable="False" />
+                <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="local:Order">
+                            <ContentControl x:Name="Status" Style="{StaticResource Nocturne.Styles.Tag}" Content="{Binding Status}"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="New">
+                                    <Setter TargetName="Status" Property="Style" Value="{StaticResource Nocturne.Styles.Pill.Warning}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="Packing">
+                                    <Setter TargetName="Status" Property="Style" Value="{StaticResource Nocturne.Styles.Pill.Warning}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="Shipped">
+                                    <Setter TargetName="Status" Property="Style" Value="{StaticResource Nocturne.Styles.Pill.Success}" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <nc:NocturneGridColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="110" TextAlignment="Right" IsSearchable="False" />
+            </nc:NocturneGrid.Columns>
+        </nc:NocturneGrid>
+
+        <!-- Lines of the selected order -->
+        <Expander Grid.Row="4" Header="Order lines" IsExpanded="True" Margin="0,16,0,0" DataContext="{Binding SelectedItem, ElementName=OrderGrid}">
+            <ListView ItemsSource="{Binding Lines}" Height="120">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="PRODUCT" DisplayMemberBinding="{Binding Product}" Width="280" />
+                        <GridViewColumn Header="QUANTITY" DisplayMemberBinding="{Binding Quantity}" Width="100" />
+                        <GridViewColumn Header="PRICE" DisplayMemberBinding="{Binding Price, StringFormat=C}" Width="100" />
+                        <GridViewColumn Header="AMOUNT" DisplayMemberBinding="{Binding Amount, StringFormat=C}" Width="110" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Expander>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,14,0,0">
+            <TextBlock Style="{StaticResource Page.Caption}" Text="Shipped on time this month" Margin="0,0,12,0" />
+            <ProgressBar Width="220" Value="92" VerticalAlignment="Center" />
+            <TextBlock Style="{StaticResource Page.Caption}" Margin="12,0,0,0" Text="92 % · 10 orders · $8,412.70" />
+        </StackPanel>
+    </Grid>
+</UserControl>

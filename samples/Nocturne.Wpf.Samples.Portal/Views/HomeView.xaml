@@ -1,0 +1,72 @@
+<UserControl x:Class="Nocturne.Wpf.Samples.Portal.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf"
+             xmlns:local="clr-namespace:Nocturne.Wpf.Samples.Portal">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="20,12,28,28">
+            <TextBlock Style="{StaticResource Page.Title}" Text="Good morning, Lindsey" />
+            <TextBlock Style="{StaticResource Page.Intro}"
+                       Text="Wednesday 18 November · 3 orders are waiting to be packed and 5 products are below their reorder level." />
+
+            <nc:InfoBar Severity="Info" Title="New price list." Margin="0,0,0,18"
+                        Message="Prices for 2027 take effect on 1 January. Customers with open quotes get a reminder on Monday." />
+
+            <!-- Key figures; the first three open the page behind them -->
+            <UniformGrid Rows="1" Margin="-6,0,-6,18">
+                <nc:Tile Title="Open orders" Count="3" Style="{StaticResource Nocturne.Styles.Tile.Accent}" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Orders">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.List}" />
+                </nc:Tile>
+                <nc:Tile Title="Below reorder level" Count="5" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Products">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Box}" />
+                </nc:Tile>
+                <nc:Tile Title="Customers" Count="7" Margin="6,0" Width="Auto"
+                         Command="NavigationCommands.GoToPage" CommandParameter="Customers">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.People}" />
+                </nc:Tile>
+                <nc:Tile Title="Sales this month" Count="$8.4k" Margin="6,0" Width="Auto">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Chart}" />
+                </nc:Tile>
+            </UniformGrid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <HeaderedContentControl Style="{StaticResource Nocturne.Styles.Card}" Header="LATEST ORDERS">
+                    <ListView ItemsSource="{x:Static local:SampleData.Orders}" Height="236">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ORDER" DisplayMemberBinding="{Binding Number}" Width="96" />
+                                <GridViewColumn Header="CUSTOMER" DisplayMemberBinding="{Binding Customer}" Width="190" />
+                                <GridViewColumn Header="DATE" DisplayMemberBinding="{Binding Date, StringFormat=MMM d}" Width="80" />
+                                <GridViewColumn Header="TOTAL" DisplayMemberBinding="{Binding Total, StringFormat=C}" Width="100" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Grid.Column="2" Style="{StaticResource Nocturne.Styles.Card}" Header="TOP RATED PRODUCTS">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.TopRated}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="local:Product">
+                                <DockPanel Margin="0,0,0,14">
+                                    <nc:Rating DockPanel.Dock="Right" Value="{Binding Rating, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" />
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="{Binding Category}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

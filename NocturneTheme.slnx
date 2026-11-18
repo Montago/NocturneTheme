@@ -8,4 +8,8 @@
     <Project Path="src/Nocturne.Wpf.Demo/Nocturne.Wpf.Demo.csproj" />
     <Project Path="src/Nocturne.Wpf/Nocturne.Wpf.csproj" />
   </Folder>
+  <Folder Name="/WPF/Samples/">
+    <Project Path="samples/Nocturne.Wpf.Samples.Admin/Nocturne.Wpf.Samples.Admin.csproj" />
+    <Project Path="samples/Nocturne.Wpf.Samples.Portal/Nocturne.Wpf.Samples.Portal.csproj" />
+  </Folder>
 </Solution>

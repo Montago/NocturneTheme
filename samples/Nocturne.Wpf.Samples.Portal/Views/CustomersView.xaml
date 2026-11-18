@@ -1,0 +1,129 @@
+<UserControl x:Class="Nocturne.Wpf.Samples.Portal.Views.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf"
+             xmlns:local="clr-namespace:Nocturne.Wpf.Samples.Portal">
+    <!-- An accordion on the left, tabs with the selected customer on the right -->
+    <Grid Margin="20,12,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.ColumnSpan="3" Style="{StaticResource Page.Title}" Text="Customers" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource Page.Intro}" Text="7 customers in 6 countries" />
+
+        <nc:Accordion Grid.Row="2">
+            <Expander Header="By country" IsExpanded="True">
+                <TreeView x:Name="Tree" BorderThickness="0" Background="Transparent" Padding="0" ItemsSource="{x:Static local:SampleData.Countries}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type local:Country}" ItemsSource="{Binding Customers}">
+                            <TextBlock Text="{Binding Name}" />
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:Customer}">
+                                    <TextBlock Text="{Binding Company}" />
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Expander>
+            <Expander Header="Key accounts">
+                <TextBlock TextWrapping="Wrap" Text="Alfreds Futterkiste and Ernst Handel have framework agreements until 2028." />
+            </Expander>
+            <Expander Header="Archive">
+                <TextBlock TextWrapping="Wrap" Text="12 former customers." />
+            </Expander>
+        </nc:Accordion>
+
+        <Grid Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedItem, ElementName=Tree}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <ContentControl Style="{StaticResource Nocturne.Styles.IconTile}">
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Globe}" />
+                </ContentControl>
+                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Company}" />
+                    <TextBlock Style="{StaticResource Page.Caption}">
+                        <Run Text="{Binding City, Mode=OneWay}" />, <Run Text="{Binding Country, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+
+            <TabControl Grid.Row="1">
+                <TabItem Header="Contact">
+                    <!-- Two columns of fields, each with its label above -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel>
+                            <Label Content="C_ontact" Target="{Binding ElementName=ContactBox}" />
+                            <TextBox x:Name="ContactBox" Text="{Binding Contact, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="_Title" Target="{Binding ElementName=TitleBox}" />
+                            <TextBox x:Name="TitleBox" Text="{Binding Title, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                            <Label Content="_Email" Target="{Binding ElementName=EmailBox}" />
+                            <TextBox x:Name="EmailBox" Text="{Binding Email, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,12,0,0">
+                            <Label Content="_Phone" Target="{Binding ElementName=PhoneBox}" />
+                            <TextBox x:Name="PhoneBox" Width="180" HorizontalAlignment="Left" Text="{Binding Phone, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                            <Label Content="C_ity" Target="{Binding ElementName=CityBox}" />
+                            <TextBox x:Name="CityBox" Text="{Binding City, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <Button Content="New order" MinWidth="80" />
+                            <Button Style="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" MinWidth="80" Margin="8,0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Orders">
+                    <ListView ItemsSource="{Binding Orders}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ORDER" DisplayMemberBinding="{Binding Number}" Width="110" />
+                                <GridViewColumn Header="DATE" DisplayMemberBinding="{Binding Date, StringFormat=d}" Width="120" />
+                                <GridViewColumn Header="STATUS" DisplayMemberBinding="{Binding Status}" Width="110" />
+                                <GridViewColumn Header="TOTAL" DisplayMemberBinding="{Binding Total, StringFormat=C}" Width="110" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+                <TabItem Header="Notes">
+                    <TextBox Style="{StaticResource Nocturne.Styles.TextBox.MultiLine}"
+                             Text="Prefers delivery before 10 am. Invoices go to the accounts department, not to the contact." />
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

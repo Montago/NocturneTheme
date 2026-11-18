@@ -6,14 +6,17 @@ Usage (from the repository root):
     python tools/update_docs.py --check      only the checks, no build or screenshots
 
 Steps:
-  1. Builds the demo into a scratch folder (never into bin/, which Visual Studio may have locked).
-  2. Runs it with --snapshot and checks that no picture is blank. RenderTargetBitmap returns
+  1. Builds the demo and the sample apps into a scratch folder (never into bin/, which Visual Studio
+     may have locked).
+  2. Runs each with --snapshot and checks that no picture is blank. RenderTargetBitmap returns
      transparent images while the screen is off or the session is locked.
-  3. Copies the page pictures to docs/screenshots and the gallery to docs/screenshots/controls.
+  3. Copies the page pictures to docs/screenshots, the gallery to docs/screenshots/controls and the
+     sample apps' pages to docs/screenshots/samples.
   4. Regenerates docs/resource-keys.md.
   5. Checks that every {StaticResource} in Styles/ is defined earlier in the same file, that every
-     image the docs reference exists, that every gallery picture is shown on a docs page and still has
-     its sample, and that every public control class is mentioned on a docs page.
+     image the docs reference exists, that every gallery and sample picture is shown on a docs page,
+     that every gallery picture still has its sample, and that every public control class is
+     mentioned on a docs page.
 
 Prints a report and exits with 1 when a step or a check fails. Needs only the Python standard library
 and the .NET SDK.
@@ -35,6 +38,13 @@ DOCS = os.path.join(ROOT, 'docs')
 SHOTS = os.path.join(DOCS, 'screenshots')
 DEMO = 'src/Nocturne.Wpf.Demo'
 EXE = 'Nocturne.Wpf.Demo'
+# (project, exe, snapshot subfolder): the demo renders into the snapshot folder itself, the sample
+# apps into samples/ (admin-*.png and portal-*.png)
+APPS = [
+    (DEMO, EXE, ''),
+    ('samples/Nocturne.Wpf.Samples.Admin', 'Nocturne.Wpf.Samples.Admin', 'samples'),
+    ('samples/Nocturne.Wpf.Samples.Portal', 'Nocturne.Wpf.Samples.Portal', 'samples'),
+]
 GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Wpf.Demo', 'Views', 'GalleryPage.xaml')
 
 # Demo pictures the docs use (the rest of --snapshot is for checking the look while working).
@@ -68,26 +78,29 @@ def step(text):
 # ---------------------------------------------------------------- build and render
 
 def build_and_render(scratch, report):
-    out = os.path.join(scratch, 'bin')
     snap = os.path.join(scratch, 'snap')
-    step(f'Building {DEMO}')
-    result = subprocess.run(['dotnet', 'build', os.path.join(ROOT, DEMO), '-c', 'Release', '-o', out, '-nologo', '-v', 'q'],
-                            capture_output=True, text=True)
-    if result.returncode != 0:
-        report.error(f'build of {DEMO} failed:\n{result.stdout[-3000:]}{result.stderr[-2000:]}')
-        return None
-
-    step(f'Rendering {EXE} --snapshot')
     shutil.rmtree(snap, ignore_errors=True)
-    try:
-        subprocess.run([os.path.join(out, EXE + '.exe'), '--snapshot', snap], timeout=600, check=False)
-    except subprocess.TimeoutExpired:
-        report.error(f'{EXE} --snapshot did not finish within 10 minutes')
-        return None
-    error_file = os.path.join(snap, 'error.txt')
-    if os.path.exists(error_file):
-        report.error(f'{EXE} --snapshot failed:\n' + open(error_file, encoding='utf-8', errors='replace').read())
-        return None
+    for project, exe, subfolder in APPS:
+        out = os.path.join(scratch, 'bin', exe)
+        step(f'Building {project}')
+        result = subprocess.run(['dotnet', 'build', os.path.join(ROOT, project), '-c', 'Release', '-o', out, '-nologo', '-v', 'q'],
+                                capture_output=True, text=True)
+        if result.returncode != 0:
+            report.error(f'build of {project} failed:\n{result.stdout[-3000:]}{result.stderr[-2000:]}')
+            return None
+
+        step(f'Rendering {exe} --snapshot')
+        folder = os.path.join(snap, subfolder)
+        try:
+            subprocess.run([os.path.join(out, exe + '.exe'), '--snapshot', folder], timeout=600, check=False)
+        except subprocess.TimeoutExpired:
+            report.error(f'{exe} --snapshot did not finish within 10 minutes')
+            return None
+        error_file = os.path.join(folder, 'error.txt')
+        if os.path.exists(error_file):
+            report.error(f'{exe} --snapshot failed:\n' + open(error_file, encoding='utf-8', errors='replace').read())
+            return None
+
     pictures = glob.glob(os.path.join(snap, '**', '*.png'), recursive=True)
     print(f'  {len(pictures)} pictures')
     blank = [p for p in pictures if is_blank(p)]
@@ -122,8 +135,9 @@ def is_blank(path):
 def copy_pictures(snap, report):
     step('Copying pictures to docs/screenshots')
     plan = [(os.path.join(snap, name), os.path.join(SHOTS, name)) for name in DEMO_PAGES]
-    plan += [(source, os.path.join(SHOTS, 'controls', os.path.basename(source)))
-             for source in glob.glob(os.path.join(snap, 'controls', '*.png'))]
+    for folder in ('controls', 'samples'):
+        plan += [(source, os.path.join(SHOTS, folder, os.path.basename(source)))
+                 for source in glob.glob(os.path.join(snap, folder, '*.png'))]
 
     for source, target in plan:
         if not os.path.exists(source):
@@ -199,7 +213,7 @@ def check_doc_images(report):
                 if not os.path.exists(os.path.join(DOCS, m.group(1))):
                     report.error(f'{root_md} shows docs/{m.group(1)}, which does not exist')
 
-    for picture in sorted(glob.glob(os.path.join(SHOTS, 'controls', '*.png'))):
+    for picture in sorted(glob.glob(os.path.join(SHOTS, 'controls', '*.png')) + glob.glob(os.path.join(SHOTS, 'samples', '*.png'))):
         name = os.path.relpath(picture, DOCS).replace(os.sep, '/')
         if name not in referenced:
             report.warn(f'{name} is not shown on any docs page')
