@@ -545,6 +545,9 @@
         <Setter Property="EnableColumnVirtualization" Value="True" />
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
         <Setter Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="True" />
+        <!-- By row, not by pixel as the plain DataGrid: the thumb-drag preview (NocturneGrid.Scrolling.cs) needs
+             rows as the unit; scrolling by pixel moves and re-binds every row on each drag step (~30x slower) -->
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Item" />
         <!-- Search hits: light accent text in faintly lit cells (HighlightBrush, a background behind the words, is unset) -->
         <Setter Property="HighlightForeground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
         <Setter Property="HighlightCellBackground" Value="{DynamicResource Nocturne.Brushes.DataGrid.SearchHit}" />
