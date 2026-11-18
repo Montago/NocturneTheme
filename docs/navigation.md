@@ -79,7 +79,7 @@ sub-items.
 
 | `HamburgerMenuItem` | |
 | --- | --- |
-| `Icon` | The icon, usually an `nc:StrokeIcon` |
+| `Icon` | The icon, usually an `nc:StrokeIcon` or `{nc:Icon …}` ([NocturneIcon](typography.md#nocturneicon)) |
 | `Items` | Sub-items: they make the item a group. Sub-items show no icon |
 | `IsExpanded` | Whether a group shows its sub-items; selecting a sub-item opens its group |
 
@@ -129,7 +129,8 @@ For a section of a page, a [card](typography.md#cards) is usually the better cho
 ![Menu with a submenu open](screenshots/controls/menu.png)
 
 The menu bar's items are flat until hovered; submenus open in the dark popup. `ControlHelper.Icon`
-puts a line icon before a menu item, and `InputGestureText` shows its shortcut on the right.
+puts a line icon before a menu item (or `Icon="{nc:Icon ContentSave}"` a [Material Design
+icon](typography.md#nocturneicon), scaled to 16px), and `InputGestureText` shows its shortcut on the right.
 
 ```xml
 <Menu>

@@ -138,3 +138,16 @@ top right and a `Title` at the bottom. `Nocturne.Styles.Tile.Accent` fills it wi
 | `Badge` | What the badge shows (a number or a short word) |
 | `BadgeBackground` | The badge's fill (the accent by default) |
 | `BadgeForeground` | The badge's text colour (the text on the accent by default) |
+
+The badge sticks out 7px above and to the right of the content. In the 44px title bar a 36px button
+leaves only 4px above it, so there put the `Badged` around the button's icon instead:
+
+```xml
+<nc:NocturneWindow.RightWindowCommands>
+    <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Notifications">
+        <nc:Badged Badge="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <nc:NocturneIcon Kind="Bell" Width="18" Height="18" />
+        </nc:Badged>
+    </Button>
+</nc:NocturneWindow.RightWindowCommands>
+```

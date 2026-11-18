@@ -46,8 +46,9 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
 ## What is in it
 
 - **NocturneWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` (0.5),
-  44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2 or with
-  transparency effects off it paints an opaque ground of the same colour.
+  44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2, with
+  transparency effects off or over Remote Desktop (unless `UseBackdropInRemoteSession`) it paints an
+  opaque ground of the same colour.
 - **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,
   TextBox (`.Search`, `.MultiLine`), PasswordBox (reveal button), Label, CheckBox (three-state),
   RadioButton, toggle switch (`Nocturne.Styles.ToggleSwitch`), ComboBox (editable too), ListBox and
@@ -74,6 +75,9 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
   the accent colour chosen in Windows and follows it when the user changes it.
 - **Cards** (`Nocturne.Styles.Card`), tags, status pills, badges, icon tiles, typography styles.
 - **StrokeIcon** and a small set of line icons (`Nocturne.Icons.*`).
+- **NocturneIcon**: Material Design Icons by Pictogrammers, `<nc:NocturneIcon Kind="Bell" />`, with
+  the shortcuts `{nc:Icon ContentSave}` (for `MenuItem.Icon`, `Content`) and `{nc:IconGeometry Star}`.
+  The icons are under the Apache License 2.0 (see `NOTICE.md` in the package), the rest under MIT.
 - Attached helpers: `ControlHelper` (`Placeholder`, `Icon`, `HasError`, `CornerRadius`),
   `PasswordBoxHelper.CanReveal`, `TabHelper` (`ShowCloseButton`, `Badge`, `ShowAddButton`),
   `FocusHelper` (a keyboard-focus ring a template draws itself, as the TreeViewItem does).

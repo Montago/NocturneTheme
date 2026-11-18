@@ -30,6 +30,11 @@ Colours). Without it, or with `Backdrop="None"`, the window paints `Nocturne.Bru
 an opaque ground of the same colour as tint over backdrop, and `IsBackdropActive` is false. The window
 switches between the two by itself when the user turns transparency effects on or off.
 
+Over Remote Desktop the window paints the opaque ground too: WPF draws in software in a remote
+session, and a see-through window is slow there. It follows the session when it moves between the
+local screen and Remote Desktop while the app runs. Set `UseBackdropInRemoteSession="True"` to keep
+the backdrop anyway.
+
 ## Accents
 
 ![The controls page in the green accent](screenshots/accent-green.png)

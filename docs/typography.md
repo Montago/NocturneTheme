@@ -104,3 +104,49 @@ units works too.
 
 Templates with room for an icon read [`ControlHelper.Icon`](helpers.md#controlhelper) (menu items,
 `AutoSuggestBox`), so they take the same geometries.
+
+## NocturneIcon
+
+![Material Design icons alone, on icon buttons and on a primary button](screenshots/controls/nocturneicon.png)
+
+`nc:NocturneIcon` draws one of a set of [Material Design Icons](https://pictogrammers.com/library/mdi/)
+by Pictogrammers, filled, in its `Foreground`, 20×20 by default. `Kind` takes the icon's name as
+MahApps' IconBrowser shows it (`view-grid` is `ViewGrid`). Use these for an app's own icons
+(navigation, commands, status); the line icons above stay for the theme's templates.
+
+```xml
+<nc:NocturneIcon Kind="Bell" />
+<nc:NocturneIcon Kind="AccountMultiple" Width="16" Height="16" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+```
+
+Two markup extensions, `IconExtension` and `IconGeometryExtension`, save the element around it:
+
+| Markup | Gives | For |
+| --- | --- | --- |
+| `{nc:Icon ContentSave}` | a new `NocturneIcon` (`Size=18` sets width and height) | `Icon` of a `MenuItem` or `HamburgerMenuItem`, `Content` of an icon button |
+| `{nc:IconGeometry Star}` | the icon's frozen geometry in 24×24 units, filled | `Data` of a `Path`, a `GeometryDrawing` |
+
+```xml
+<Button Style="{StaticResource Nocturne.Styles.Button.Icon}" Content="{nc:Icon Refresh, Size=18}" ToolTip="Refresh" />
+<MenuItem Header="Save" Icon="{nc:Icon ContentSave}" InputGestureText="Ctrl+S" />
+<Path Width="20" Height="20" Stretch="Uniform" Data="{nc:IconGeometry Star}" Fill="{DynamicResource Nocturne.Brushes.Warning}" />
+```
+
+`{nc:Icon}` makes one element, and an element can only have one parent: in a `Style` setter, where
+one value is shared by every control, put a `NocturneIcon` in a template instead. Menu items scale an
+icon larger than their 16px slot down to fit.
+
+![The demo's Icons page](screenshots/icons.png)
+
+The demo's Icons page shows every icon with its name; click one to copy its XAML. The set is listed in
+`icons/icons.json` in the repository; to add an icon, put its MDI name there and run
+`python tools/generate_icons.py --fetch`, which downloads the SVG and regenerates `NocturneIconKind`.
+
+| Property | |
+| --- | --- |
+| `Kind` | The icon (`NocturneIconKind`; `None` draws nothing) |
+| `Data` | Read-only: the icon's geometry in 24×24 units (`NocturneIcon.GeometryOf(kind)` from code) |
+| `Foreground` | The colour (inherited) |
+
+The icons are licensed under the Apache License 2.0, the rest of Nocturne under MIT; the package's
+licence is `MIT AND Apache-2.0` and it carries both licences and a `NOTICE.md`.

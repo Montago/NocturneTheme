@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Montago/NocturneTheme/actions/workflows/ci.yml/badge.svg)](https://github.com/Montago/NocturneTheme/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Montago/NocturneTheme?label=release)](https://github.com/Montago/NocturneTheme/releases)
-[![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
+[![Licence: MIT AND Apache-2.0](https://img.shields.io/badge/licence-MIT%20AND%20Apache--2.0-blue)](NOTICE.md)
 
 A dark theme for WPF on .NET 8 and later. The Windows 11 backdrop (Acrylic by default, or Mica /
 Mica Alt) shows through a tinted window with a soft light from the top-left corner, and cards and
@@ -20,7 +20,8 @@ control; the package adds the controls a desktop app usually needs on top.
 ## What is in it
 
 - **The window.** `NocturneWindow` draws the backdrop, the tint and the light, its own 44px title bar
-  and caption buttons, and hosts in-window dialogs and flyouts.
+  and caption buttons, and hosts in-window dialogs and flyouts. Over Remote Desktop it paints an
+  opaque ground instead of the backdrop, which draws faster there.
 - **Every standard control**, styled as soon as `Nocturne.xaml` is merged, plus named variants such as
   `Nocturne.Styles.Button.Primary` or `Nocturne.Styles.TabControl.Document`.
 - **Own controls** (`nc:` namespace): `DropDownButton`, `SplitButton`, `Tile`, `Badged`,
@@ -32,6 +33,8 @@ control; the package adds the controls a desktop app usually needs on top.
   accent colour chosen in Windows, at run time.
 - **Building blocks**: cards, tags, pills, badges, icon tiles, a type scale and a set of line icons
   (`nc:StrokeIcon`).
+- **Icons.** `nc:NocturneIcon` draws Material Design Icons (`<nc:NocturneIcon Kind="Bell" />`, or
+  `Icon="{nc:Icon ContentSave}"` on a menu item); the set is listed in `icons/icons.json`.
 
 | | |
 | --- | --- |
@@ -130,5 +133,7 @@ The demo and the samples take `--snapshot <folder>`: they render their pages to 
 
 ## Licence
 
-MIT, see [LICENSE](LICENSE). Everything in the repository, including the icons, is drawn for Nocturne;
-the font is Segoe UI, which comes with Windows.
+MIT, see [LICENSE](LICENSE), except the Material Design Icons by Pictogrammers in `icons/` and the
+path data generated from them, which are under the Apache License 2.0 (see [NOTICE.md](NOTICE.md)).
+The rest, including the line icons, is drawn for Nocturne; the font is Segoe UI, which comes with
+Windows. The package's licence is `MIT AND Apache-2.0`.

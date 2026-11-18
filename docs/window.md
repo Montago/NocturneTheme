@@ -35,11 +35,12 @@ behind all of it.
 | --- | --- |
 | `Backdrop` | `Acrylic` (default), `Mica`, `MicaAlt` or `None` |
 | `TintOpacity` | How strongly the dark tint covers the backdrop, 0 to 1 (0.5) |
+| `UseBackdropInRemoteSession` | Keeps the backdrop over Remote Desktop (false: the window paints its opaque ground there) |
 | `IsBackdropActive` | Read-only: true while Windows draws the backdrop |
 | `TitleBarHeight` | Height of the title bar (44) |
 | `ShowIcon` | Shows `Icon` (or a small accent glyph when none is set) before the title (true) |
 | `ShowMinButton`, `ShowMaxRestoreButton` | Hide the minimise or maximise button |
-| `RightWindowCommands` | Content in the title bar before the caption buttons |
+| `RightWindowCommands` | Content in the title bar before the caption buttons (a [badge](buttons.md#badged) goes on the button's icon, so it stays inside the window) |
 | `Flyouts` | The layer for [flyouts](#flyout), above the content and under the title bar |
 
 ## Dialogs

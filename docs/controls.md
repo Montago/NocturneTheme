@@ -18,7 +18,7 @@ below show each one, the named variants, and the controls Nocturne.Wpf adds (`nc
 | [Lists and data](lists.md) | `ListBox`, `ListView`/`GridView`, `TreeView`, `DataGrid`, `NocturneGrid`, `Calendar`, `ScrollViewer` |
 | [Navigation and layout](navigation.md) | `TabControl` (segments and document tabs), `HamburgerMenu`, `Expander`, `Accordion`, `GroupBox`, `Menu`, `ContextMenu`, `ToolBar`, `StatusBar`, `GridSplitter`, `ToolTip` |
 | [Progress and status](status.md) | `ProgressBar`, `ProgressRing`, `BusyIndicator`, `InfoBar` |
-| [Typography and surfaces](typography.md) | Text styles, cards, tags, pills, badges, icon tiles, `StrokeIcon` and the icons |
+| [Typography and surfaces](typography.md) | Text styles, cards, tags, pills, badges, icon tiles, `StrokeIcon` and the line icons, `NocturneIcon` (Material Design Icons) |
 
 The picture under each heading is rendered from the demo's gallery
 (`src/Nocturne.Wpf.Demo/Views/GalleryPage.xaml`), on a card over the window's fallback ground.
