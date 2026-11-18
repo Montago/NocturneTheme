@@ -25,7 +25,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- MIT, except the icons: Material Design Icons (Apache License 2.0, see NOTICE.md) -->
+    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -41,6 +42,10 @@
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="PACKAGE.md" Pack="true" PackagePath="\README.md" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\NOTICE.md" Pack="true" PackagePath="\" />
+    <!-- The icons are Material Design Icons (Apache License 2.0) -->
+    <None Include="..\..\icons\LICENSE" Pack="true" PackagePath="\icons\" />
+    <None Include="..\..\icons\LICENSE-2.0.txt" Pack="true" PackagePath="\icons\" />
   </ItemGroup>
 
 </Project>

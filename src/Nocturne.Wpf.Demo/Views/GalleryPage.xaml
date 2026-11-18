@@ -790,5 +790,28 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ContentControl>
+
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="nocturneicon">
+            <StackPanel>
+                <StackPanel Margin="0,0,0,14" Orientation="Horizontal">
+                    <nc:NocturneIcon Kind="Bell" Margin="0,0,14,0" />
+                    <nc:NocturneIcon Kind="Calendar" Margin="0,0,14,0" />
+                    <nc:NocturneIcon Kind="Email" Margin="0,0,14,0" />
+                    <nc:NocturneIcon Kind="Folder" Margin="0,0,14,0" />
+                    <nc:NocturneIcon Kind="AccountMultiple" Margin="0,0,14,0" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                    <nc:NocturneIcon Kind="Star" Foreground="{DynamicResource Nocturne.Brushes.Warning}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Icon}" Content="{nc:Icon Refresh, Size=18}" AutomationProperties.Name="Refresh" />
+                    <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Icon}" Content="{nc:Icon Printer, Size=18}" AutomationProperties.Name="Print" />
+                    <Button Style="{StaticResource Nocturne.Styles.Button.Primary}">
+                        <StackPanel Orientation="Horizontal">
+                            <nc:NocturneIcon Kind="ContentSave" Width="16" Height="16" Margin="0,0,8,0" />
+                            <TextBlock Text="Save" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ContentControl>
     </Grid>
 </UserControl>

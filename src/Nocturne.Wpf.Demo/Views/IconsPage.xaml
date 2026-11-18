@@ -1,0 +1,69 @@
+<UserControl x:Class="Nocturne.Wpf.Demo.Views.IconsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-wpf">
+    <StackPanel>
+        <!-- Page header -->
+        <StackPanel Margin="0,0,0,20">
+            <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Icons" />
+            <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}"
+                       Text="nc:NocturneIcon draws Material Design Icons by Pictogrammers (Apache License 2.0), with the names MahApps' IconBrowser uses. Click an icon to copy its XAML; add more in icons/icons.json." />
+        </StackPanel>
+
+        <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="SHORTCUTS" Tag="nc:NocturneIcon · {nc:Icon} · {nc:IconGeometry}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource Nocturne.Styles.TextBlock.Mono}">
+                        <Setter Property="Margin" Value="20,0,0,14" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+
+                <StackPanel Margin="0,0,0,14" Orientation="Horizontal">
+                    <nc:NocturneIcon Kind="Bell" Margin="0,0,12,0" />
+                    <nc:NocturneIcon Kind="Cog" Margin="0,0,12,0" />
+                    <nc:NocturneIcon Kind="AccountMultiple" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="&lt;nc:NocturneIcon Kind=&quot;Bell&quot; /&gt;  — 20 × 20, in Foreground" />
+
+                <Button Grid.Row="1" Margin="0,0,0,14" HorizontalAlignment="Left" Style="{StaticResource Nocturne.Styles.Button.Icon}"
+                        Content="{nc:Icon Refresh, Size=18}" AutomationProperties.Name="Refresh" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Content=&quot;{nc:Icon Refresh, Size=18}&quot;  — a new NocturneIcon where content goes" />
+
+                <Menu Grid.Row="2" Margin="0,0,0,14" HorizontalAlignment="Left">
+                    <MenuItem Header="File">
+                        <MenuItem Header="New" Icon="{nc:Icon FilePlus}" InputGestureText="Ctrl+N" />
+                        <MenuItem Header="Save" Icon="{nc:Icon ContentSave}" InputGestureText="Ctrl+S" />
+                        <MenuItem Header="Print" Icon="{nc:Icon Printer}" InputGestureText="Ctrl+P" />
+                    </MenuItem>
+                </Menu>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="&lt;MenuItem Icon=&quot;{nc:Icon ContentSave}&quot; /&gt;  — scaled to the menu's 16px" />
+
+                <Path Grid.Row="3" Margin="0,0,0,14" Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Left"
+                      Data="{nc:IconGeometry Star}" Fill="{DynamicResource Nocturne.Brushes.Warning}" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="&lt;Path Data=&quot;{nc:IconGeometry Star}&quot; Fill=&quot;…&quot; /&gt;  — the geometry, 24 × 24" />
+            </Grid>
+        </HeaderedContentControl>
+
+        <HeaderedContentControl Style="{StaticResource Demo.Card}" Header="ALL ICONS" Tag="NocturneIconKind">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,16" LastChildFill="False">
+                    <TextBox x:Name="Search" Width="240" Style="{StaticResource Nocturne.Styles.TextBox.Search}" nc:ControlHelper.Placeholder="Search icons"
+                             TextChanged="OnSearchChanged" AutomationProperties.Name="Search icons" />
+                    <TextBlock x:Name="Copied" DockPanel.Dock="Right" VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.TextBlock.Mono}" />
+                </DockPanel>
+                <WrapPanel x:Name="Icons" />
+            </StackPanel>
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>

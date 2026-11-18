@@ -1,6 +1,6 @@
 <!--
     Shared pieces: the keyboard focus ring, typography, cards, tags, status pills, badges, icon
-    tiles and StrokeIcon. Other files reach these with DynamicResource (StaticResource does not
+    tiles, StrokeIcon and NocturneIcon. Other files reach these with DynamicResource (StaticResource does not
     work across the merged files).
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -44,6 +44,27 @@
                         <Canvas Width="24" Height="24">
                             <Path Data="{TemplateBinding Data}" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}"
                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                        </Canvas>
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- NocturneIcon: a filled Material Design icon; the 24×24 path scaled into the control, so every
+         icon keeps the padding of its grid -->
+    <Style TargetType="c:NocturneIcon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="SnapsToDevicePixels" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:NocturneIcon">
+                    <Viewbox Stretch="Uniform">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="{TemplateBinding Data}" Fill="{TemplateBinding Foreground}" />
                         </Canvas>
                     </Viewbox>
                 </ControlTemplate>

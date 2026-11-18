@@ -49,7 +49,10 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid x:Name="IconHost" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center">
-                    <ContentPresenter x:Name="IconPresenter" ContentSource="Icon" />
+                    <!-- A larger icon ({nc:Icon …} is 20px) is scaled down to the 16px slot -->
+                    <Viewbox StretchDirection="DownOnly">
+                        <ContentPresenter x:Name="IconPresenter" ContentSource="Icon" />
+                    </Viewbox>
                     <c:StrokeIcon x:Name="Glyph" Width="16" Height="16" Data="{TemplateBinding h:ControlHelper.Icon}" Foreground="{TemplateBinding Foreground}" />
                     <c:StrokeIcon x:Name="CheckMark" Width="16" Height="16" StrokeThickness="2.2" Visibility="Collapsed"
                                   Data="{DynamicResource Nocturne.Icons.Check}" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />

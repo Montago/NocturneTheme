@@ -34,6 +34,13 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 - Everything is MIT. No third-party images
   or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
   `Nocturne.Fonts.Family`).
+- The licence exception (approved by the user, as in JetPack): `NocturneIcon` draws Material Design
+  Icons (Apache 2.0), kept unchanged in `icons/mdi/` with their licence in `icons/` and a note in
+  `NOTICE.md`; the package licence is `MIT AND Apache-2.0`. Add icons only from that set: the MDI
+  name in `icons/icons.json`, then `python tools/generate_icons.py --fetch` (CI runs `--check`).
+  They are filled; the theme's own `Nocturne.Icons.*` line icons (`StrokeIcon`) stay for the
+  templates. Shortcuts: `{nc:Icon Bell}` (a new NocturneIcon, for `Icon`/`Content`; not in Style
+  setters, one element cannot have two parents) and `{nc:IconGeometry Bell}` (the geometry).
 - This is the basic control set. Grow it step by step; do not add a large set of extra controls
   without the user asking.
 - **Docs and screenshots are updated only for a release.** Code changes leave `docs/` (pages,
@@ -51,7 +58,8 @@ src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.W
   Styles/Controls.*.xaml      one file per control group
   Themes/Generic.xaml         merges Nocturne.xaml (implicit styles don't reach MainWindow : NocturneWindow)
   Controls/                   NocturneWindow (hosts Flyouts and dialogs), NocturneTheme (accents), LightTexture,
-                              StrokeIcon, TabPanelBorder, NativeMethods; own controls (behaviour ported
+                              StrokeIcon, NocturneIcon (+ Icon/IconGeometry extensions; NocturneIconKind.g.cs
+                              generated), TabPanelBorder, NativeMethods; own controls (behaviour ported
                               from JetPack, look new): DropDownButton, SplitButton, Tile (Buttons.xaml),
                               NumericUpDown (Text), ProgressRing, RangeSlider, Rating (Range), InfoBar,
                               Badged, BusyIndicator, Accordion (Containers), HamburgerMenu (Lists),
@@ -76,6 +84,8 @@ tools/update_docs.py          builds the demo and the samples, runs --snapshot, 
                               (samples to screenshots/samples/), regenerates
                               docs/resource-keys.md (generate_resource_keys.py) and runs the checks
                               (StaticResource order, images, every control documented); --check: checks only
+icons/                        icons.json (the MDI names in the set), mdi/*.svg, LICENSE (Apache 2.0)
+tools/generate_icons.py       icons.json + icons/mdi -> Controls/NocturneIconKind.g.cs; --fetch, --check
 tools/generate_icon.ps1       draws src/Nocturne.Wpf/icon.png, the package icon (System.Drawing)
 .github/workflows/            ci.yml (build and pack on every push and PR), release.yml (version tags)
 ```
@@ -89,7 +99,7 @@ dotnet build NocturneTheme.slnx
 src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot <scratch folder>
 ```
 
-- `--snapshot` renders the five pages (top, halfway down a long page, and the bottom), the popups
+- `--snapshot` renders the six pages (controls, more, custom, grid, tokens, icons: top, halfway down a long page, and the bottom), the popups
   (combo box, context menu, tool tip, date picker, drop-down button, time picker, colour picker,
   search combo box, two NocturneGrid filters), an open dialog, the open flyout, the folded
   HamburgerMenu and the grid grouped by make to PNG, one picture per gallery sample into `controls/`,

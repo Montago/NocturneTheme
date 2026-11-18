@@ -42,7 +42,7 @@ internal static class Snapshot
     {
         window.Backdrop = WindowBackdrop.None;
 
-        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "grid"), (4, "tokens") })
+        foreach (var (index, name) in new[] { (0, "controls"), (1, "more"), (2, "custom"), (3, "grid"), (4, "tokens"), (5, "icons") })
         {
             window.Navigation.SelectedIndex = index;
             await Settle(window);
