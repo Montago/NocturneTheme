@@ -17,4 +17,14 @@ public partial class App : Application
         FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement),
             new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
     }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+        // --render / --render-gallery: pictures of one control, no demo window (RenderCommand.cs)
+        if (!RenderCommand.TryStart(this, e.Args))
+        {
+            StartupUri = new Uri("MainWindow.xaml", UriKind.Relative);
+        }
+    }
 }

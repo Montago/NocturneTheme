@@ -20,82 +20,102 @@ internal static class GallerySnapshot
 {
     private const double Margin = 16;
 
-    public static async Task SaveAsync(string folder)
+    /// <summary>Renders the samples to <c>&lt;folder&gt;/&lt;Tag&gt;.png</c>; <paramref name="only"/> picks samples by Tag.</summary>
+    public static async Task SaveAsync(string folder, ICollection<string>? only = null, double scale = 1)
     {
         Directory.CreateDirectory(folder);
         var gallery = new GalleryPage();
-        var window = new NocturneWindow
-        {
-            Backdrop = WindowBackdrop.None,
-            Content = gallery,
-            ShowActivated = false,
-            ShowInTaskbar = false,
-            WindowStartupLocation = WindowStartupLocation.Manual,
-            Left = -20000,
-            Top = 0,
-            Width = 1400,
-            Height = 1000,
-        };
+        var window = CreateWindow(gallery);
         window.Show();
 
         try
         {
             var samples = gallery.Samples.ToList();
-            foreach (var sample in samples)
+            var chosen = samples.Where(s => only == null || only.Contains(s.Tag as string ?? "", StringComparer.OrdinalIgnoreCase)).ToList();
+            if (only != null && chosen.Count == 0)
+            {
+                throw new ArgumentException($"No gallery sample has the Tag '{string.Join(", ", only)}'. Tags: "
+                    + string.Join(", ", samples.Select(s => s.Tag)));
+            }
+            foreach (var sample in chosen)
             {
                 foreach (var other in samples)
                 {
                     other.Visibility = other == sample ? Visibility.Visible : Visibility.Collapsed;
                 }
-                await IdleAsync(window, 200);
-
-                var menus = new List<FrameworkElement>();
-                var closers = new List<Action>();
-                foreach (var element in Gallery.Descendants(sample).OfType<FrameworkElement>().Where(Gallery.GetOpen).ToList())
-                {
-                    Open(element, menus, closers);
-                }
-                await IdleAsync(window, 450);
-
-                var parts = new List<(Visual Visual, Rect Bounds)>();
-                var opened = Gallery.Descendants(sample).OfType<Popup>().Where(p => p.IsOpen && p.Child != null).ToList();
-                foreach (var popup in opened)
-                {
-                    var target = popup.PlacementTarget ?? VisualTreeHelper.GetParent(popup) as UIElement;
-                    AddPopup(parts, sample, popup.Child, target, popup.Placement, popup.HorizontalOffset, popup.VerticalOffset);
-                }
-                foreach (var menu in menus)
-                {
-                    var (target, placement, h, v) = menu switch
-                    {
-                        ContextMenu c => (c.PlacementTarget, c.Placement, c.HorizontalOffset, c.VerticalOffset),
-                        ToolTip t => (t.PlacementTarget, t.Placement, t.HorizontalOffset, t.VerticalOffset),
-                        _ => (null, PlacementMode.Bottom, 0d, 0d),
-                    };
-                    AddPopup(parts, sample, menu, target, placement, h, v);
-                }
-
-                Gallery.FreezeAnimations(sample);
-                foreach (var popup in parts.Select(p => p.Visual).OfType<DependencyObject>())
-                {
-                    Gallery.FreezeAnimations(popup);
-                }
-                await IdleAsync(window, 0);
-                Save(window, sample, parts, Path.Combine(folder, $"{sample.Tag}.png"));
-
-                foreach (var close in closers)
-                {
-                    close();
-                }
-                foreach (var menu in menus)
-                {
-                    menu.SetValue(menu is ToolTip ? ToolTip.IsOpenProperty : ContextMenu.IsOpenProperty, false);
-                }
+                await CaptureAsync(window, sample, Path.Combine(folder, $"{sample.Tag}.png"), scale);
             }
         }
         finally
         {
             window.Close();
+        }
+    }
+
+    /// <summary>An opaque window off the screen for <see cref="CaptureAsync"/>.</summary>
+    public static NocturneWindow CreateWindow(object content) => new()
+    {
+        Backdrop = WindowBackdrop.None,
+        Content = content,
+        ShowActivated = false,
+        ShowInTaskbar = false,
+        WindowStartupLocation = WindowStartupLocation.Manual,
+        Left = -20000,
+        Top = 0,
+        Width = 1400,
+        Height = 1000,
+    };
+
+    /// <summary>
+    /// Renders <paramref name="sample"/> (shown in <paramref name="window"/>) to a PNG on the window's
+    /// fallback ground, with the popups of the elements marked <c>Gallery.Open</c> drawn open and the
+    /// endless animations stopped <paramref name="time"/> in (700 ms by default).
+    /// </summary>
+    public static async Task CaptureAsync(Window window, FrameworkElement sample, string file, double scale = 1, TimeSpan? time = null)
+    {
+        await IdleAsync(window, 200);
+
+        var menus = new List<FrameworkElement>();
+        var closers = new List<Action>();
+        foreach (var element in Gallery.Descendants(sample).OfType<FrameworkElement>().Where(Gallery.GetOpen).ToList())
+        {
+            Open(element, menus, closers);
+        }
+        await IdleAsync(window, menus.Count + closers.Count > 0 ? 450 : 0);
+
+        var parts = new List<(Visual Visual, Rect Bounds)>();
+        var opened = Gallery.Descendants(sample).OfType<Popup>().Where(p => p.IsOpen && p.Child != null).ToList();
+        foreach (var popup in opened)
+        {
+            var target = popup.PlacementTarget ?? VisualTreeHelper.GetParent(popup) as UIElement;
+            AddPopup(parts, sample, popup.Child, target, popup.Placement, popup.HorizontalOffset, popup.VerticalOffset);
+        }
+        foreach (var menu in menus)
+        {
+            var (target, placement, h, v) = menu switch
+            {
+                ContextMenu c => (c.PlacementTarget, c.Placement, c.HorizontalOffset, c.VerticalOffset),
+                ToolTip t => (t.PlacementTarget, t.Placement, t.HorizontalOffset, t.VerticalOffset),
+                _ => (null, PlacementMode.Bottom, 0d, 0d),
+            };
+            AddPopup(parts, sample, menu, target, placement, h, v);
+        }
+
+        Gallery.FreezeAnimations(sample, time);
+        foreach (var popup in parts.Select(p => p.Visual).OfType<DependencyObject>())
+        {
+            Gallery.FreezeAnimations(popup, time);
+        }
+        await IdleAsync(window, 0);
+        Save(window, sample, parts, file, scale);
+
+        foreach (var close in closers)
+        {
+            close();
+        }
+        foreach (var menu in menus)
+        {
+            menu.SetValue(menu is ToolTip ? ToolTip.IsOpenProperty : ContextMenu.IsOpenProperty, false);
         }
     }
 
@@ -206,7 +226,7 @@ internal static class GallerySnapshot
         parts.Add((root, new Rect(at, new Size(root.ActualWidth, root.ActualHeight))));
     }
 
-    private static void Save(Window window, FrameworkElement sample, List<(Visual Visual, Rect Bounds)> parts, string file)
+    private static void Save(Window window, FrameworkElement sample, List<(Visual Visual, Rect Bounds)> parts, string file, double scale)
     {
         var bounds = new Rect(0, 0, sample.ActualWidth, sample.ActualHeight);
         foreach (var part in parts)
@@ -229,7 +249,9 @@ internal static class GallerySnapshot
             }
         }
 
-        var bitmap = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, 96, 96, PixelFormats.Pbgra32);
+        // A higher DPI draws the same layout with more pixels (for looking at details close up).
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(bounds.Width * scale), (int)Math.Ceiling(bounds.Height * scale),
+            96 * scale, 96 * scale, PixelFormats.Pbgra32);
         bitmap.Render(drawing);
         var encoder = new PngBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(bitmap));

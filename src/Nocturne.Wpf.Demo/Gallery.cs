@@ -19,8 +19,9 @@ public static class Gallery
     /// Stops the endless animations (indeterminate ProgressBar, ProgressRing) at a fixed point, so a
     /// sample gives the same picture on every run and a docs picture only changes when the look does.
     /// </summary>
-    public static void FreezeAnimations(DependencyObject root)
+    public static void FreezeAnimations(DependencyObject root, TimeSpan? time = null)
     {
+        var at = time ?? TimeSpan.FromMilliseconds(700);
         foreach (var control in Descendants(root).OfType<Control>())
         {
             if (control.Template is not { } template)
@@ -35,7 +36,7 @@ public static class Gallery
             foreach (var storyboard in storyboards)
             {
                 // Does nothing (apart from a trace message) when the storyboard is not running here.
-                storyboard.SeekAlignedToLastTick(control, TimeSpan.FromMilliseconds(700), TimeSeekOrigin.BeginTime);
+                storyboard.SeekAlignedToLastTick(control, at, TimeSeekOrigin.BeginTime);
                 storyboard.Pause(control);
             }
         }

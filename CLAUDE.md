@@ -57,7 +57,8 @@ src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.W
                               NocturneGridCheckBoxColumn and its Grid* helpers (DataGrid.xaml; JetPackGrid renamed)
   Helpers/                    ControlHelper, PasswordBoxHelper, TabHelper, ScrollViewerHelper, FocusHelper
                               (attached properties); Converters (tree indent, splitter direction)
-src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot; Views/GalleryPage.xaml
+src/Nocturne.Wpf.Demo/         demo app; pages in Views/, Snapshot.cs for --snapshot, RenderCommand.cs for
+                              --render / --render-gallery (one control, no demo window); Views/GalleryPage.xaml
                               has one Demo.Sample per control (Tag = file name), GallerySnapshot.cs renders
                               each to controls/<Tag>.png with popups marked demo:Gallery.Open drawn open
 samples/                      two sample apps built with the theme, in the solution: Nocturne.Wpf.Samples.Admin
@@ -93,6 +94,10 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
   then exits. RenderTargetBitmap cannot see Mica, so it switches the
   backdrop to None (opaque fallback ground). Look at the PNGs after every visual change; keep them
   out of the repo.
+- For one control, use `/render-control` (`.claude/skills/render-control`): `--render <snippet.xaml> <out.png>`
+  or `--render-gallery <Tag,…> <folder>` (`RenderCommand.cs`) draw a XAML snippet or chosen gallery
+  samples in about a second, with `--scale`, `--time` (animation moments) and `--accent`. Look at
+  details with those; run the full `--snapshot` once a visual change is done.
 - The sample apps take `--snapshot <folder>` too (one picture per page, off screen at 1280×800).
   A change to a control or style shows in them as well, so check them after visual changes.
 - The user often runs the demo from Visual Studio, which locks `bin\...`. Do not kill it; build to
