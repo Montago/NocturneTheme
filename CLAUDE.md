@@ -13,7 +13,10 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 - Keep the design's values (colours, radii, sizes, 120/150 ms transitions). The Tokens board is the
   spec; `Styles/Brushes.xaml` holds the colours.
 - Window defaults chosen by the user after trying them on screen (they differ from the design's
-  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.5.
+  Mica / 55 % / 80 %): `Backdrop` Acrylic, `TintOpacity` 0.5. Over Remote Desktop (WPF renders in
+  software there) the window paints its opaque ground instead unless `UseBackdropInRemoteSession` is
+  set; it follows the session live (WM_WTSSESSION_CHANGE). The user often works over RDP, so on screen
+  they see the opaque ground unless the demo's "Also over Remote Desktop" box is ticked.
 - No grain/noise texture. The design had one; the user tried many versions (sandblasted, hammered,
   1:1 pixels) and had it removed: it added nothing and turned to mud over RDP compression.
 - Accents: `NocturneTheme.SetAccent` (`Controls/NocturneTheme.cs`) writes the accent brushes,

@@ -39,7 +39,9 @@
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Margin="8,0,8,12" Style="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="WINDOW" />
                 <TextBlock Margin="8,0,0,6" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Backdrop" />
-                <ComboBox x:Name="BackdropBox" Margin="8,0,0,14" SelectedItem="{Binding Backdrop, ElementName=Window}" />
+                <ComboBox x:Name="BackdropBox" Margin="8,0,0,8" SelectedItem="{Binding Backdrop, ElementName=Window}" />
+                <CheckBox Margin="8,0,0,14" Content="Also over Remote Desktop" IsChecked="{Binding UseBackdropInRemoteSession, ElementName=Window}"
+                          ToolTip="Off by default: over Remote Desktop the window paints its opaque ground, which draws faster" />
                 <DockPanel Margin="8,0,0,0">
                     <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding TintOpacity, ElementName=Window, StringFormat={}{0:P0}}" />
                     <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Tint" />

@@ -47,6 +47,8 @@ public class NocturneWindow : Window
     private Color? surfaceColor;
     private bool frameExtended;
     private bool transparencyEnabled = true;
+    private bool remoteSession;
+    private DispatcherTimer? sessionTimer;
 
     static NocturneWindow()
     {
@@ -74,11 +76,30 @@ public class NocturneWindow : Window
         nameof(Backdrop), typeof(WindowBackdrop), typeof(NocturneWindow),
         new PropertyMetadata(WindowBackdrop.Acrylic, (d, _) => ((NocturneWindow)d).ApplyBackdrop()));
 
-    /// <summary>The system material behind the window. Needs Windows 11 22H2 with transparency effects on.</summary>
+    /// <summary>
+    /// The system material behind the window. Needs Windows 11 22H2 with transparency effects on, and
+    /// is left out over Remote Desktop unless <see cref="UseBackdropInRemoteSession"/> is set.
+    /// </summary>
     public WindowBackdrop Backdrop
     {
         get => (WindowBackdrop)GetValue(BackdropProperty);
         set => SetValue(BackdropProperty, value);
+    }
+
+    public static readonly DependencyProperty UseBackdropInRemoteSessionProperty = DependencyProperty.Register(
+        nameof(UseBackdropInRemoteSession), typeof(bool), typeof(NocturneWindow),
+        new PropertyMetadata(false, (d, _) => ((NocturneWindow)d).ApplyBackdrop()));
+
+    /// <summary>
+    /// Keeps the backdrop over Remote Desktop (false by default). WPF renders in software in a remote
+    /// session, and a see-through window has to be composed and sent again with everything behind it,
+    /// so the window paints its opaque ground there instead. It follows a session that moves between
+    /// the console and Remote Desktop while the app runs.
+    /// </summary>
+    public bool UseBackdropInRemoteSession
+    {
+        get => (bool)GetValue(UseBackdropInRemoteSessionProperty);
+        set => SetValue(UseBackdropInRemoteSessionProperty, value);
     }
 
     private static readonly DependencyPropertyKey IsBackdropActivePropertyKey = DependencyProperty.RegisterReadOnly(
@@ -276,6 +297,7 @@ public class NocturneWindow : Window
         base.OnSourceInitialized(e);
         var hwnd = new WindowInteropHelper(this).Handle;
         HwndSource.FromHwnd(hwnd)?.AddHook(WndProc);
+        NativeMethods.RegisterSessionNotification(hwnd, true);
 
         // The theme is always dark: dark system frame and dark materials. Rounded corners on Windows 11.
         NativeMethods.SetDwmAttribute(hwnd, NativeMethods.DwmwaUseImmersiveDarkMode, 1);
@@ -292,10 +314,12 @@ public class NocturneWindow : Window
         }
 
         // The backdrop type fails before Windows 11 22H2. With transparency effects off Windows
-        // paints a plain fill instead, so the template keeps its opaque ground.
+        // paints a plain fill instead, so the template keeps its opaque ground. Over Remote Desktop
+        // the opaque ground is used too (UseBackdropInRemoteSession).
         var active = false;
         transparencyEnabled = NativeMethods.IsTransparencyEnabled();
-        if (Backdrop != WindowBackdrop.None && transparencyEnabled)
+        remoteSession = NativeMethods.IsRemoteSession();
+        if (Backdrop != WindowBackdrop.None && transparencyEnabled && (!remoteSession || UseBackdropInRemoteSession))
         {
             var type = Backdrop switch
             {
@@ -386,6 +410,30 @@ public class NocturneWindow : Window
             && NativeMethods.IsTransparencyEnabled() != transparencyEnabled)
         {
             Dispatcher.BeginInvoke(ApplyBackdrop);
+        }
+
+        // The session moved between the local console and Remote Desktop. Check again a little
+        // later too, in case the remote state has not been updated when the message arrives.
+        if (msg == NativeMethods.WmWtsSessionChange && Backdrop != WindowBackdrop.None
+            && wParam.ToInt32() is >= NativeMethods.WtsConsoleConnect and <= NativeMethods.WtsRemoteDisconnect)
+        {
+            Dispatcher.BeginInvoke(ApplyBackdrop);
+            sessionTimer ??= new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (_, _) =>
+            {
+                sessionTimer!.Stop();
+                if (NativeMethods.IsRemoteSession() != remoteSession)
+                {
+                    ApplyBackdrop();
+                }
+            }, Dispatcher);
+            sessionTimer.Stop();
+            sessionTimer.Start();
+        }
+
+        if (msg == NativeMethods.WmDestroy)
+        {
+            NativeMethods.RegisterSessionNotification(hwnd, false);
+            sessionTimer?.Stop();
         }
 
         // A new accent colour in Windows: NocturneTheme follows it when the app uses NocturneAccent.System.

@@ -25,6 +25,14 @@ internal static class NativeMethods
     public const int WmSysCommand = 0x0112;
     public const int WmSettingChange = 0x001A;
     public const int WmDwmColorizationColorChanged = 0x0320;
+    public const int WmDestroy = 0x0002;
+
+    // Session changes (WTSRegisterSessionNotification): a Remote Desktop connection taking over the
+    // session or the local console taking it back
+    public const int WmWtsSessionChange = 0x02B1;
+    public const int WtsConsoleConnect = 1, WtsConsoleDisconnect = 2, WtsRemoteConnect = 3, WtsRemoteDisconnect = 4;
+    private const int NotifyForThisSession = 0;
+    private const int SmRemoteSession = 0x1000;
     public const int ScKeyMenu = 0xF100;
     public const int GwlStyle = -16;
     public const int WsSysMenu = 0x00080000;
@@ -49,6 +57,31 @@ internal static class NativeMethods
 
     [DllImport("user32.dll")]
     private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int cx, int cy, int flags);
+
+    [DllImport("user32.dll")]
+    private static extern int GetSystemMetrics(int index);
+
+    [DllImport("wtsapi32.dll")]
+    private static extern bool WTSRegisterSessionNotification(IntPtr hwnd, int flags);
+
+    [DllImport("wtsapi32.dll")]
+    private static extern bool WTSUnRegisterSessionNotification(IntPtr hwnd);
+
+    /// <summary>True while the session is shown over Remote Desktop (asked each time, never cached).</summary>
+    public static bool IsRemoteSession() => GetSystemMetrics(SmRemoteSession) != 0;
+
+    /// <summary>Sends the window WM_WTSSESSION_CHANGE when the session moves between console and remote.</summary>
+    public static void RegisterSessionNotification(IntPtr hwnd, bool register)
+    {
+        try
+        {
+            _ = register ? WTSRegisterSessionNotification(hwnd, NotifyForThisSession) : WTSUnRegisterSessionNotification(hwnd);
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException)
+        {
+            // No Terminal Services API (Server Core without it): the state at start-up is used.
+        }
+    }
 
     /// <summary>Sets or clears window style bits and lets the frame pick up the change.</summary>
     public static void SetStyleBits(IntPtr hwnd, int bits, bool set)
