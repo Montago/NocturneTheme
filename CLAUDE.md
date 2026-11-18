@@ -125,9 +125,10 @@ src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot 
   `<Version>` in the csproj) and creates a GitHub release with the `.nupkg` and `.snupkg` attached.
   Tag with `git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"` and push the tag; tag and push only when the
   user asks.
-- nuget.org (Trusted Publishing) is off until the user turns it on: the push runs only when the
-  repository variable `NUGET_PUBLISH` is `true` and the secret `NUGET_USER` is set. The user sets
-  both; never add API keys or secrets to the repo.
+- nuget.org (Trusted Publishing) is on since 0.1.2: the release workflow pushes to nuget.org because
+  the repository variable `NUGET_PUBLISH` is `true` and the secret `NUGET_USER` is set (the user set
+  both, and the nuget.org policy "Nocturne Publishing" for Montago/NocturneTheme, release.yml). Never
+  add API keys or secrets to the repo. A failed push can be retried by re-running the release run.
 
 ## WPF gotchas (same as JetPack)
 
