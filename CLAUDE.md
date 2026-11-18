@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Nocturne for WPF: a dark theme for .NET 8+, built from the user's design canvas (claude.ai artifact
+Nocturne for WPF: a dark theme for .NET 10+, built from the user's design canvas (claude.ai artifact
 "Nocturne – WPF kontrolbibliotek", boards Main and Tokens). It was called Frosted Glass until the
 glass look was dropped.
 Structured like the user's JetPack theme (`C:\Git\JetpackTheme`): one library, one merged
@@ -52,7 +52,7 @@ dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
 ## Layout
 
 ```
-src/Nocturne.Wpf/              library (net8.0-windows, NuGet package Nocturne.Wpf)
+src/Nocturne.Wpf/              library (net10.0-windows, NuGet package Nocturne.Wpf)
   Styles/Nocturne.xaml         the one dictionary apps merge; merges everything below
   Styles/Brushes.xaml, Fonts.xaml, Icons.xaml
   Styles/Controls.*.xaml      one file per control group
@@ -96,7 +96,7 @@ XAML namespace `urn:nocturne-wpf`, prefix `nc`. Brushes are referenced with `Dyn
 
 ```bash
 dotnet build NocturneTheme.slnx
-src/Nocturne.Wpf.Demo/bin/Debug/net8.0-windows/Nocturne.Wpf.Demo.exe --snapshot <scratch folder>
+src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot <scratch folder>
 ```
 
 - `--snapshot` renders the six pages (controls, more, custom, grid, tokens, icons: top, halfway down a long page, and the bottom), the popups

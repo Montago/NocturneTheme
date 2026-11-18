@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -18,7 +18,7 @@
     <Version>0.1.0</Version>
     <Authors>Martin Kirk</Authors>
     <Copyright>Copyright (c) 2026 Martin Kirk</Copyright>
-    <Description>Nocturne: a dark theme for WPF on .NET 8+. Windows 11 Acrylic, Mica or Mica Alt shows through a tinted window, with translucent cards and styles for the standard controls.</Description>
+    <Description>Nocturne: a dark theme for WPF on .NET 10+. Windows 11 Acrylic, Mica or Mica Alt shows through a tinted window, with translucent cards and styles for the standard controls.</Description>
     <PackageTags>wpf;theme;mica;acrylic;nocturne;dark;controls;styles</PackageTags>
     <PackageProjectUrl>https://github.com/Montago/NocturneTheme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Montago/NocturneTheme</RepositoryUrl>
