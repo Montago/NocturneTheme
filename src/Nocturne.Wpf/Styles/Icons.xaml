@@ -19,6 +19,8 @@
     <Geometry x:Key="Nocturne.Icons.Copy">M10.5,8.5 H17.5 A2,2 0 0 1 19.5,10.5 V17.5 A2,2 0 0 1 17.5,19.5 H10.5 A2,2 0 0 1 8.5,17.5 V10.5 A2,2 0 0 1 10.5,8.5 Z M15.5,8.5 V6 A1.5,1.5 0 0 0 14,4.5 H6 A1.5,1.5 0 0 0 4.5,6 V14 A1.5,1.5 0 0 0 6,15.5 H8.5</Geometry>
     <Geometry x:Key="Nocturne.Icons.Cut">M4,17.5 A2.5,2.5 0 1 1 9,17.5 A2.5,2.5 0 1 1 4,17.5 Z M15,17.5 A2.5,2.5 0 1 1 20,17.5 A2.5,2.5 0 1 1 15,17.5 Z M8.3,15.7 L18,4 M15.7,15.7 L6,4</Geometry>
     <Geometry x:Key="Nocturne.Icons.Paste">M7,4.5 H17 A2,2 0 0 1 19,6.5 V18.5 A2,2 0 0 1 17,20.5 H7 A2,2 0 0 1 5,18.5 V6.5 A2,2 0 0 1 7,4.5 Z M9,4.5 H15 V7.5 H9 Z</Geometry>
+    <Geometry x:Key="Nocturne.Icons.Undo">M9,14 L4,9 L9,4 M4,9 H14.5 A5.5,5.5 0 0 1 14.5,20 H11</Geometry>
+    <Geometry x:Key="Nocturne.Icons.SelectAll">M8,4 H4 V8 M16,4 H20 V8 M20,16 V20 H16 M4,16 V20 H8 M9,12 H15</Geometry>
     <Geometry x:Key="Nocturne.Icons.Edit">M4,20 H8 L19,9 L15,5 L4,16 Z</Geometry>
     <Geometry x:Key="Nocturne.Icons.Delete">M4,7 H20 M9.5,7 V4.5 H14.5 V7 M6,7 L7,20 H17 L18,7</Geometry>
     <Geometry x:Key="Nocturne.Icons.Sync">M20,12 A8,8 0 0 1 5.7,16.9 M4,12 A8,8 0 0 1 18.3,7.1 M18.5,3 V7.2 H14.3 M5.5,21 V16.8 H9.7</Geometry>

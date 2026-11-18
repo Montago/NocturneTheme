@@ -674,6 +674,14 @@
             </Border>
         </ContentControl>
 
+        <!-- The text fields' own menu (Nocturne.ContextMenu.Text), opened over a selection -->
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="contextmenu-text" Width="420">
+            <Grid Height="290" VerticalAlignment="Top">
+                <TextBox VerticalAlignment="Top" Text="Nocturne for WPF" SelectionStart="0" SelectionLength="8" IsInactiveSelectionHighlightEnabled="True"
+                         AutomationProperties.Name="Name" demo:Gallery.Open="True" />
+            </Grid>
+        </ContentControl>
+
         <ContentControl Style="{StaticResource Demo.Sample}" Tag="toolbar" Width="640">
             <ToolBarTray>
                 <ToolBar>

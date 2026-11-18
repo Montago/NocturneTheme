@@ -18,7 +18,9 @@ internal static class NativeMethods
     public const int DwmsbtTabbedWindow = 4;    // Mica Alt
 
     // DWM_WINDOW_CORNER_PREFERENCE values
+    public const int DwmwcpDoNotRound = 1;
     public const int DwmwcpRound = 2;
+    public const int DwmwcpRoundSmall = 3;
 
     // Window style bits and messages for keeping the system caption buttons away
     public const int WmStyleChanging = 0x007C;

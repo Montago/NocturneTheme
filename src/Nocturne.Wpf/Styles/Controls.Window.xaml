@@ -1,6 +1,7 @@
 <!--
     NocturneWindow: backdrop (or the opaque fallback), tint and the light from the top-left
-    corner, under a 44px title bar with 46 x 32 caption buttons. Over the content: the Flyouts layer,
+    corner, under a 44px title bar with 46 x 32 caption buttons: LeftWindowCommands, icon and title,
+    RightWindowCommands, caption buttons. TitleBarStyle puts a strip behind it. Over the content: the Flyouts layer,
     then PART_DialogHost, which dims the page while a NocturneDialog is open.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -81,6 +82,8 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
+                            <!-- The strip behind the title bar: none (Seamless), or a fill with a hairline under it (TitleBarStyle) -->
+                            <Border x:Name="TitleBarBg" Height="{TemplateBinding TitleBarHeight}" Background="Transparent" />
                             <DockPanel x:Name="TitleBar" Height="{TemplateBinding TitleBarHeight}" Background="Transparent">
                                 <StackPanel x:Name="CaptionButtons" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
                                     <Button x:Name="MinButton" Style="{StaticResource Nocturne.Styles.Button.WindowCaption}" Command="{x:Static SystemCommands.MinimizeWindowCommand}"
@@ -94,12 +97,17 @@
                                 </StackPanel>
                                 <ContentPresenter x:Name="RightCommands" DockPanel.Dock="Right" Margin="0,0,8,0" VerticalAlignment="Center"
                                                   Content="{TemplateBinding RightWindowCommands}" WindowChrome.IsHitTestVisibleInChrome="True" />
-                                <StackPanel x:Name="TitleArea" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
+                                <!-- LeftWindowCommands, then a thin divider before the icon and title -->
+                                <ContentPresenter x:Name="LeftCommands" DockPanel.Dock="Left" Margin="8,0,0,0" VerticalAlignment="Center"
+                                                  Content="{TemplateBinding LeftWindowCommands}" WindowChrome.IsHitTestVisibleInChrome="True" />
+                                <Rectangle x:Name="LeftDivider" DockPanel.Dock="Left" Width="1" Height="18" Margin="12,0" VerticalAlignment="Center"
+                                           Fill="{DynamicResource Nocturne.Brushes.Divider}" />
+                                <StackPanel x:Name="TitleArea" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Grid x:Name="IconHost" Width="16" Height="16" Margin="0,0,10,0">
                                         <Image x:Name="IconImage" Source="{TemplateBinding Icon}" RenderOptions.BitmapScalingMode="HighQuality" />
                                         <!-- Shown when the window has no Icon -->
                                         <Canvas x:Name="DefaultIcon" Width="16" Height="16" Visibility="Collapsed">
-                                            <Rectangle Canvas.Left="1" Canvas.Top="1" Width="14" Height="14" RadiusX="4" RadiusY="4" Fill="{DynamicResource Nocturne.Brushes.Accent}" />
+                                            <Rectangle x:Name="DefaultIconFill" Canvas.Left="1" Canvas.Top="1" Width="14" Height="14" RadiusX="4" RadiusY="4" Fill="{DynamicResource Nocturne.Brushes.Accent}" />
                                             <Rectangle Canvas.Left="4.5" Canvas.Top="4.5" Width="7" Height="7" RadiusX="2" RadiusY="2" Stroke="White" StrokeThickness="1.4" />
                                         </Canvas>
                                     </Grid>
@@ -121,6 +129,23 @@
                                     WindowChrome.ResizeGripDirection="BottomRight" Opacity="0.5" />
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="LeftWindowCommands" Value="{x:Null}">
+                            <Setter TargetName="LeftCommands" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="LeftDivider" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="TitleArea" Property="Margin" Value="16,0,0,0" />
+                        </Trigger>
+                        <Trigger Property="TitleBarStyle" Value="Separated">
+                            <Setter TargetName="TitleBarBg" Property="Background" Value="{DynamicResource Nocturne.Brushes.TitleBar.Separated}" />
+                            <Setter TargetName="TitleBarBg" Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.TitleBar.Separated.Border}" />
+                            <Setter TargetName="TitleBarBg" Property="BorderThickness" Value="0,0,0,1" />
+                        </Trigger>
+                        <Trigger Property="TitleBarStyle" Value="Accent">
+                            <Setter TargetName="TitleBarBg" Property="Background" Value="{DynamicResource Nocturne.Brushes.TitleBar.Accent}" />
+                            <Setter TargetName="TitleBarBg" Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.TitleBar.Accent.Border}" />
+                            <Setter TargetName="TitleBarBg" Property="BorderThickness" Value="0,0,0,1" />
+                            <!-- The accent square would sink into the accent strip: draw it in the light shade -->
+                            <Setter TargetName="DefaultIconFill" Property="Fill" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                        </Trigger>
                         <Trigger Property="IsBackdropActive" Value="True">
                             <Setter TargetName="Fallback" Property="Visibility" Value="Collapsed" />
                         </Trigger>

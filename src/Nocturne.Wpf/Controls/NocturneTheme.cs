@@ -137,6 +137,8 @@ public static class NocturneTheme
         resources["Nocturne.Brushes.Window.Fallback"] = Solid(p.Fallback);
         resources["Nocturne.Brushes.Window.Tint"] = Solid(p.Tint);
         resources["Nocturne.Brushes.Popup"] = Solid(Color.FromArgb(0xF7, p.Popup.R, p.Popup.G, p.Popup.B));
+        resources["Nocturne.Brushes.TitleBar.Accent"] = Vertical(WithAlpha(p.Accent, 0x4D), WithAlpha(p.Accent, 0x38));
+        resources["Nocturne.Brushes.TitleBar.Accent.Border"] = Solid(WithAlpha(p.Light, 0x38));
     }
 
     /// <summary>
@@ -253,6 +255,8 @@ public static class NocturneTheme
         brush.Freeze();
         return brush;
     }
+
+    private static Color WithAlpha(Color color, byte alpha) => Color.FromArgb(alpha, color.R, color.G, color.B);
 
     private static LinearGradientBrush Vertical(Color top, Color bottom)
     {

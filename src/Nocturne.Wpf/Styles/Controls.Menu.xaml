@@ -159,6 +159,44 @@
         </Setter>
     </Style>
 
+    <!--
+        The right-click menu of the text fields (TextBox, RichTextBox, the editable ComboBox,
+        NumericUpDown, DatePicker): Undo, Cut, Copy, Paste and Select all with the theme's line icons.
+        ContextMenuHelper.TargetsPlacement sends the commands to the field the menu was opened on, so
+        Cut and Copy are dimmed without a selection. A read-only field shows only Copy and Select all. PasswordBox offers Paste only.
+        x:Shared False: every field gets its own menu. A field with spell checking on keeps WPF's own
+        menu, which lists the suggestions.
+    -->
+    <!-- Commands that change the text: left out on a read-only field -->
+    <Style x:Key="Nocturne.Styles.MenuItem.TextEdit" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PlacementTarget.IsReadOnly, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Nocturne.Styles.Separator.TextEdit" TargetType="Separator" BasedOn="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PlacementTarget.IsReadOnly, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <ContextMenu x:Key="Nocturne.ContextMenu.Text" x:Shared="False" h:ContextMenuHelper.TargetsPlacement="True">
+        <MenuItem Style="{StaticResource Nocturne.Styles.MenuItem.TextEdit}" Command="ApplicationCommands.Undo" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Undo}" />
+        <Separator Style="{StaticResource Nocturne.Styles.Separator.TextEdit}" />
+        <MenuItem Style="{StaticResource Nocturne.Styles.MenuItem.TextEdit}" Command="ApplicationCommands.Cut" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Cut}" />
+        <MenuItem Command="ApplicationCommands.Copy" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Copy}" />
+        <MenuItem Style="{StaticResource Nocturne.Styles.MenuItem.TextEdit}" Command="ApplicationCommands.Paste" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Paste}" />
+        <Separator />
+        <MenuItem Command="ApplicationCommands.SelectAll" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.SelectAll}" />
+    </ContextMenu>
+
+    <ContextMenu x:Key="Nocturne.ContextMenu.Password" x:Shared="False" h:ContextMenuHelper.TargetsPlacement="True">
+        <MenuItem Command="ApplicationCommands.Paste" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Paste}" />
+    </ContextMenu>
+
     <Style TargetType="Menu">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family}" />

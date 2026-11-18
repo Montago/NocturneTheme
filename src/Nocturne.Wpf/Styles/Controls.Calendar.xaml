@@ -307,6 +307,7 @@
 
     <!-- DatePicker -->
     <Style TargetType="DatePickerTextBox">
+        <Setter Property="ContextMenu" Value="{DynamicResource Nocturne.ContextMenu.Text}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Background" Value="Transparent" />

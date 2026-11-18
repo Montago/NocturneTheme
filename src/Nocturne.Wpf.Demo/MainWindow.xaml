@@ -7,6 +7,20 @@
                   Title="Nocturne — Control library"
                   Width="1500" Height="1000" MinWidth="900" MinHeight="600"
                   WindowStartupLocation="CenterScreen">
+    <!-- Before the title: back to the previous page, and fold the navigation in or out -->
+    <nc:NocturneWindow.LeftWindowCommands>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="BackButton" Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" IsEnabled="False" Click="OnBackClick"
+                    ToolTip="Back" AutomationProperties.Name="Back">
+                <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.ChevronLeft}" />
+            </Button>
+            <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" Margin="4,0,0,0" Click="OnNavigationToggleClick"
+                    ToolTip="Show or hide the navigation" AutomationProperties.Name="Show or hide the navigation">
+                <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Menu}" />
+            </Button>
+        </StackPanel>
+    </nc:NocturneWindow.LeftWindowCommands>
+
     <!-- Slides in from the right (Custom controls page: Open flyout) -->
     <nc:NocturneWindow.Flyouts>
         <Grid>
@@ -30,18 +44,33 @@
     </nc:NocturneWindow.Flyouts>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="248" />
+            <ColumnDefinition x:Name="NavigationColumn" Width="248" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Navigation and the window settings -->
-        <DockPanel Margin="16,12,16,20">
+        <DockPanel x:Name="NavigationPane" Margin="16,12,16,20">
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Margin="8,0,8,12" Style="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="WINDOW" />
                 <TextBlock Margin="8,0,0,6" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Backdrop" />
-                <ComboBox x:Name="BackdropBox" Margin="8,0,0,8" SelectedItem="{Binding Backdrop, ElementName=Window}" />
+                <ComboBox x:Name="BackdropBox" Margin="8,0,0,8" SelectedItem="{Binding Backdrop, ElementName=Window}" AutomationProperties.Name="Backdrop" />
                 <CheckBox Margin="8,0,0,14" Content="Also over Remote Desktop" IsChecked="{Binding UseBackdropInRemoteSession, ElementName=Window}"
                           ToolTip="Off by default: over Remote Desktop the window paints its opaque ground, which draws faster" />
+                <Grid Margin="8,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="72" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Title bar" />
+                    <ComboBox x:Name="TitleBarBox" Grid.Column="1" SelectedItem="{Binding TitleBarStyle, ElementName=Window}" AutomationProperties.Name="Title bar" />
+                    <TextBlock Grid.Row="2" VerticalAlignment="Center" Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Corners" />
+                    <ComboBox x:Name="CornerBox" Grid.Row="2" Grid.Column="1" SelectedItem="{Binding CornerStyle, ElementName=Window}" AutomationProperties.Name="Corners" />
+                </Grid>
                 <DockPanel Margin="8,0,0,0">
                     <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" Text="{Binding TintOpacity, ElementName=Window, StringFormat={}{0:P0}}" />
                     <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Tint" />

@@ -69,6 +69,7 @@ internal static class Snapshot
         await SaveGrid(window);
         await CheckWheelChaining(window);
         await SaveAccents(window);
+        await SaveTitleBars(window);
 
         // One picture per control for docs/screenshots/controls
         await GallerySnapshot.SaveAsync(Path.Combine(Folder!, "controls"));
@@ -86,6 +87,20 @@ internal static class Snapshot
             Save(window, Path.Combine(Folder!, $"accent-{accent.ToString().ToLowerInvariant()}.png"));
         }
         NocturneTheme.SetAccent(NocturneAccent.Blue);
+    }
+
+    /// <summary>titlebar-&lt;style&gt;.png: the controls page under the Separated and Accent title bars.</summary>
+    private static async Task SaveTitleBars(MainWindow window)
+    {
+        window.Navigation.SelectedIndex = 0;
+        window.PageScroller.ScrollToTop();
+        foreach (var style in new[] { TitleBarStyle.Separated, TitleBarStyle.Accent })
+        {
+            window.TitleBarStyle = style;
+            await Settle(window);
+            Save(window, Path.Combine(Folder!, $"titlebar-{style.ToString().ToLowerInvariant()}.png"));
+        }
+        window.TitleBarStyle = TitleBarStyle.Seamless;
     }
 
     /// <summary>
