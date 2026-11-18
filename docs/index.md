@@ -42,6 +42,7 @@ standard control; the package adds the controls a desktop app usually needs on t
 | [Getting started](getting-started.md) | Install, merge the dictionary, the first window |
 | [Theme and accents](theming.md) | Backdrop, tint, light, accents, overriding brushes, the font |
 | [Controls](controls.md) | One page per group of controls, each with a picture and XAML |
+| [Sample apps](samples.md) | Two applications built with the theme, page by page |
 | [Reference](reference.md) | [Resource keys](resource-keys.md) and [helpers](helpers.md) (attached properties, template parts) |
 
 The pictures come from the demo app in `src/Nocturne.Wpf.Demo` (`--snapshot`); the one under each
