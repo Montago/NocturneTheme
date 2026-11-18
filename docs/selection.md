@@ -67,7 +67,7 @@ The track fills with the accent up to a round thumb.
 ![RangeSlider](screenshots/controls/rangeslider.png)
 
 `nc:RangeSlider` has two thumbs for a lower and an upper value; the part between them is filled.
-Drag a thumb or use the arrow keys on the focused one.
+Drag a thumb or use the arrow keys on the focused one; both thumbs are tab stops.
 
 ```xml
 <nc:RangeSlider Minimum="0" Maximum="100" LowerValue="{Binding MinDistance}" UpperValue="{Binding MaxDistance}" SmallChange="5" />

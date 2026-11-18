@@ -111,6 +111,8 @@ if (await ShowDialogAsync(dialog) == MessageDialogResult.Affirmative) { ... }
 ![A flyout over the window](screenshots/flyout.png)
 
 `nc:Flyout` is a panel that slides in from an edge of the window (220 ms) and floats over the page.
+It slides even when Windows' animation effects are off (as in most Remote Desktop sessions). On
+opening it moves keyboard focus to its first field, and on closing gives it back to where it was.
 Put flyouts in the window's `Flyouts` layer and open them with `IsOpen`:
 
 ```xml

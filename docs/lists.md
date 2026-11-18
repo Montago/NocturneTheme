@@ -124,7 +124,10 @@ thumb is released, so a fast drag keeps up.
   to tick, or takes typed values: `*` matches any text (`vol*`), and numbers and dates take ranges
   (`>50000`, `<=2019`, `2020-01-01..2020-06-30`). A column of dates gets a tree of years, months and days.
 - **Sorting**: a click on a header sorts up, then down, then back to the original order.
-- **Grouping**: `GroupMemberPath` groups the rows under header rows that fold up.
+- **Grouping**: `GroupMemberPath` groups the rows under header rows that fold up; the rows alternate
+  within each group.
+- **Copying**: Ctrl+C copies the selected rows as the cells show them, with the binding's format
+  (`183,140`, `09/20/2015`), unless the column has its own `ClipboardContentBinding`.
 - **Paging**: `PageSize` shows one page at a time with a pager under the rows.
 
 ```xml

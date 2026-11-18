@@ -154,7 +154,9 @@ The calendar opens under the field. Today has a ring (`IsTodayHighlighted`), the
 ![TimePicker with its list open](screenshots/controls/timepicker.png)
 
 `nc:TimePicker` is a time field that opens a list of times `MinuteStep` minutes apart; the time can
-also be typed (`9` or `9:30`, taken on Return or when focus leaves).
+also be typed (`9` or `9:30`, taken on Return or when focus leaves). It takes the keyboard like a
+`ComboBox`: Alt+Down or F4 opens the list, the arrow keys move the highlight, Return takes the time
+and Escape closes the list.
 
 ```xml
 <nc:TimePicker SelectedTime="{Binding MeetingTime}" MinuteStep="30" />
@@ -170,7 +172,9 @@ also be typed (`9` or `9:30`, taken on Return or when focus leaves).
 
 ![ColorPicker with its palette open](screenshots/controls/colorpicker.png)
 
-`nc:ColorPicker` shows the colour and its hex code and opens a grid of swatches.
+`nc:ColorPicker` shows the colour and its hex code and opens a grid of swatches. Space, Alt+Down or
+F4 opens it at the current colour, the arrow keys move through the swatches, Return, Space or Tab
+takes one and Escape closes the grid without a change; focus stays on the picker.
 
 ```xml
 <nc:ColorPicker Width="200" SelectedColor="{Binding LabelColour}" />
@@ -207,8 +211,8 @@ text. Up and Down move through them, Return or a click takes one and raises `Sug
 ![SearchComboBox with its list open](screenshots/controls/searchcombobox.png)
 
 `nc:SearchComboBox` opens and picks like a `ComboBox`, but it can be typed into: the list filters to
-the items that match and the first match is completed. The list is virtualized, so thousands of items
-stay fast.
+the items that match and the first match is completed. The first click or Tab into the box selects its
+text, so typing starts a new search. The list is virtualized, so thousands of items stay fast.
 
 ```xml
 <nc:SearchComboBox ItemsSource="{Binding People}" DisplayMemberPath="Name" SelectedItem="{Binding Owner}"
