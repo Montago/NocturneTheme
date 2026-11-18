@@ -49,6 +49,9 @@ Values shown are the default blue accent. `NocturneTheme.SetAccent` writes new v
 | `Nocturne.Brushes.Button.Primary.Pressed` | SolidColorBrush | `#FF134F8C` |
 | `Nocturne.Brushes.Button.Primary.Border` | SolidColorBrush | `#33FFFFFF` |
 | `Nocturne.Brushes.Button.Primary.Highlight` | SolidColorBrush | `#33FFFFFF` |
+| `Nocturne.Brushes.Button.Danger` | LinearGradientBrush | `#FF9E2121` 0 → `#FF861B1B` 1 |
+| `Nocturne.Brushes.Button.Danger.Hover` | LinearGradientBrush | `#FFAB2626` 0 → `#FF922020` 1 |
+| `Nocturne.Brushes.Button.Danger.Pressed` | SolidColorBrush | `#FF701616` |
 | `Nocturne.Brushes.Button.Secondary` | SolidColorBrush | `#14FFFFFF` |
 | `Nocturne.Brushes.Button.Secondary.Hover` | SolidColorBrush | `#24FFFFFF` |
 | `Nocturne.Brushes.Button.Secondary.Pressed` | SolidColorBrush | `#0DFFFFFF` |
@@ -105,6 +108,10 @@ Values shown are the default blue accent. `NocturneTheme.SetAccent` writes new v
 | `Nocturne.Brushes.Window.Fallback` | SolidColorBrush | `#FF1E2633` |
 | `Nocturne.Brushes.Window.Tint` | SolidColorBrush | `#FF10161F` |
 | `Nocturne.Brushes.Window.Light` | LinearGradientBrush | `#14FFFFFF` 0 → `#00FFFFFF` 0.38 |
+| `Nocturne.Brushes.TitleBar.Separated` | SolidColorBrush | `#38000000` |
+| `Nocturne.Brushes.TitleBar.Separated.Border` | SolidColorBrush | `#14FFFFFF` |
+| `Nocturne.Brushes.TitleBar.Accent` | LinearGradientBrush | `#4D1F78D1` 0 → `#381F78D1` 1 |
+| `Nocturne.Brushes.TitleBar.Accent.Border` | SolidColorBrush | `#384DA3FF` |
 | `Nocturne.Brushes.Caption.Hover` | SolidColorBrush | `#17FFFFFF` |
 | `Nocturne.Brushes.Caption.Pressed` | SolidColorBrush | `#0DFFFFFF` |
 | `Nocturne.Brushes.Close.Hover` | SolidColorBrush | `#FFC42B1C` |
@@ -131,7 +138,7 @@ The font family and the type scale. Override `Nocturne.Fonts.Family` to use anot
 
 Line icons (24×24 geometries) for `nc:StrokeIcon` and `ControlHelper.Icon`, as in [Typography and surfaces](typography.md#icons).
 
-`Nocturne.Icons.Check`, `Nocturne.Icons.ChevronDown`, `Nocturne.Icons.ChevronUp`, `Nocturne.Icons.ChevronRight`, `Nocturne.Icons.ChevronLeft`, `Nocturne.Icons.Close`, `Nocturne.Icons.Plus`, `Nocturne.Icons.Search`, `Nocturne.Icons.Refresh`, `Nocturne.Icons.Eye`, `Nocturne.Icons.Copy`, `Nocturne.Icons.Cut`, `Nocturne.Icons.Paste`, `Nocturne.Icons.Edit`, `Nocturne.Icons.Delete`, `Nocturne.Icons.Sync`, `Nocturne.Icons.Shield`, `Nocturne.Icons.Globe`, `Nocturne.Icons.Database`, `Nocturne.Icons.Grid`, `Nocturne.Icons.Layers`, `Nocturne.Icons.Text`, `Nocturne.Icons.Clock`, `Nocturne.Icons.Calendar`, `Nocturne.Icons.Folder`, `Nocturne.Icons.Info`, `Nocturne.Icons.CheckCircle`, `Nocturne.Icons.Warning`, `Nocturne.Icons.Error`, `Nocturne.Icons.Components`, `Nocturne.Icons.Filter`, `Nocturne.Icons.PageFirst`, `Nocturne.Icons.PageLast`, `Nocturne.Icons.Menu`, `Nocturne.Icons.File`, `Nocturne.Icons.Caption.Minimize`, `Nocturne.Icons.Caption.Maximize`, `Nocturne.Icons.Caption.Restore`, `Nocturne.Icons.Caption.Close`
+`Nocturne.Icons.Check`, `Nocturne.Icons.ChevronDown`, `Nocturne.Icons.ChevronUp`, `Nocturne.Icons.ChevronRight`, `Nocturne.Icons.ChevronLeft`, `Nocturne.Icons.Close`, `Nocturne.Icons.Plus`, `Nocturne.Icons.Search`, `Nocturne.Icons.Refresh`, `Nocturne.Icons.Eye`, `Nocturne.Icons.Copy`, `Nocturne.Icons.Cut`, `Nocturne.Icons.Paste`, `Nocturne.Icons.Undo`, `Nocturne.Icons.SelectAll`, `Nocturne.Icons.Edit`, `Nocturne.Icons.Delete`, `Nocturne.Icons.Sync`, `Nocturne.Icons.Shield`, `Nocturne.Icons.Globe`, `Nocturne.Icons.Database`, `Nocturne.Icons.Grid`, `Nocturne.Icons.Layers`, `Nocturne.Icons.Text`, `Nocturne.Icons.Clock`, `Nocturne.Icons.Calendar`, `Nocturne.Icons.Folder`, `Nocturne.Icons.Info`, `Nocturne.Icons.CheckCircle`, `Nocturne.Icons.Warning`, `Nocturne.Icons.Error`, `Nocturne.Icons.Components`, `Nocturne.Icons.Filter`, `Nocturne.Icons.PageFirst`, `Nocturne.Icons.PageLast`, `Nocturne.Icons.Menu`, `Nocturne.Icons.File`, `Nocturne.Icons.Caption.Minimize`, `Nocturne.Icons.Caption.Maximize`, `Nocturne.Icons.Caption.Restore`, `Nocturne.Icons.Caption.Close`
 
 ## Named styles
 
@@ -142,6 +149,7 @@ variants and building blocks; use them with `Style="{StaticResource ...}"` or as
 | --- | --- | --- |
 | `Nocturne.Styles.Button` | `ButtonBase` | Controls.Buttons.xaml |
 | `Nocturne.Styles.Button.Primary` | `ButtonBase` | Controls.Buttons.xaml |
+| `Nocturne.Styles.Button.Danger` | `ButtonBase` | Controls.Buttons.xaml |
 | `Nocturne.Styles.Button.Subtle` | `ButtonBase` | Controls.Buttons.xaml |
 | `Nocturne.Styles.Button.Icon` | `ButtonBase` | Controls.Buttons.xaml |
 | `Nocturne.Styles.Button.Icon.Subtle` | `ButtonBase` | Controls.Buttons.xaml |
@@ -180,6 +188,8 @@ variants and building blocks; use them with `Style="{StaticResource ...}"` or as
 | `Nocturne.Styles.TreeViewItem.Expander` | `ToggleButton` | Controls.Lists.xaml |
 | `Nocturne.Styles.NocturneGrid.DateFilterItem` | `TreeViewItem` | Controls.Lists.xaml |
 | `Nocturne.Styles.HamburgerMenu.Toggle` | `ToggleButton` | Controls.Lists.xaml |
+| `Nocturne.Styles.MenuItem.TextEdit` | `MenuItem` | Controls.Menu.xaml |
+| `Nocturne.Styles.Separator.TextEdit` | `Separator` | Controls.Menu.xaml |
 | `Nocturne.Styles.ToolBar.Thumb` | `Thumb` | Controls.Menu.xaml |
 | `Nocturne.Styles.ToolBar.Overflow` | `ToggleButton` | Controls.Menu.xaml |
 | `Nocturne.Styles.ListBoxItem.Popup` | `ListBoxItem` | Controls.Pickers.xaml |

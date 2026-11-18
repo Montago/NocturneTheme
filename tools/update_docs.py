@@ -52,6 +52,7 @@ GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Wpf.Demo', 'Views', 'GalleryPage.x
 DEMO_PAGES = [
     'controls.png', 'more.png', 'custom.png', 'grid.png', 'tokens.png', 'icons.png', 'dialog.png', 'flyout.png',
     'accent-green.png', 'accent-orange.png', 'accent-yellow.png', 'accent-red.png',
+    'titlebar-separated.png', 'titlebar-accent.png',
 ]
 
 

@@ -21,10 +21,13 @@ control; the package adds the controls a desktop app usually needs on top.
 ## What is in it
 
 - **The window.** `NocturneWindow` draws the backdrop, the tint and the light, its own 44px title bar
-  and caption buttons, and hosts in-window dialogs and flyouts. Over Remote Desktop it paints an
+  (with commands on both sides, and a separated or accent-tinted strip if you like) and caption
+  buttons, and hosts in-window dialogs and flyouts. Over Remote Desktop it paints an
   opaque ground instead of the backdrop, which draws faster there.
 - **Every standard control**, styled as soon as `Nocturne.xaml` is merged, plus named variants such as
-  `Nocturne.Styles.Button.Primary` or `Nocturne.Styles.TabControl.Document`.
+  `Nocturne.Styles.Button.Primary`, `.Danger` or `Nocturne.Styles.TabControl.Document`. Text fields
+  get a right-click menu with icons, errors show in a callout under the field, and scroll bars fade
+  out while the mouse is away.
 - **Own controls** (`nc:` namespace): `DropDownButton`, `SplitButton`, `Tile`, `Badged`,
   `NumericUpDown`, `TimePicker`, `ColorPicker`, `AutoSuggestBox`, `SearchComboBox`, `RangeSlider`,
   `Rating`, `ProgressRing`, `BusyIndicator`, `InfoBar`, `Accordion`, `HamburgerMenu`, `NocturneDialog`,

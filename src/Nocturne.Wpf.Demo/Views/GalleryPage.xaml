@@ -55,7 +55,7 @@
             </WrapPanel>
         </ContentControl>
 
-        <ContentControl Style="{StaticResource Demo.Sample}" Tag="button-danger">
+        <ContentControl Style="{StaticResource Demo.Sample}" Tag="button-danger" Width="560">
             <WrapPanel>
                 <Button Margin="0,0,10,0" Content="Cancel" />
                 <Button Margin="0,0,10,0" Style="{StaticResource Nocturne.Styles.Button.Danger}" Content="Delete" />

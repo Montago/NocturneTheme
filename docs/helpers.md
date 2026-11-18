@@ -64,6 +64,23 @@ swallows every turn otherwise, so a `ListBox` or `DataGrid` inside a scrolling p
 The theme's `ScrollViewer` style turns it on; only visual parents are searched, so a popup never
 scrolls the page under it.
 
+`AutoHide` fades the scroll bars out (150 ms) while the mouse is away from the scroll viewer: they
+show while the mouse is over it, and for a second after the content scrolls. The bars keep their room.
+The theme's `ScrollViewer` styles turn it on; set it to `False` on a scroll viewer whose bars should
+always show.
+
+```xml
+<ScrollViewer nc:ScrollViewerHelper.AutoHide="False">...</ScrollViewer>
+```
+
+## ContextMenuHelper
+
+`TargetsPlacement` sends a context menu's commands to the element it was opened on. A `MenuItem`
+without a `CommandTarget` runs its command on itself, inside the menu's popup, where a text box's Cut
+or Paste is never handled. With `TargetsPlacement="True"` on the `ContextMenu`, every opening points
+the items at the element and asks again whether each command can run, so Cut and Copy are dimmed
+exactly while nothing is selected. The text fields' own menu uses it ([The text menu](navigation.md#the-text-menu)).
+
 ## FocusHelper
 
 `FocusVisualStyle` draws around the whole element, which for a `TreeViewItem` means its whole

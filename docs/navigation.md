@@ -12,6 +12,8 @@ nav_order: 6
 
 The implicit `TabControl` is a segmented control: the tab headers share one sunken strip, the
 selected one is a raised segment with a short accent line under its text, and the page sits below.
+When another tab is chosen, the segment glides over to it (320 ms) and the line runs ahead and
+stretches before it settles; `nc:TabSelectionIndicator` in the template draws both.
 
 ```xml
 <TabControl>
@@ -159,6 +161,31 @@ The same items as the menu: icons, shortcuts, check marks for `IsCheckable` item
                   nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Delete}" />
     </ContextMenu>
 </Border.ContextMenu>
+```
+
+### The text menu
+
+![The text fields' menu](screenshots/controls/contextmenu-text.png)
+
+Text fields (`TextBox`, `RichTextBox`, the editable `ComboBox`, `NumericUpDown`, `DatePicker`) get
+`Nocturne.ContextMenu.Text` instead of Windows' plain menu: Undo, Cut, Copy, Paste and Select all with
+the theme's line icons and their shortcuts. The commands work on the field the menu was opened on, so
+Cut and Copy are dimmed while nothing is selected. A read-only field shows only Copy and Select all,
+and a `PasswordBox` gets `Nocturne.ContextMenu.Password` with Paste only. A field with
+`SpellCheck.IsEnabled` keeps WPF's own menu, which lists the spelling suggestions.
+
+To add an item, give the field a menu of your own (every field needs its own instance) with
+[`ContextMenuHelper.TargetsPlacement`](helpers.md#contextmenuhelper), and the commands go to the field:
+
+```xml
+<TextBox>
+    <TextBox.ContextMenu>
+        <ContextMenu nc:ContextMenuHelper.TargetsPlacement="True">
+            <MenuItem Command="ApplicationCommands.Copy" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Copy}" />
+            <MenuItem Header="Copy as link" Click="OnCopyLink" />
+        </ContextMenu>
+    </TextBox.ContextMenu>
+</TextBox>
 ```
 
 ## ToolBar

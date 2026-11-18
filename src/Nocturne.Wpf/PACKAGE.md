@@ -46,17 +46,20 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
 ## What is in it
 
 - **NocturneWindow**: `Backdrop` (Acrylic by default, Mica, MicaAlt, None), `TintOpacity` (0.5),
-  44px title bar with its own caption buttons, `RightWindowCommands`. Without Windows 11 22H2, with
+  44px title bar with its own caption buttons, `LeftWindowCommands` and `RightWindowCommands`,
+  `TitleBarStyle` (Seamless, Separated, Accent), `CornerStyle` (Round, RoundSmall, Square). Without Windows 11 22H2, with
   transparency effects off or over Remote Desktop (unless `UseBackdropInRemoteSession`) it paints an
   opaque ground of the same colour.
-- **Styles** for Button (default, `.Primary`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,
+- **Styles** for Button (default, `.Primary`, `.Danger`, `.Subtle`, `.Icon`), RepeatButton, ToggleButton,
   TextBox (`.Search`, `.MultiLine`), PasswordBox (reveal button), Label, CheckBox (three-state),
   RadioButton, toggle switch (`Nocturne.Styles.ToggleSwitch`), ComboBox (editable too), ListBox and
   side navigation, ListView (with GridView column headers), TreeView, Slider, ProgressBar
   (indeterminate), ScrollViewer, GroupBox, Expander, TabControl (segmented and `.Document` tabs with
   close buttons, badges and "+"), DataGrid (row headers too), Calendar, DatePicker, RichTextBox,
   ToolBar and ToolBarTray, StatusBar, GridSplitter, ContextMenu, Menu, ToolTip, Hyperlink, Separator,
-  ResizeGrip.
+  ResizeGrip. Text fields get a right-click menu with icons (`Nocturne.ContextMenu.Text`), validation
+  errors show in a callout under the field, scroll bars fade out while the mouse is away, and the
+  segmented tabs glide to the chosen tab.
 - **Own controls**: `DropDownButton` and `SplitButton` (each also `.Primary`), `NumericUpDown`,
   `ProgressRing`, `InfoBar` (Info, Success, Warning, Error), `NocturneDialog` (shown in the window with
   `await window.ShowMessageAsync(...)` or `ShowDialogAsync`) and `Flyout` (in `NocturneWindow.Flyouts`,
@@ -80,6 +83,7 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
   The icons are under the Apache License 2.0 (see `NOTICE.md` in the package), the rest under MIT.
 - Attached helpers: `ControlHelper` (`Placeholder`, `Icon`, `HasError`, `CornerRadius`),
   `PasswordBoxHelper.CanReveal`, `TabHelper` (`ShowCloseButton`, `Badge`, `ShowAddButton`),
+  `ScrollViewerHelper` (`ChainMouseWheel`, `AutoHide`), `ContextMenuHelper.TargetsPlacement`,
   `FocusHelper` (a keyboard-focus ring a template draws itself, as the TreeViewItem does).
 
 Brushes are `Nocturne.Brushes.*`; reference them with `DynamicResource`.

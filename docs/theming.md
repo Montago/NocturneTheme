@@ -40,8 +40,8 @@ the backdrop anyway.
 ![The controls page in the green accent](screenshots/accent-green.png)
 
 The accent is blue. `NocturneTheme.SetAccent` switches it at run time: the accent brushes,
-the text on the accent, the primary button, the popup ground and the window's tint and fallback
-ground all take the new hue. Every style uses `DynamicResource`, so open windows follow at once.
+the text on the accent, the primary button, the popup ground, the window's tint and fallback
+ground and the `Accent` title bar all take the new hue. Every style uses `DynamicResource`, so open windows follow at once.
 
 ```csharp
 using Nocturne.Wpf.Controls;

@@ -26,15 +26,26 @@ field. `ControlHelper.Placeholder` shows a hint while the box is empty.
 
 ### Errors
 
-A validation error on the binding shows the error look; `ControlHelper.HasError` shows it without
-one. Put the message under the field with `Nocturne.Styles.TextBlock.Error`:
+![A validation error with its callout](screenshots/controls/validation.png)
+
+A validation error on the binding draws the field's red frame, and a small callout under the field
+shows the first error message while the field has focus or the mouse is over it. It floats over the
+layout, so nothing moves when an error comes or goes:
 
 ```xml
-<TextBox Text="{Binding Port, ValidatesOnDataErrors=True}" nc:ControlHelper.HasError="{Binding PortIsInvalid}" />
+<TextBox Text="{Binding Port, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+```
+
+`ControlHelper.HasError` shows the red frame without a binding error; put the message under the field
+yourself with `Nocturne.Styles.TextBlock.Error`:
+
+```xml
+<TextBox Text="{Binding Port}" nc:ControlHelper.HasError="{Binding PortIsInvalid}" />
 <TextBlock Style="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Must be a number from 1 to 65535." />
 ```
 
-`HasError` works the same on `PasswordBox`, `ComboBox`, `DatePicker`, `NumericUpDown` and the pickers.
+Both work the same on `PasswordBox`, `ComboBox`, `DatePicker`, `NumericUpDown` and the pickers. To
+leave the callout out, set `Validation.ErrorTemplate` to `{DynamicResource Nocturne.Templates.NoErrorAdorner}`.
 
 ## Search box and clear button
 

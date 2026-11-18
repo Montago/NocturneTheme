@@ -111,8 +111,11 @@ With `HeadersVisibility="All"` the rows get a row header, which marks the select
 
 ![NocturneGrid searching](screenshots/controls/nocturnegrid.png)
 
-`nc:NocturneGrid` is a `DataGrid` for large lists. Rows and columns are virtualized, and the text of
-`NocturneGridColumn` cells is drawn straight from the font, so tens of thousands of rows scroll smoothly.
+`nc:NocturneGrid` is a `DataGrid` for large lists. Rows and columns are virtualized and the rows are
+recycled, and the text of `NocturneGridColumn` cells is drawn straight from the font, so tens of
+thousands of rows scroll smoothly. It scrolls by row (a wheel turn moves three rows). While the scroll
+bar thumb is dragged, the rows in view show the rows at the thumb and the grid moves there when the
+thumb is released, so a fast drag keeps up.
 
 - **Search**: `SearchText` filters the rows to those that contain every word somewhere (in the
   searchable columns); quotes keep a phrase together. The hits are drawn in the light accent in faintly
@@ -211,7 +214,10 @@ accent. A click on the month shows the months of the year, and again the years.
 ![ScrollViewer](screenshots/controls/scrollviewer.png)
 
 Scroll bars are thin 6px lines that widen to 10px under the mouse. Their hit area is 18px, so a bar
-along the window edge stays clear of the resize border. The theme's `ScrollViewer` passes a wheel turn
+along the window edge stays clear of the resize border. They fade out while the mouse is away and
+come back when it is over the scroll viewer or the content scrolls; their room stays, so the content
+does not move ([`ScrollViewerHelper.AutoHide`](helpers.md#scrollviewerhelper)). The pictures on these
+pages show no bars for that reason. The theme's `ScrollViewer` passes a wheel turn
 it cannot use (a list scrolled to its end, or with nothing to scroll) on to the scroll viewer around
 it, so a list inside a scrolling page does not stop the page ([`ScrollViewerHelper`](helpers.md#scrollviewerhelper)).
 

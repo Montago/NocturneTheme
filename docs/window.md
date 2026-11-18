@@ -12,7 +12,8 @@ nav_order: 1
 
 `nc:NocturneWindow` is the frame: the Windows 11 backdrop under a dark tint and the light from the
 top-left corner ([Theme and accents](theming.md#the-layers-of-a-window)), a 44px title bar with the
-title and its own minimise, maximise and close buttons, and the layers for flyouts and dialogs. While
+title and its own minimise, maximise and close buttons, and the layers for flyouts and dialogs. The
+demo window has a back button and a navigation toggle in `LeftWindowCommands`. While
 a backdrop is active it extends the DWM frame over the whole window, so Windows draws the material
 behind all of it.
 
@@ -22,6 +23,11 @@ behind all of it.
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:nc="urn:nocturne-wpf"
                    Title="Files" Backdrop="Acrylic" TintOpacity="0.5">
+    <nc:NocturneWindow.LeftWindowCommands>
+        <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Back" Command="NavigationCommands.BrowseBack">
+            <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.ChevronLeft}" />
+        </Button>
+    </nc:NocturneWindow.LeftWindowCommands>
     <nc:NocturneWindow.RightWindowCommands>
         <Button Style="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip="Settings" Click="OnSettings">
             <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Components}" />
@@ -40,8 +46,25 @@ behind all of it.
 | `TitleBarHeight` | Height of the title bar (44) |
 | `ShowIcon` | Shows `Icon` (or a small accent glyph when none is set) before the title (true) |
 | `ShowMinButton`, `ShowMaxRestoreButton` | Hide the minimise or maximise button |
+| `LeftWindowCommands` | Content at the start of the title bar, before the icon and title (back, a navigation toggle), with a thin divider after it |
 | `RightWindowCommands` | Content in the title bar before the caption buttons (a [badge](buttons.md#badged) goes on the button's icon, so it stays inside the window) |
+| `TitleBarStyle` | `Seamless` (default), `Separated` or `Accent`, see [below](#title-bar-styles) |
+| `CornerStyle` | `Round` (default, 8px), `RoundSmall` (4px, for small tool windows) or `Square`; Windows 11 draws the corners, a maximised window is always square |
 | `Flyouts` | The layer for [flyouts](#flyout), above the content and under the title bar |
+
+### Title bar styles
+
+By default the title bar lies on the window's own ground, one with the content (`Seamless`).
+`Separated` puts a slightly darker strip with a hairline under it, for apps with busy content at the
+top; `Accent` tints the strip with the accent colour, so it follows `NocturneTheme.SetAccent`.
+
+```xml
+<nc:NocturneWindow Title="Files" TitleBarStyle="Separated" CornerStyle="RoundSmall">
+```
+
+![TitleBarStyle Separated](screenshots/titlebar-separated.png)
+
+![TitleBarStyle Accent](screenshots/titlebar-accent.png)
 
 ## Dialogs
 
