@@ -1,7 +1,13 @@
 # Plan: Nocturne for Avalonia
 
-Status: proposed (2026-11-18). Nothing started. The four decisions below are open; the
-recommendation is given for each.
+Status: phases 0-6 done (2026-11-19, branch `feature/avalonia`, PR #4): the standard controls with the
+document tabs and fading scroll bars, StatusBar, the own controls and Avalonia's pickers, a plain
+DataGrid theme, the demo pages, the gallery and the Admin and Portal sample apps; phase 7
+(NocturneGrid) next. Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
+
+Decided by the user (2026-11-19): 1. cross-platform; 2. same repository; 3. Avalonia's own
+controls, styled by the theme, plus our own classes for what Avalonia lacks; 4. NocturneGrid waits
+for a later version.
 
 This is not a straight copy. The design values (colours, radii, sizes, 120/150 ms transitions),
 the icons, the resource keys and the logic of the custom controls carry over almost unchanged.
@@ -62,17 +68,38 @@ NocturneGrid alone is ~3,500 lines on top of WPF's DataGrid and is the heaviest 
   CalendarDatePicker, ToolTip.
 - 120/150 ms become `Transitions`; `DropShadowEffect` becomes `BoxShadow`.
 
-### 4. Gaps in Avalonia
-- StatusBar and GroupBox: styles on existing panels / `HeaderedContentControl`.
-- ToolBar, RichTextBox, ListView/GridView do not exist: leave them out of the first version
+### 4. Gaps in Avalonia (done)
+- StatusBar / StatusBarItem: our own (an ItemsControl on a DockPanel; a Separator gets the vertical
+  theme). GroupBox exists in Avalonia 12 and has its theme since phase 3.
+- ToolBar, RichTextBox, ListView/GridView do not exist: left out of the first version
   (DataGrid covers ListView/GridView).
 
-### 5. Custom controls
-- Port the logic, rewrite the templates. Flyout and NocturneDialog move to the window's
-  `OverlayLayer`.
+### 5. Custom controls (done)
+- Ported (logic from WPF, templates new): Tile, Badged, BusyIndicator, Accordion, ProgressRing,
+  InfoBar, Rating, RangeSlider, HamburgerMenu, SearchComboBox, NocturneDialog and Flyout (both in
+  NocturneWindow: `PART_DialogHost`, `Flyouts`), ColorPicker (the swatch grid: Avalonia's ColorPicker
+  lives in a separate package, `Avalonia.Controls.ColorPicker`, so the theme keeps its own).
+- Avalonia's DatePicker, TimePicker (looping columns, the chosen row over the field) and
+  AutoCompleteBox have themes; NumericUpDown, DropDownButton and SplitButton had them already.
+- The WPF AutoSuggestBox and TimePicker are not ported: AutoCompleteBox and TimePicker cover them.
+- Demo: the "Custom controls" page; `--snapshot` draws it (top, bottom, pickers open, dialog,
+  flyout, folded HamburgerMenu) and `checks.txt` drives it (SearchComboBox typing and Enter, a
+  ColorPicker swatch, the TimePicker accept button, a dialog answer, Escape on the flyout).
 
-### 6. Demo and samples
-- The demo pages, the gallery (one sample per control) and the Admin and Portal sample apps.
+### 6. Demo and samples (done)
+- Demo pages as in WPF: Controls, More controls (an app frame with TreeView, GridSplitter, DataGrid and
+  StatusBar; Calendar, CalendarDatePicker, DataGrid row headers), Custom controls, Icons, Tokens. The
+  WPF Grid page waits for NocturneGrid.
+- `Views/GalleryPage.axaml`: one sample per control (WPF's names where the control is the same;
+  ToolBar, RichTextBox, ListView and the NocturneGrid samples are left out, DataGrid groups and the
+  dialog are new). `--render-gallery <Tag,…|all> <folder>` draws chosen samples, `--snapshot` all of
+  them into `controls/`, cropped to the sample and its open popups.
+- A plain DataGrid theme (WPF's look: headers, 42px rows, selection, row headers, group headers) came
+  forward from phase 7: both sample apps list their data in DataGrids. The theme depends on the
+  `Avalonia.Controls.DataGrid` package for it.
+- `samples/Nocturne.Avalonia.Samples.Admin` and `.Portal`: the WPF samples' pages, with DataGrid and
+  `DataGridCollectionView` (search filter, groups) where WPF uses NocturneGrid. Shared files in
+  `samples/Shared/Avalonia`; `--snapshot <folder>` writes `admin-*.png` / `portal-*.png` (also in CI on Linux).
 
 ### 7. NocturneGrid (later version)
 - On `Avalonia.Controls.DataGrid`: columns, filters, grouping through `DataGridCollectionView`,

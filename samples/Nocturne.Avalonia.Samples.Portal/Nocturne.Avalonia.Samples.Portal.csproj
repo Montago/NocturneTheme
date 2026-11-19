@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\src\Avalonia.props" />
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <!-- The snapshot command draws the pages off screen (SampleSnapshot.cs) -->
+    <PackageReference Include="Avalonia.Headless" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nocturne.Avalonia\Nocturne.Avalonia.csproj" />
+    <!-- Icons the theme does not have, the status pills and the snapshot command, shared by both samples -->
+    <AvaloniaXaml Include="..\Shared\Avalonia\SampleIcons.axaml" Link="SampleIcons.axaml" />
+    <Compile Include="..\Shared\Avalonia\SampleSnapshot.cs" Link="SampleSnapshot.cs" />
+    <Compile Include="..\Shared\Avalonia\SampleConverters.cs" Link="SampleConverters.cs" />
+  </ItemGroup>
+
+</Project>

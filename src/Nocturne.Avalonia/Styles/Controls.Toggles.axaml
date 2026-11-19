@@ -1,0 +1,201 @@
+<!--
+    CheckBox (with IsThreeState), RadioButton and the toggle switch: Avalonia's ToggleSwitch, and
+    the same look as Nocturne.Styles.ToggleSwitch for a ToggleButton or CheckBox (as in the WPF
+    version). Content on the left, the 40 x 20 switch on the right; the knob slides in 150 ms.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls">
+
+    <ControlTheme x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Toggle.Fill}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border}" />
+        <Setter Property="Padding" Value="10,0,0,0" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="Root" ColumnDefinitions="Auto,*" Background="Transparent">
+                    <Panel Width="20" Height="20" VerticalAlignment="Center">
+                        <Border Name="Box" CornerRadius="5" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" />
+                        <c:StrokeIcon Name="Check" Width="14" Height="14" StrokeThickness="3" IsVisible="False"
+                                      Data="{DynamicResource Nocturne.Icons.Check}" Foreground="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+                        <Rectangle Name="Dash" Width="10" Height="2" RadiusX="1" RadiusY="1" IsVisible="False" Fill="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter" Grid.Column="1" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border.Hover}" />
+        </Style>
+        <Style Selector="^:checked /template/ Border#Box, ^:indeterminate /template/ Border#Box">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+        </Style>
+        <Style Selector="^:checked /template/ c|StrokeIcon#Check">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:indeterminate /template/ Rectangle#Dash">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Box">
+            <Setter Property="Opacity" Value="0.8" />
+        </Style>
+        <Style Selector="^:disabled /template/ Grid#Root">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type RadioButton}" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Toggle.Fill}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border}" />
+        <Setter Property="Padding" Value="10,0,0,0" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="Root" ColumnDefinitions="Auto,*" Background="Transparent">
+                    <!-- Checked: a 6px accent ring around a white centre -->
+                    <Ellipse Name="Dot" Width="20" Height="20" VerticalAlignment="Center" StrokeThickness="1"
+                             Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" />
+                    <ContentPresenter Name="PART_ContentPresenter" Grid.Column="1" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Ellipse#Dot">
+            <Setter Property="Stroke" Value="{DynamicResource Nocturne.Brushes.Toggle.Border.Hover}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#Dot">
+            <Setter Property="Stroke" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+            <Setter Property="StrokeThickness" Value="6" />
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#Dot">
+            <Setter Property="Opacity" Value="0.8" />
+        </Style>
+        <Style Selector="^:disabled /template/ Grid#Root">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ToggleSwitch: Avalonia moves PART_MovingKnobs from 0 to the width of PART_SwitchKnob (and lets the knob be dragged) -->
+    <ControlTheme x:Key="{x:Type ToggleSwitch}" TargetType="ToggleSwitch">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Toggle.Fill}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Switch.Border}" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="OnContent" Value="{x:Null}" />
+        <Setter Property="OffContent" Value="{x:Null}" />
+        <Setter Property="KnobTransitions">
+            <Transitions>
+                <DoubleTransition Easing="CubicEaseOut" Property="Canvas.Left" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="Root" Background="Transparent">
+                    <Panel Name="Switch" DockPanel.Dock="Right" Width="40" Height="20" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <Border Name="Track" CornerRadius="10" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" />
+                        <Canvas Name="PART_SwitchKnob" Width="20" Height="20" HorizontalAlignment="Left">
+                            <Panel Name="PART_MovingKnobs" Width="20" Height="20">
+                                <Ellipse Name="Knob" Width="12" Height="12" Fill="{DynamicResource Nocturne.Brushes.Switch.Knob}" />
+                            </Panel>
+                        </Canvas>
+                        <ContentPresenter Name="PART_OnContentPresenter" IsVisible="False" />
+                        <ContentPresenter Name="PART_OffContentPresenter" IsVisible="False" />
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Track">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border.Hover}" />
+        </Style>
+        <Style Selector="^:checked /template/ Border#Track">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#Knob">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#Knob">
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="^:disabled /template/ DockPanel#Root">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The switch look for a ToggleButton or CheckBox (Theme="{StaticResource Nocturne.Styles.ToggleSwitch}") -->
+    <ControlTheme x:Key="Nocturne.Styles.ToggleSwitch" TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Toggle.Fill}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Switch.Border}" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="IsThreeState" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="Root" Background="Transparent">
+                    <Panel Name="Switch" DockPanel.Dock="Right" Width="40" Height="20" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <Border Name="Track" CornerRadius="10" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" />
+                        <Ellipse Name="Knob" Width="12" Height="12" Margin="4,0,0,0" HorizontalAlignment="Left" Fill="{DynamicResource Nocturne.Brushes.Switch.Knob}">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform />
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="CubicEaseOut" />
+                                </Transitions>
+                            </Ellipse.Transitions>
+                        </Ellipse>
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Track">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border.Hover}" />
+        </Style>
+        <Style Selector="^:checked /template/ Border#Track">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#Knob">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+            <Setter Property="RenderTransform" Value="translateX(20px)" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#Knob">
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="^:disabled /template/ DockPanel#Root">
+            <Setter Property="Opacity" Value="0.45" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

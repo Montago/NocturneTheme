@@ -1,0 +1,40 @@
+<!--
+    The Nocturne theme. Apps add it to Application.Styles:
+
+        <Application.Styles>
+            <nc:NocturneTheme />
+        </Application.Styles>
+
+    It stands alone (no Fluent or Simple theme under it): every control gets its ControlTheme here.
+    The files are merged with MergeResourceInclude, which joins them at compile time, so a
+    StaticResource in one file finds a key in an earlier one (the WPF version cannot do that).
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Nocturne.Avalonia.NocturneTheme">
+
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Brushes.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Fonts.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Icons.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Shared.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Base.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Buttons.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Toggles.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Menu.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Text.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Range.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Lists.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Containers.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Calendar.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Pickers.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Overlays.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.DataGrid.axaml" />
+                <MergeResourceInclude Source="avares://Nocturne.Avalonia/Styles/Controls.Window.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+</Styles>

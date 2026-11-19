@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Admin"
+             x:Class="Nocturne.Avalonia.Samples.Admin.Views.DashboardView">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,12,28,28">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Dashboard" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro" Text="Wednesday 18 November · week 47" />
+
+            <nc:InfoBar Severity="Warning" Title="4 timesheets" Message="for week 47 are waiting for your approval." Margin="0,0,0,18">
+                <Button Content="Review" Tag="Timesheets" Click="OnGoToPage" />
+            </nc:InfoBar>
+
+            <!-- Key figures; each tile opens the page behind it -->
+            <UniformGrid Rows="1" Margin="-6,0,-6,18">
+                <nc:Tile Title="Active employees" Count="8" Theme="{StaticResource Nocturne.Styles.Tile.Accent}" Margin="6,0" Width="NaN"
+                         HorizontalAlignment="Stretch" Tag="Employees" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.People}" />
+                </nc:Tile>
+                <nc:Tile Title="Running projects" Count="5" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch" Tag="Projects" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Briefcase}" />
+                </nc:Tile>
+                <nc:Tile Title="Hours this week" Count="296" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch" Tag="Timesheets" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Clock}" />
+                </nc:Tile>
+                <nc:Tile Title="Awaiting approval" Count="4" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch" Tag="Timesheets" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Bell}" />
+                </nc:Tile>
+            </UniformGrid>
+
+            <Grid ColumnDefinitions="3*,16,2*">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="PROJECT BUDGETS" Tag="Hours">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.Projects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:Project">
+                                <Grid Margin="0,0,0,16" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="{Binding Customer}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="{Binding HoursText}" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0" Value="{Binding Progress, Mode=OneWay}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="RECENT ACTIVITY">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.RecentActivity}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:Activity">
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Text}" />
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Hint}" Margin="0,2,0,0" Text="{Binding Time}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

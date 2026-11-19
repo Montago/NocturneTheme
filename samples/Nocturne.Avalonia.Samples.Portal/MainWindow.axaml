@@ -1,0 +1,100 @@
+<nc:NocturneWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:nc="urn:nocturne-avalonia"
+                   xmlns:v="using:Nocturne.Avalonia.Samples.Portal.Views"
+                   x:Class="Nocturne.Avalonia.Samples.Portal.MainWindow"
+                   Title="Northwind Traders · Sales portal"
+                   Width="1280" Height="800" MinWidth="960" MinHeight="600"
+                   WindowStartupLocation="CenterScreen">
+    <nc:NocturneWindow.Styles>
+        <!-- One side bar entry: an icon tile and the page name -->
+        <Style Selector="ListBox#Navigation nc|StrokeIcon">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+        </Style>
+    </nc:NocturneWindow.Styles>
+
+    <nc:NocturneWindow.RightWindowCommands>
+        <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button Theme="{StaticResource Nocturne.Styles.Button.Subtle}" ToolTip.Tip="Signed in" Padding="10,0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Sample.Icons.User}" />
+                    <TextBlock VerticalAlignment="Center" Text="Lindsey Ballard" />
+                </StackPanel>
+            </Button>
+            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Help" AutomationProperties.Name="Help"
+                    Tag="About" Click="OnGoToPage">
+                <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Help}" />
+            </Button>
+        </StackPanel>
+    </nc:NocturneWindow.RightWindowCommands>
+
+    <DockPanel>
+        <nc:StatusBar DockPanel.Dock="Bottom">
+            <nc:StatusBarItem Content="Ready" />
+            <Separator />
+            <nc:StatusBarItem Content="Price list 2026 · USD" />
+            <nc:StatusBarItem HorizontalAlignment="Right" Content="Last synced 09:42" />
+        </nc:StatusBar>
+
+        <Grid ColumnDefinitions="240,*">
+            <!-- The side bar: the company, the pages and a note at the bottom -->
+            <DockPanel Margin="16,8,8,20">
+                <StackPanel DockPanel.Dock="Top" Margin="8,4,8,20">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Text="Northwind" />
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Margin="0,2,0,0" Text="TRADERS · SALES" />
+                </StackPanel>
+
+                <Border DockPanel.Dock="Bottom" Theme="{StaticResource Nocturne.Styles.Border.Card}" Padding="16">
+                    <StackPanel>
+                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Monthly target" />
+                        <ProgressBar Margin="0,10,0,8" Value="84" />
+                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="$8,413 of $10,000" />
+                    </StackPanel>
+                </Border>
+
+                <ListBox Name="Navigation" Theme="{StaticResource Nocturne.Styles.ListBox.Navigation}" SelectedIndex="0" AutomationProperties.Name="Pages">
+                    <ListBoxItem Tag="Home" AutomationProperties.Name="Home">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Data="{StaticResource Sample.Icons.Home}" /></ContentControl>
+                            <TextBlock VerticalAlignment="Center" Text="Home" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="Products" AutomationProperties.Name="Products">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Data="{StaticResource Sample.Icons.Box}" /></ContentControl>
+                            <TextBlock VerticalAlignment="Center" Text="Products" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="Orders" AutomationProperties.Name="Orders">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Data="{StaticResource Sample.Icons.List}" /></ContentControl>
+                            <TextBlock VerticalAlignment="Center" Text="Orders" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="Customers" AutomationProperties.Name="Customers">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Data="{StaticResource Sample.Icons.People}" /></ContentControl>
+                            <TextBlock VerticalAlignment="Center" Text="Customers" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="About" AutomationProperties.Name="About">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}"><nc:StrokeIcon Data="{StaticResource Sample.Icons.Help}" /></ContentControl>
+                            <TextBlock VerticalAlignment="Center" Text="About" />
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+            </DockPanel>
+
+            <!-- The pages, in the order of the side bar; the selected one is shown -->
+            <Panel Name="Pages" Grid.Column="1">
+                <v:HomeView />
+                <v:ProductsView />
+                <v:OrdersView />
+                <v:CustomersView />
+                <v:AboutView />
+            </Panel>
+        </Grid>
+    </DockPanel>
+</nc:NocturneWindow>

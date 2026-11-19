@@ -1,0 +1,111 @@
+<nc:NocturneWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:nc="urn:nocturne-avalonia"
+                   x:Class="Nocturne.Avalonia.Demo.MainWindow"
+                   Title="Nocturne — Avalonia control library"
+                   Width="1400" Height="900" MinWidth="900" MinHeight="600"
+                   WindowStartupLocation="CenterScreen">
+    <!-- Before the title: fold the navigation in or out -->
+    <nc:NocturneWindow.LeftWindowCommands>
+        <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" Click="OnNavigationToggleClick"
+                ToolTip.Tip="Show or hide the navigation" AutomationProperties.Name="Show or hide the navigation">
+            <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Menu}" />
+        </Button>
+    </nc:NocturneWindow.LeftWindowCommands>
+
+    <!-- Slides in from the right (Custom controls page: Open flyout) -->
+    <nc:NocturneWindow.Flyouts>
+        <Panel>
+            <nc:Flyout Name="SettingsFlyout" Header="Display settings" Width="360">
+                <StackPanel>
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Margin="0,0,0,16" TextWrapping="Wrap"
+                               Text="A flyout floats over the page; Escape or the × closes it." />
+                    <ToggleSwitch Content="Show hidden files" IsChecked="True" />
+                    <ToggleSwitch Content="Compact rows" />
+                    <Label Margin="0,14,0,0" Content="_Sort by" Target="FlyoutSort" />
+                    <ComboBox Name="FlyoutSort" SelectedIndex="0" HorizontalAlignment="Stretch">
+                        <ComboBoxItem Content="Name" />
+                        <ComboBoxItem Content="Date modified" />
+                        <ComboBoxItem Content="Size" />
+                    </ComboBox>
+                    <Label Margin="0,14,0,0" Content="_Thumbnail size" Target="FlyoutSize" />
+                    <NumericUpDown Name="FlyoutSize" Minimum="16" Maximum="256" Increment="16" Value="96" FormatString="0 px" />
+                </StackPanel>
+            </nc:Flyout>
+        </Panel>
+    </nc:NocturneWindow.Flyouts>
+
+    <Grid Name="Layout" ColumnDefinitions="248,*">
+        <!-- Navigation and the window settings -->
+        <DockPanel Name="NavigationPane" Margin="16,12,16,20">
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Margin="8,0,8,12" Theme="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="WINDOW" />
+                <TextBlock Margin="8,0,0,6" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Backdrop" />
+                <ComboBox Name="BackdropBox" Margin="8,0,0,8" HorizontalAlignment="Stretch" AutomationProperties.Name="Backdrop" />
+                <CheckBox Name="RemoteBox" Margin="8,0,0,14" Content="Also over Remote Desktop"
+                          ToolTip.Tip="Off by default: over Remote Desktop the window paints its opaque ground, which draws faster" />
+                <Grid Margin="8,0,0,14" ColumnDefinitions="72,*" RowDefinitions="Auto,8,Auto">
+                    <TextBlock VerticalAlignment="Center" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Margin="0" Text="Title bar" />
+                    <ComboBox Name="TitleBarBox" Grid.Column="1" HorizontalAlignment="Stretch" AutomationProperties.Name="Title bar" />
+                    <TextBlock Grid.Row="2" VerticalAlignment="Center" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Margin="0" Text="Corners" />
+                    <ComboBox Name="CornerBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" AutomationProperties.Name="Corners" />
+                </Grid>
+                <DockPanel Margin="8,0,0,0">
+                    <TextBlock Name="TintText" DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold" />
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Tint" />
+                </DockPanel>
+                <Slider Name="TintSlider" Margin="8,0,0,14" Minimum="0.2" Maximum="0.9" SmallChange="0.05" LargeChange="0.1"
+                        AutomationProperties.Name="Tint" />
+                <TextBlock Margin="8,0,0,6" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Accent" />
+                <ComboBox Name="AccentBox" Margin="8,0,0,0" HorizontalAlignment="Stretch" AutomationProperties.Name="Accent" />
+            </StackPanel>
+
+            <ListBox Name="Pages" Theme="{StaticResource Nocturne.Styles.ListBox.Navigation}" SelectedIndex="0">
+                <ListBoxItem Tag="controls">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Components}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="more">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Layers}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="More controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="custom">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Grid}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Custom controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="icons">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Text}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Icons" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="tokens">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Layers}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Tokens" />
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+        </DockPanel>
+
+        <ScrollViewer Name="PageScroller" Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
+            <ContentControl Name="PageHost" Margin="8,8,28,28" />
+        </ScrollViewer>
+    </Grid>
+</nc:NocturneWindow>

@@ -1,0 +1,235 @@
+<!--
+    ContextMenu, Menu, MenuItem, MenuFlyout and ToolTip: dark, nearly opaque popups with rounded
+    corners and a soft shadow (Nocturne.Styles.PopupSurface). A menu item shows a stroke icon from
+    ControlHelper.Icon (or its Icon) and its InputGesture on the right. Nocturne.ContextMenu.Text is
+    the menu of the text fields: Undo, Cut, Copy, Paste and Select all with the theme's line icons.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers"
+                    xmlns:conv="using:Avalonia.Controls.Converters">
+
+    <conv:PlatformKeyGestureConverter x:Key="Nocturne.Converters.KeyGesture" />
+
+    <!-- The popup surface; the outer margin leaves room for the shadow -->
+    <ControlTheme x:Key="Nocturne.Styles.PopupSurface" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Margin="14,4,14,28">
+                    <Border Margin="1" CornerRadius="10" Background="Black" BoxShadow="0 10 28 0 #73000000" />
+                    <Border CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Popup}" BorderBrush="{DynamicResource Nocturne.Brushes.Popup.Border}"
+                            BorderThickness="1" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type MenuItem}" TargetType="MenuItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="FocusAdorner" Value="{StaticResource Nocturne.Templates.FocusVisual.Inset}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" MinHeight="36" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Hover}" IsVisible="False" />
+                    <Grid Name="Row" Margin="10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIcon" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemGesture" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!-- No icon and no check: no icon column -->
+                        <Panel Name="IconHost" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Panel.IsVisible>
+                                <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                                    <Binding Path="Icon" RelativeSource="{RelativeSource TemplatedParent}" Converter="{x:Static ObjectConverters.IsNotNull}" />
+                                    <Binding Path="(h:ControlHelper.Icon)" RelativeSource="{RelativeSource TemplatedParent}" Converter="{x:Static ObjectConverters.IsNotNull}" />
+                                    <Binding Path="IsChecked" RelativeSource="{RelativeSource TemplatedParent}" />
+                                </MultiBinding>
+                            </Panel.IsVisible>
+                            <!-- A larger icon ({nc:Icon …} is 20px) is scaled down to the 16px slot -->
+                            <Viewbox StretchDirection="DownOnly">
+                                <ContentPresenter Name="PART_IconPresenter" Content="{TemplateBinding Icon}" />
+                            </Viewbox>
+                            <c:StrokeIcon Name="Glyph" Width="16" Height="16" Data="{TemplateBinding h:ControlHelper.Icon}" Foreground="{TemplateBinding Foreground}"
+                                          IsVisible="{TemplateBinding h:ControlHelper.Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <c:StrokeIcon Name="CheckMark" Width="16" Height="16" StrokeThickness="2.2" IsVisible="False"
+                                          Data="{DynamicResource Nocturne.Icons.Check}" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                        </Panel>
+                        <ContentPresenter Name="PART_HeaderPresenter" Grid.Column="1" VerticalAlignment="Center" RecognizesAccessKey="True"
+                                          Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <TextBlock Name="PART_InputGestureText" Grid.Column="2" Margin="28,0,0,0" VerticalAlignment="Center"
+                                   Text="{TemplateBinding InputGesture, Converter={StaticResource Nocturne.Converters.KeyGesture}}"
+                                   IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                   FontSize="{DynamicResource Nocturne.Font.Size.Small}" Foreground="{DynamicResource Nocturne.Brushes.Shortcut}" />
+                        <c:StrokeIcon Name="Arrow" Grid.Column="3" Width="14" Height="14" Margin="10,0,0,0" StrokeThickness="2"
+                                      Data="{DynamicResource Nocturne.Icons.ChevronRight}" Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+                    <Popup Name="PART_Popup" Placement="RightEdgeAlignedTop" HorizontalOffset="-8" VerticalOffset="-9"
+                           IsLightDismissEnabled="False" IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4" MinWidth="200">
+                            <ScrollViewer>
+                                <ItemsPresenter Name="PART_ItemsPresenter" Grid.IsSharedSizeScope="True" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            </ScrollViewer>
+                        </ContentControl>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:separator">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Separator Margin="6,4" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:checked /template/ c|StrokeIcon#CheckMark">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:checked /template/ c|StrokeIcon#Glyph, ^:checked /template/ ContentPresenter#PART_IconPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:empty /template/ c|StrokeIcon#Arrow">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:not(:empty) /template/ TextBlock#PART_InputGestureText">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg, ^:open /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The items of a Menu bar: no icon, no gesture, 32px high; the submenu opens below -->
+    <ControlTheme x:Key="Nocturne.Styles.MenuItem.TopLevel" TargetType="MenuItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FocusAdorner" Value="{StaticResource Nocturne.Templates.FocusVisual.Inset}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" MinHeight="32" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Hover}" IsVisible="False" />
+                    <ContentPresenter Name="PART_HeaderPresenter" Margin="10,0" VerticalAlignment="Center" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                    <Popup Name="PART_Popup" Placement="BottomEdgeAlignedLeft" HorizontalOffset="-14"
+                           IsLightDismissEnabled="True" IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}"
+                           OverlayInputPassThroughElement="{Binding $parent[Menu]}">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4" MinWidth="200">
+                            <ScrollViewer>
+                                <ItemsPresenter Name="PART_ItemsPresenter" Grid.IsSharedSizeScope="True" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            </ScrollViewer>
+                        </ContentControl>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:selected /template/ Border#HoverBg, ^:open /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Menu}" TargetType="Menu">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ItemContainerTheme" Value="{StaticResource Nocturne.Styles.MenuItem.TopLevel}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" KeyboardNavigation.TabNavigation="Continue" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ContextMenu}" TargetType="ContextMenu">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="MinWidth" Value="200" />
+        <Setter Property="HorizontalOffset" Value="-14" />
+        <Setter Property="VerticalOffset" Value="-4" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4">
+                    <ScrollViewer>
+                        <ItemsPresenter Name="PART_ItemsPresenter" Grid.IsSharedSizeScope="True" ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        KeyboardNavigation.TabNavigation="Continue" />
+                    </ScrollViewer>
+                </ContentControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- MenuFlyout (Button.Flyout, ContextFlyout): the same surface as ContextMenu -->
+    <ControlTheme x:Key="{x:Type MenuFlyoutPresenter}" TargetType="MenuFlyoutPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="MinWidth" Value="228" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4">
+                    <ScrollViewer>
+                        <ItemsPresenter Name="PART_ItemsPresenter" Grid.IsSharedSizeScope="True" ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        KeyboardNavigation.TabNavigation="Continue" />
+                    </ScrollViewer>
+                </ContentControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        The right-click menu of the text fields. Commands that change the text are left out on a
+        read-only field; a password field (PasswordChar set) offers Paste only.
+    -->
+    <MenuFlyout x:Key="Nocturne.ContextMenu.Text" Placement="Pointer">
+        <MenuItem Header="Undo" Command="{Binding $parent[TextBox].Undo}" IsEnabled="{Binding $parent[TextBox].CanUndo}"
+                  IsVisible="{Binding !$parent[TextBox].IsReadOnly}"
+                  h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Undo}" />
+        <Separator IsVisible="{Binding !$parent[TextBox].IsReadOnly}" />
+        <MenuItem Header="Cut" Command="{Binding $parent[TextBox].Cut}" IsEnabled="{Binding $parent[TextBox].CanCut}"
+                  IsVisible="{Binding !$parent[TextBox].IsReadOnly}" InputGesture="{x:Static TextBox.CutGesture}"
+                  h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Cut}" />
+        <MenuItem Header="Copy" Command="{Binding $parent[TextBox].Copy}" IsEnabled="{Binding $parent[TextBox].CanCopy}"
+                  InputGesture="{x:Static TextBox.CopyGesture}" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Copy}" />
+        <MenuItem Header="Paste" Command="{Binding $parent[TextBox].Paste}" IsEnabled="{Binding $parent[TextBox].CanPaste}"
+                  IsVisible="{Binding !$parent[TextBox].IsReadOnly}" InputGesture="{x:Static TextBox.PasteGesture}"
+                  h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Paste}" />
+        <Separator />
+        <MenuItem Header="Select all" Command="{Binding $parent[TextBox].SelectAll}" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.SelectAll}" />
+    </MenuFlyout>
+
+    <MenuFlyout x:Key="Nocturne.ContextMenu.Password" Placement="Pointer">
+        <MenuItem Header="Paste" Command="{Binding $parent[TextBox].Paste}" IsEnabled="{Binding $parent[TextBox].CanPaste}"
+                  InputGesture="{x:Static TextBox.PasteGesture}" h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Paste}" />
+    </MenuFlyout>
+
+    <ControlTheme x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Caption}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="{TemplateBinding Padding}"
+                                Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

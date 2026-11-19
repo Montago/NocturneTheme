@@ -1,0 +1,385 @@
+<!--
+    ScrollViewer / ScrollBar (thin rounded bars without arrows that widen under the pointer and
+    fade out while it is away from the scroll viewer, in again while the content scrolls; their room stays), Slider and ProgressBar
+    (with an indeterminate runner).
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
+
+    <!-- Scroll bars: the page parts of the track are invisible buttons -->
+    <ControlTheme x:Key="Nocturne.Styles.ScrollBar.PageButton" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        18px wide: the bar sits clear of the window's resize border when it runs along the edge. The
+        thumb fills the whole width, so it is easy to grab; only the rounded bar in its middle is
+        drawn. Over the scroll bar, track and thumb widen from 6 to 10px.
+    -->
+    <ControlTheme x:Key="{x:Type ScrollBar}" TargetType="ScrollBar">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="False" />
+        <Style Selector="^:vertical">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Background="Transparent">
+                        <Border Name="TrackBar" Width="6" Margin="0,4" CornerRadius="3" HorizontalAlignment="Center"
+                                Background="{DynamicResource Nocturne.Brushes.ScrollBar.Track}" />
+                        <Track Margin="0,4" IsDirectionReversed="True" Orientation="Vertical"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               ViewportSize="{TemplateBinding ViewportSize}" Value="{TemplateBinding Value, Mode=TwoWay}"
+                               DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_PageUpButton" Theme="{StaticResource Nocturne.Styles.ScrollBar.PageButton}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_PageDownButton" Theme="{StaticResource Nocturne.Styles.ScrollBar.PageButton}" />
+                            </Track.IncreaseButton>
+                            <Thumb Name="thumb" MinHeight="24">
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <Panel Background="Transparent">
+                                            <Border Name="Bar" Margin="{TemplateBinding Padding}" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" />
+                                        </Panel>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:horizontal">
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Background="Transparent">
+                        <Border Name="TrackBar" Height="6" Margin="4,0" CornerRadius="3" VerticalAlignment="Center"
+                                Background="{DynamicResource Nocturne.Brushes.ScrollBar.Track}" />
+                        <Track Margin="4,0" Orientation="Horizontal"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               ViewportSize="{TemplateBinding ViewportSize}" Value="{TemplateBinding Value, Mode=TwoWay}"
+                               DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_PageUpButton" Theme="{StaticResource Nocturne.Styles.ScrollBar.PageButton}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_PageDownButton" Theme="{StaticResource Nocturne.Styles.ScrollBar.PageButton}" />
+                            </Track.IncreaseButton>
+                            <Thumb Name="thumb" MinWidth="24">
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <Panel Background="Transparent">
+                                            <Border Name="Bar" Margin="{TemplateBinding Padding}" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" />
+                                        </Panel>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <!-- The drawn bar is the thumb minus its Padding: 6px, 10px under the pointer -->
+        <Style Selector="^ /template/ Thumb#thumb">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.ScrollBar.Thumb}" />
+            <Setter Property="CornerRadius" Value="3" />
+        </Style>
+        <Style Selector="^:vertical /template/ Thumb#thumb">
+            <Setter Property="Padding" Value="6,0" />
+        </Style>
+        <Style Selector="^:horizontal /template/ Thumb#thumb">
+            <Setter Property="Padding" Value="0,6" />
+        </Style>
+        <Style Selector="^:vertical:pointerover /template/ Thumb#thumb">
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+        <Style Selector="^:horizontal:pointerover /template/ Thumb#thumb">
+            <Setter Property="Padding" Value="0,4" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+        <Style Selector="^ /template/ Thumb#thumb:pointerover, ^ /template/ Thumb#thumb:pressed">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.ScrollBar.Thumb.Hover}" />
+        </Style>
+        <Style Selector="^:vertical:pointerover /template/ Border#TrackBar">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+        <Style Selector="^:horizontal:pointerover /template/ Border#TrackBar">
+            <Setter Property="Height" Value="10" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        The bars fade out while the pointer is away from the scroll viewer and in when it comes or the
+        content scrolls (AllowAutoHide, on by default; ScrollViewerHelper.AutoHide)
+    -->
+    <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="h:ScrollViewerHelper.AutoHide" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto" Background="{TemplateBinding Background}">
+                    <ScrollContentPresenter Name="PART_ContentPresenter" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}"
+                                            HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                                            VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                            HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                                            VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                                            ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                        <ScrollContentPresenter.GestureRecognizers>
+                            <ScrollGestureRecognizer CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                                     CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                                     IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}"
+                                                     Offset="{Binding Offset, ElementName=PART_ContentPresenter}"
+                                                     Viewport="{Binding Viewport, ElementName=PART_ContentPresenter}"
+                                                     Extent="{Binding Extent, ElementName=PART_ContentPresenter}" />
+                        </ScrollContentPresenter.GestureRecognizers>
+                    </ScrollContentPresenter>
+                    <ScrollBar Name="PART_HorizontalScrollBar" Grid.Row="1" Orientation="Horizontal" />
+                    <ScrollBar Name="PART_VerticalScrollBar" Grid.Column="1" Orientation="Vertical" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ ScrollBar">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^[AllowAutoHide=True] /template/ ScrollBar">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <!-- ScrollViewerHelper sets barsVisible while the pointer is over the viewer, and for a second after it scrolls -->
+        <Style Selector="^[AllowAutoHide=True].barsVisible /template/ ScrollBar">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Slider: a 4px track, the filled part in the light accent, a 20px thumb with a pale ring -->
+    <ControlTheme x:Key="Nocturne.Styles.Slider.Fill" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Name="Bar" Height="4" CornerRadius="2" Background="{TemplateBinding Background}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.Slider.Rest" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.Slider.Fill}">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Slider.Track}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Slider.Fill.Vertical" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.Slider.Fill}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Name="Bar" Width="4" CornerRadius="2" Background="{TemplateBinding Background}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.Slider.Rest.Vertical" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.Slider.Fill.Vertical}">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Slider.Track}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Slider.Thumb" TargetType="Thumb">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Ellipse Margin="1" Fill="Black" Effect="drop-shadow(0 1 3 #73000000)" />
+                    <Ellipse Name="Knob" Fill="{DynamicResource Nocturne.Brushes.Accent}" Stroke="{DynamicResource Nocturne.Brushes.Slider.Thumb.Border}" StrokeThickness="4" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Ellipse#Knob">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#Knob">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+            <Setter Property="StrokeThickness" Value="5" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Slider}" TargetType="Slider">
+        <Style Selector="^:horizontal">
+            <Setter Property="MinHeight" Value="22" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Name="Root" Background="Transparent">
+                        <Track Name="PART_Track" Orientation="Horizontal" IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value, Mode=TwoWay}">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource Nocturne.Styles.Slider.Fill}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource Nocturne.Styles.Slider.Rest}" />
+                            </Track.IncreaseButton>
+                            <Thumb Name="thumb" Theme="{StaticResource Nocturne.Styles.Slider.Thumb}" />
+                        </Track>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:vertical">
+            <Setter Property="MinWidth" Value="22" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel Name="Root" Background="Transparent">
+                        <Track Name="PART_Track" Orientation="Vertical" IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value, Mode=TwoWay}">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource Nocturne.Styles.Slider.Fill.Vertical}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource Nocturne.Styles.Slider.Rest.Vertical}" />
+                            </Track.IncreaseButton>
+                            <Thumb Name="thumb" Theme="{StaticResource Nocturne.Styles.Slider.Thumb}" />
+                        </Track>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ProgressBar: a 6px rounded track; IsIndeterminate runs a bar across in 1.6 s -->
+    <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Progress.Track}" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ProgressBar">
+                <Border Name="Root" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
+                    <Panel>
+                        <Border Name="PART_Indicator" CornerRadius="{TemplateBinding CornerRadius}" HorizontalAlignment="Left"
+                                Background="{TemplateBinding Foreground}" IsVisible="{Binding !IsIndeterminate, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Border Name="Runner" CornerRadius="{TemplateBinding CornerRadius}" HorizontalAlignment="Left"
+                                Background="{TemplateBinding Foreground}" IsVisible="{Binding IsIndeterminate, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:vertical">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Width" Value="6" />
+            <Setter Property="MinWidth" Value="0" />
+        </Style>
+        <Style Selector="^:vertical /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+        <Style Selector="^:horizontal:indeterminate /template/ Border#Runner">
+            <Setter Property="Width" Value="{Binding TemplateSettings.ContainerWidth, RelativeSource={RelativeSource TemplatedParent}}" />
+            <Style.Animations>
+                <Animation IterationCount="Infinite" Duration="0:0:1.6" Easing="SineEaseInOut">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateStartingOffset}" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.IndeterminateEndingOffset}" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ProgressRing: a quarter arc in the light accent runs round a faint track once a second; size it with Width and Height -->
+    <ControlTheme x:Key="{x:Type c:ProgressRing}" TargetType="c:ProgressRing">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Progress.Track}" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Viewbox Name="Root" Stretch="Uniform">
+                    <Panel Width="32" Height="32">
+                        <!-- An Ellipse strokes inside its bounds (centre line at radius 12.5); a Path strokes on its line, so the arc uses radius 12.5 too -->
+                        <Ellipse Margin="2" Stroke="{TemplateBinding Background}" StrokeThickness="3" />
+                        <Path Name="Arc" Width="32" Height="32" Data="M16,3.5 A12.5,12.5 0 0 1 28.5,16" Stroke="{TemplateBinding Foreground}" StrokeThickness="3"
+                              StrokeLineCap="Round" />
+                    </Panel>
+                </Viewbox>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^[IsActive=False] /template/ Viewbox#Root">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^[IsActive=True] /template/ Path#Arc">
+            <Style.Animations>
+                <Animation Duration="0:0:1" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="360" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </ControlTheme>
+
+    <!-- A round keyboard-focus ring, for the RangeSlider thumbs -->
+    <FocusAdornerTemplate x:Key="Nocturne.Templates.FocusVisual.Round">
+        <Ellipse Margin="-4" StrokeThickness="2" Stroke="{DynamicResource Nocturne.Brushes.Focus}" />
+    </FocusAdornerTemplate>
+
+    <!-- RangeSlider: the Slider's track and thumbs, with the light accent between the two thumbs. Each thumb is a
+         tab stop, so both values can be reached from the keyboard. -->
+    <ControlTheme x:Key="{x:Type c:RangeSlider}" TargetType="c:RangeSlider">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent">
+                    <Border Height="4" Margin="10,0" CornerRadius="2" VerticalAlignment="Center" Background="{DynamicResource Nocturne.Brushes.Slider.Track}" />
+                    <Canvas Name="PART_Track">
+                        <Border Name="PART_Fill" Canvas.Top="9" Height="4" CornerRadius="2" Background="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                        <Thumb Name="PART_LowerThumb" Canvas.Top="1" Theme="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True" IsTabStop="True"
+                               FocusAdorner="{StaticResource Nocturne.Templates.FocusVisual.Round}" AutomationProperties.Name="Lower value" />
+                        <Thumb Name="PART_UpperThumb" Canvas.Top="1" Theme="{StaticResource Nocturne.Styles.Slider.Thumb}" Focusable="True" IsTabStop="True"
+                               FocusAdorner="{StaticResource Nocturne.Templates.FocusVisual.Round}" AutomationProperties.Name="Upper value" />
+                    </Canvas>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Rating: the stars are drawn by the control (light accent when on, dark outline when off) -->
+    <ControlTheme x:Key="{x:Type c:Rating}" TargetType="c:Rating">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Name="PART_Host" Orientation="Horizontal" Background="Transparent" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

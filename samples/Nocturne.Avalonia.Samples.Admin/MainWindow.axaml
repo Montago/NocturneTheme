@@ -1,0 +1,97 @@
+<nc:NocturneWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:nc="urn:nocturne-avalonia"
+                   xmlns:v="using:Nocturne.Avalonia.Samples.Admin.Views"
+                   x:Class="Nocturne.Avalonia.Samples.Admin.MainWindow"
+                   Title="Contoso Staffing · Administration"
+                   Width="1280" Height="800" MinWidth="960" MinHeight="600"
+                   WindowStartupLocation="CenterScreen">
+
+    <nc:NocturneWindow.RightWindowCommands>
+        <StackPanel Orientation="Horizontal" Spacing="6">
+            <!-- The badge sits on the bell, not on the button's corner, which would put it above the window's top edge -->
+            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Timesheets waiting for approval"
+                    AutomationProperties.Name="Timesheets waiting for approval" Tag="Timesheets" Click="OnGoToPage">
+                <nc:Badged Badge="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Bell}" />
+                </nc:Badged>
+            </Button>
+            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Settings"
+                    AutomationProperties.Name="Settings" Click="OnSettingsClick">
+                <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.Settings}" />
+            </Button>
+        </StackPanel>
+    </nc:NocturneWindow.RightWindowCommands>
+
+    <nc:NocturneWindow.Flyouts>
+        <Panel>
+            <nc:Flyout Name="Settings" Header="Settings" Width="320">
+                <StackPanel>
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="APPEARANCE" Margin="0,0,0,12" />
+                    <Label Content="_Accent" Target="AccentBox" />
+                    <ComboBox Name="AccentBox" HorizontalAlignment="Stretch" />
+                    <Label Margin="0,14,0,0" Content="_Backdrop" Target="BackdropBox" />
+                    <ComboBox Name="BackdropBox" HorizontalAlignment="Stretch" />
+                    <ToggleSwitch Margin="0,16,0,0" Content="Show page names" IsChecked="{Binding #Navigation.IsPaneOpen}" />
+
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="ACCOUNT" Margin="0,28,0,12" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile}">
+                            <nc:StrokeIcon Data="{StaticResource Sample.Icons.User}" />
+                        </ContentControl>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Ida Kragh" />
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Controller · Finance" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="Sign out" HorizontalAlignment="Left" Margin="0,16,0,0" />
+                </StackPanel>
+            </nc:Flyout>
+        </Panel>
+    </nc:NocturneWindow.Flyouts>
+
+    <DockPanel>
+        <nc:StatusBar DockPanel.Dock="Bottom">
+            <nc:StatusBarItem Content="Ready" />
+            <Separator />
+            <nc:StatusBarItem Content="Signed in as Ida Kragh" />
+            <nc:StatusBarItem Name="Version" HorizontalAlignment="Right" />
+        </nc:StatusBar>
+
+        <!-- The navigation pane: each item carries its page in Tag, and the content area shows it -->
+        <nc:HamburgerMenu Name="Navigation" SelectedIndex="0">
+            <nc:HamburgerMenuItem Content="Dashboard">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Grid}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:DashboardView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Employees">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Sample.Icons.People}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:EmployeesView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Timesheets">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Clock}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:TimesheetsView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+            <nc:HamburgerMenuItem Content="Projects">
+                <nc:HamburgerMenuItem.Icon>
+                    <nc:StrokeIcon Data="{StaticResource Sample.Icons.Briefcase}" />
+                </nc:HamburgerMenuItem.Icon>
+                <nc:HamburgerMenuItem.Tag>
+                    <v:ProjectsView />
+                </nc:HamburgerMenuItem.Tag>
+            </nc:HamburgerMenuItem>
+        </nc:HamburgerMenu>
+    </DockPanel>
+</nc:NocturneWindow>

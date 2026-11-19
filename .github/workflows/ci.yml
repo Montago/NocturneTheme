@@ -24,6 +24,10 @@ jobs:
           python tools/generate_web_tokens.py --check
           python tools/bundle_web_css.py --check
 
+      # Nocturne.Avalonia: brushes, line icons and accent palettes are generated from the WPF library
+      - name: Avalonia tokens up to date
+        run: python tools/generate_avalonia_tokens.py --check
+
       - name: Build
         run: dotnet build NocturneTheme.slnx -c Release
 
@@ -31,8 +35,37 @@ jobs:
         run: |
           dotnet pack src/Nocturne.Wpf/Nocturne.Wpf.csproj -c Release --no-build -o artifacts
           dotnet pack src/Nocturne.Web/Nocturne.Web.csproj -c Release --no-build -o artifacts
+          dotnet pack src/Nocturne.Avalonia/Nocturne.Avalonia.csproj -c Release --no-build -o artifacts
 
       - uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
           path: artifacts/*
+
+  # Nocturne.Avalonia runs on Linux too: build it there and draw the demo, its gallery and the two
+  # sample apps off screen (headless, Skia). The demo's snapshot fails when a behaviour check fails.
+  avalonia-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build
+        run: |
+          dotnet build src/Nocturne.Avalonia.Demo -c Release -o out/demo
+          dotnet build samples/Nocturne.Avalonia.Samples.Admin -c Release -o out/admin
+          dotnet build samples/Nocturne.Avalonia.Samples.Portal -c Release -o out/portal
+
+      - name: Snapshot
+        run: |
+          ./out/demo/Nocturne.Avalonia.Demo --snapshot snapshots
+          ./out/admin/Nocturne.Avalonia.Samples.Admin --snapshot snapshots/samples
+          ./out/portal/Nocturne.Avalonia.Samples.Portal --snapshot snapshots/samples
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: avalonia-linux-snapshots
+          path: snapshots/**

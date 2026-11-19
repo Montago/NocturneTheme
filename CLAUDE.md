@@ -33,9 +33,15 @@ Nocturne.Web is the same look in HTML and CSS for ASP.NET Core, ported from the 
   pixel for pixel and redrawn 150 ms after a resize. As a plain gradient (8 % to 0) it has ~20
   steps that show as diagonal bands, worst over RDP. `--snapshot`
   writes `light.png` (gradient left, dithered right; stretch the contrast to compare).
-- Everything is MIT. No third-party images
-  or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
-  `Nocturne.Fonts.Family`).
+- Everything is MIT. No third-party images in the repo, and no fonts besides Inter.
+- The font is **Inter** (chosen by the user 2026-11-19 over Noto Sans and Atkinson Hyperlegible Next,
+  so WPF, Web and Avalonia look alike). Second licence exception: Inter 4.1 (SIL OFL 1.1) kept
+  unchanged with its `LICENSE.txt` and a note in `NOTICE.md`; a package that ships it adds `OFL-1.1`
+  to its licence. Nocturne.Web ships it now (`wwwroot/fonts/InterVariable*.woff2`, the release's
+  `web/` files); WPF and Avalonia still draw Segoe UI and follow later. WPF cannot use a variable
+  font's axes: use the release's static TTFs, one per weight (Normal, Medium, SemiBold, Bold), and
+  check that Medium and SemiBold really render (WPF groups faces by name ID 1). Apps can override
+  `Nocturne.Fonts.Family` (the design used Figtree).
 - The licence exception (approved by the user, as in JetPack): `NocturneIcon` draws Material Design
   Icons (Apache 2.0), kept unchanged in `icons/mdi/` with their licence in `icons/` and a note in
   `NOTICE.md`; the package licence is `MIT AND Apache-2.0`. Add icons only from that set: the MDI
@@ -130,6 +136,118 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 - On-screen captures (`CopyFromScreen`) fail while the RDP window is minimised ("The handle is
   invalid"); use `--snapshot` then.
 
+## Avalonia port (Nocturne.Avalonia)
+
+The plan, its decisions and its phases are in `plans/avalonia-port.md`; keep its Status line current.
+Decided by the user: cross-platform (`net10.0`, Windows-only parts behind `OperatingSystem.IsWindows()`),
+same repo, Avalonia's own controls where they exist (NumericUpDown, TimePicker, ColorPicker, …) styled
+by the theme, our own classes only for what Avalonia lacks, NocturneGrid in a later version.
+
+```
+src/Avalonia.props             the Avalonia and Avalonia.Controls.DataGrid versions, imported by every Avalonia project
+src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmlns urn:nocturne-avalonia, prefix nc)
+  NocturneTheme.axaml(.cs)     the Styles class apps add to Application.Styles (<nc:NocturneTheme />); merges Styles/*;
+                               NocturneTheme.Accents.cs: SetAccent, System accent (Windows' AccentPalette, else Avalonia's)
+  Styles/                      Brushes, Icons (generated), Fonts, Controls.*.axaml (ControlThemes keyed {x:Type …};
+                               Controls.DataGrid.axaml styles Avalonia's DataGrid, a package the library references);
+                               Controls.Base.axaml holds the hosts every standalone theme needs (PopupRoot,
+                               OverlayPopupHost, AdornerLayer with the focus ring, FlyoutPresenter, ItemsControl, …)
+  Controls/                    NocturneWindow (hosts Flyouts and dialogs), LightTexture, NativeMethods (Windows only),
+                               NocturneIcon (+ Icon/IconGeometry extensions; NocturneIconKind.g.cs generated), StrokeIcon,
+                               TabSelectionIndicator, TabPanelBorder, NocturneAccent.g.cs (generated); own controls:
+                               Tile, Badged, BusyIndicator, Accordion, StatusBar (ContentControls.cs), ProgressRing, InfoBar
+                               (StatusControls.cs), Rating, RangeSlider (RangeControls.cs), HamburgerMenu, SearchComboBox,
+                               ColorPicker, NocturneDialog, Flyout (Overlays.cs)
+  Helpers/                     ControlHelper (attached properties), TabHelper (document tabs: close, badge, "+"),
+                               ScrollViewerHelper (bars fade in on hover and while scrolling), NocturneConverters
+src/Nocturne.Avalonia.Demo/    demo (Views/: Controls, MoreControls, CustomControls, Icons, Tokens pages; GalleryPage with one
+                               sample per control, Tag = file name); DemoData.cs; Headless.cs, Snapshot.cs (--snapshot),
+                               RenderCommand.cs (--render, --render-gallery), GallerySnapshot.cs + Gallery.cs (Gallery.Open:
+                               the drop-down, menu or tool tip drawn open in a sample's picture)
+samples/Nocturne.Avalonia.Samples.Admin, .Portal   the WPF samples' pages on Avalonia (DataGrid where WPF has NocturneGrid);
+                               samples/Shared/Avalonia: SampleIcons.axaml, SampleSnapshot.cs (--snapshot), SampleConverters.cs
+tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
+                               Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
+```
+
+- The theme stands alone (no Fluent or Simple theme under it), so every control needs a ControlTheme
+  from us or it draws nothing. Avalonia's own Simple theme (same version) is the reference for each
+  control's template parts (`PART_*`) and pseudo-classes.
+- The WPF library stays the source of the design values: change a colour, line icon or palette there
+  and run `python tools/generate_avalonia_tokens.py` (CI runs `--check`); `generate_icons.py` writes both
+  icon enums.
+- `--snapshot` / `--render` run on the headless platform with Skia and system fonts: no screen, a few
+  seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
+  (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
+  (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
+  `--snapshot` draws the pages, popups, the gallery (`controls/`), and ends with `checks.txt` (behaviour
+  driven with the headless mouse and keyboard: scroll bars hide and appear, document tabs close and add,
+  the custom page's SearchComboBox, ColorPicker, TimePicker, dialog and flyout) and exits with 1 when a
+  check fails, so CI catches it. The sample apps take `--snapshot <folder>` too (CI runs all three on Linux).
+- NocturneWindow extends the client area and marks its title bar and caption buttons with Avalonia 12's
+  `WindowDecorationProperties.ElementRole` (TitleBar, MinimizeButton, MaximizeButton, CloseButton; User for
+  commands inside the bar): Windows drags, snaps and shows the snap layouts itself. macOS keeps its traffic
+  lights (`:macos` hides our buttons). Remote Desktop and the transparency switch are polled every 2 s (no
+  public WndProc hook). Checked on screen on Windows 11: Acrylic, hover on all three buttons, snap layouts,
+  maximised.
+- Avalonia's packages send build statistics; the empty `AvaloniaStats` target in
+  `Directory.Build.targets` turns that off. Keep it.
+- `nuget.config` limits package sources to nuget.org (the user's global config lists a local
+  `C:\Git\Nuget` that does not exist and breaks restore).
+
+### Avalonia gotchas
+
+- `.axaml` files use `x:Double` (not `sys:Double`); relative gradient points need `%` (`0%,0%`; `0,1` is pixels).
+- A `BasedOn` theme gives its setters to the template's children too when its `TargetType` matches them:
+  a shared base with `TargetType="TemplatedControl"` painted the field ground on a TextBox's scroll viewer.
+  Keep base themes as narrow as the control (the field themes repeat their setters instead).
+- A selector may hold one `/template/` (no `^ /template/ Thumb /template/ Border`): reach into a nested
+  template through the inner control's own properties (the scroll thumb's bar follows its `Padding`).
+- Attached properties cannot be selected on (`[(h|ControlHelper.X)=True]` does not parse):
+  `ControlHelper.ClearButton` / `HasError` set the classes `clearButton` / `hasError`, which the themes
+  select; elsewhere bind visibility with a MultiBinding.
+- The window templates need a `VisualLayerManager` named `PART_VisualLayerManager`, or overlay popups
+  find no layer. NocturneWindow's wraps the title bar too, so its commands can open popups.
+- `DataValidationErrors` takes the field's `Background` and `Padding`; its presenter must not bind them.
+- ToggleSwitch moves `PART_MovingKnobs` from 0 to the width of `PART_SwitchKnob` (keep that canvas as
+  wide as the travel, 20).
+- Transitions: `Transitions` on the part (120/150 ms); rotate chevrons with `RenderTransform="rotate(…)"`
+  and a `TransformOperationsTransition`. Headless captures run 30 frames (0.5 s) so they finish.
+- Headless, `Dispatcher.UIThread.RunJobs()` never fires a `DispatcherTimer`; run
+  `Dispatcher.UIThread.MainLoop(token)` for the time to wait (`Snapshot.Wait`).
+- Avalonia has no WPF `RoutedCommand`: TabHelper offers `CloseTabCommand` / `AddTabCommand` (ICommand),
+  the `TabClosing` and `AddTabRequested` routed events and an `AddCommand` attached property.
+- `TextBox.TextChanged` is posted to the dispatcher, so it arrives after the change: a flag set around
+  a change from code has gone by then. SearchComboBox remembers the text it set (`ownText`) instead.
+- Popup content lives in the overlay layer, not under its control: find a part in an open popup among
+  the window's visual descendants (`Snapshot.PopupPart`), not the control's.
+- A ListBox scrolls its selected item into view when selected from code, and the request bubbles up to
+  the page's ScrollViewer: HamburgerMenu turns `AutoScrollToSelectedItem` off.
+- `VirtualizingStackPanel` sets `IsVisible` on its containers itself; a panel whose items hide
+  (HamburgerMenu's sub-items in the folded pane) uses a StackPanel.
+- `Animation.RunAsync` needs a Visual; Flyout slides its TranslateTransform frame by frame
+  (`TopLevel.RequestAnimationFrame`).
+- DatePicker and TimePicker place their popup themselves (centred under the field, moved up by
+  half the presenter's `MaxHeight`): the presenter themes set `MaxHeight` to their real height so
+  the chosen row sits on the field; their part names come from `StringDatePicker*Text` /
+  `StringTimePicker*Text` resources, which a standalone theme has to supply.
+- Giving focus back (dialog, flyout) uses no `NavigationMethod`: with Tab, SearchComboBox takes it
+  for the user moving in and opens its list.
+- Elements that draw outside their bounds (Badged's badge, a swatch ring) need room inside the
+  bounds or `ClipToBounds="False"`; negative margins are clipped.
+- Headless, open popups are `OverlayPopupHost`s in the window's `PopupOverlayLayer` (not `OverlayLayer`);
+  `GallerySnapshot` crops to them. A flyout's popup is not a visual descendant of its button: close it
+  with `Hide()`, not by looking for a Popup.
+- A `ResourceDictionary` keeps resources nothing has used yet deferred: enumerate its keys and read each
+  with `TryGetResource` (the gallery's line icons), not its values.
+- Resources and the clipboard: `Application.Current.TryFindResource` works before a
+  control is in the tree, `control.TryFindResource` does not; `IClipboard.SetTextAsync` is an extension in
+  `Avalonia.Input.Platform`; `InputElement.TappedEvent` (not `Gestures`).
+- DataGrid: a `DataGridTextColumn` cell's text takes the theme `DataGridCellTextBlockTheme` (and the editor
+  `DataGridCellTextBoxTheme`), found by key; right-aligned columns use `CellStyleClasses` and a
+  `DataGridCell.<class>` style; grouping is `DataGridCollectionView.GroupDescriptions`, and a grid selects
+  its first row when it gets its items unless `SelectedItem` is set to null after.
+
 ## Releases
 
 - Repo: github.com/Montago/NocturneTheme, default branch `master`.
@@ -158,7 +276,9 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 - Accents: `Nocturne.setAccent('green' | '#hex' | 'system')` (stored in localStorage `nocturne.accent`)
   computes the palette as `NocturneTheme.FromSystem` does; named ones are `:root[data-accent=…]` blocks
   in the tokens. The light is a dithered canvas (`canvas.nc-window__light`), redrawn 150 ms after a resize.
-- `--nc-font-weight-medium` is 400: Chromium draws Segoe UI at 500 as Semibold, WPF as Regular.
+- The font is Inter (`@font-face` in `nocturne.src.css`); `generate_web_tokens.py` puts `Inter` ahead
+  of the WPF families in `--nc-font-family` while Fonts.xaml still says Segoe UI.
+  `--nc-font-weight-medium` is 500 (Inter has the weight; it was 400 with Segoe UI).
 - The WPF gallery pictures draw on Fallback without tint, so the web gallery does too
   (`body.gallery`); compare a web gallery picture with `docs/screenshots/controls/<name>.png`.
 - Check visual changes with `python tools/web_snapshots.py --out <scratch>` (needs Pillow and Edge);

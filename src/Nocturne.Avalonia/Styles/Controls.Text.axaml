@@ -1,0 +1,370 @@
+<!--
+    Every field theme repeats the field setters instead of basing them on one shared theme: a
+    BasedOn theme whose TargetType also matches the template's children (TemplatedControl) gives
+    its setters to them too.
+
+    TextBox (also the password field: PasswordChar, with the class revealPasswordButton for an eye
+    button), NumericUpDown and the validation callout. A field is a dark, slightly sunken glass
+    strip with a lighter bottom edge; focus draws a 2px accent line along the bottom, an error a
+    red one. PlaceholderText shows hint text, ControlHelper.Icon an icon on the left
+    (Nocturne.Styles.TextBox.Search sets the magnifier), ControlHelper.ClearButton (or the class clearButton) an × that
+    empties the box. NumericUpDown is the same field with step buttons.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
+
+    <!--
+        The field draws its own red frame (:error); while it has the keyboard focus or the pointer,
+        a callout under it shows the first error message.
+    -->
+    <ControlTheme x:Key="{x:Type DataValidationErrors}" TargetType="DataValidationErrors">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <!-- DataValidationErrors takes the field's Background and Padding; the field draws them itself -->
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    <Popup Name="Callout" x:DataType="Control" DataContext="{TemplateBinding Owner}" Placement="BottomEdgeAlignedLeft"
+                           HorizontalOffset="-14" VerticalOffset="2" IsLightDismissEnabled="False" Focusable="False">
+                        <Popup.IsOpen>
+                            <MultiBinding Converter="{x:Static h:NocturneConverters.ShowValidationCallout}">
+                                <Binding Path="(DataValidationErrors.HasErrors)" />
+                                <Binding Path="IsKeyboardFocusWithin" />
+                                <Binding Path="IsPointerOver" />
+                            </MultiBinding>
+                        </Popup.IsOpen>
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="10,8,12,8">
+                            <DockPanel MaxWidth="300">
+                                <c:StrokeIcon DockPanel.Dock="Left" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Top" StrokeThickness="1.8"
+                                              Data="{DynamicResource Nocturne.Icons.Error}" Foreground="{DynamicResource Nocturne.Brushes.Error}" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource Nocturne.Font.Size.Caption}"
+                                           Foreground="{DynamicResource Nocturne.Brushes.Error.Text}"
+                                           Text="{Binding (DataValidationErrors.Errors), Converter={x:Static h:NocturneConverters.FirstError}}" />
+                            </DockPanel>
+                        </ContentControl>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- A form that shows the messages itself: no callout -->
+    <ControlTheme x:Key="Nocturne.Styles.DataValidationErrors.NoCallout" TargetType="DataValidationErrors">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- The small subtle buttons inside a field: the clear button, the reveal button, the NumericUpDown steps -->
+    <ControlTheme x:Key="Nocturne.Styles.Button.Field" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="Transparent" CornerRadius="6">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd, ^:checked /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Bd">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.RepeatButton.Field" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.Button.Field}">
+        <Setter Property="Delay" Value="400" />
+        <Setter Property="Interval" Value="60" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.ToggleButton.Reveal" TargetType="ToggleButton" BasedOn="{StaticResource Nocturne.Styles.Button.Field}">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Margin" Value="0,0,1,0" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="ToolTip.Tip" Value="Show password" />
+        <Style Selector="^:checked">
+            <Setter Property="ToolTip.Tip" Value="Hide password" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="ContextFlyout" Value="{StaticResource Nocturne.ContextMenu.Text}" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <DockPanel Margin="{TemplateBinding BorderThickness}">
+                            <c:StrokeIcon Name="Icon" DockPanel.Dock="Left" Width="16" Height="16" Margin="11,0,-4,0" StrokeThickness="2"
+                                          Data="{TemplateBinding h:ControlHelper.Icon}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                          IsVisible="{TemplateBinding h:ControlHelper.Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <ContentPresenter DockPanel.Dock="Left" Content="{TemplateBinding InnerLeftContent}" VerticalAlignment="Center" />
+                            <ContentPresenter DockPanel.Dock="Right" Content="{TemplateBinding InnerRightContent}" VerticalAlignment="Center" />
+                            <ToggleButton Name="Reveal" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.ToggleButton.Reveal}" IsVisible="False"
+                                          IsChecked="{Binding $parent[TextBox].RevealPassword, Mode=TwoWay}" AutomationProperties.Name="Show password">
+                                <c:StrokeIcon Width="18" Height="18" Data="{DynamicResource Nocturne.Icons.Eye}" Foreground="{Binding $parent[ToggleButton].Foreground}" />
+                            </ToggleButton>
+                            <Button Name="ClearButton" DockPanel.Dock="Right" Margin="0,0,3,0" IsVisible="False" Theme="{StaticResource Nocturne.Styles.Button.Field}"
+                                    Command="{Binding $parent[TextBox].Clear}" ToolTip.Tip="Clear" AutomationProperties.Name="Clear">
+                                <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.Close}" Foreground="{Binding $parent[Button].Foreground}" />
+                            </Button>
+                            <ScrollViewer Name="PART_ScrollViewer" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                                          BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                                          HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                          VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                          IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                                <Panel Margin="{TemplateBinding Padding}" Cursor="IBeam">
+                                    <TextBlock Name="Placeholder" Padding="2,0,0,0" Text="{TemplateBinding PlaceholderText}"
+                                               Foreground="{TemplateBinding PlaceholderForeground}" TextTrimming="CharacterEllipsis"
+                                               TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}"
+                                               IsHitTestVisible="False" />
+                                    <TextPresenter Name="PART_TextPresenter" Margin="2,0,0,0" Background="Transparent"
+                                                   CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}" CaretBrush="{TemplateBinding CaretBrush}"
+                                                   CaretIndex="{TemplateBinding CaretIndex}" LineHeight="{TemplateBinding LineHeight}"
+                                                   LetterSpacing="{TemplateBinding LetterSpacing}" PasswordChar="{TemplateBinding PasswordChar}"
+                                                   RevealPassword="{TemplateBinding RevealPassword}" SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                   SelectionEnd="{TemplateBinding SelectionEnd}" SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                   SelectionStart="{TemplateBinding SelectionStart}" Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                   TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" />
+                                </Panel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:not(:empty) /template/ TextBlock#Placeholder">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^.clearButton[IsReadOnly=False]:not(:empty) /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^.revealPasswordButton /template/ ToggleButton#Reveal">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <!-- A password field with the eye button: Paste only (set ContextFlyout to Nocturne.ContextMenu.Password on others) -->
+        <Style Selector="^.revealPasswordButton">
+            <Setter Property="ContextFlyout" Value="{StaticResource Nocturne.ContextMenu.Password}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Search field: magnifier on the left -->
+    <ControlTheme x:Key="Nocturne.Styles.TextBox.Search" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="h:ControlHelper.Icon" Value="{DynamicResource Nocturne.Icons.Search}" />
+    </ControlTheme>
+
+    <!-- Multi-line text: text from the top, wraps, scrolls -->
+    <ControlTheme x:Key="Nocturne.Styles.TextBox.MultiLine" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="MinHeight" Value="80" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    </ControlTheme>
+
+    <!-- The text box inside NumericUpDown: no look of its own -->
+    <ControlTheme x:Key="Nocturne.Styles.TextBox.Inner" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="ContextFlyout" Value="{StaticResource Nocturne.ContextMenu.Text}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer Name="PART_ScrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Background="Transparent">
+                    <Panel Margin="{TemplateBinding Padding}" Cursor="IBeam">
+                        <TextBlock Name="Placeholder" Padding="2,0,0,0" Text="{TemplateBinding PlaceholderText}"
+                                   Foreground="{TemplateBinding PlaceholderForeground}" TextAlignment="{TemplateBinding TextAlignment}" IsHitTestVisible="False" />
+                        <TextPresenter Name="PART_TextPresenter" Margin="2,0,0,0" Background="Transparent"
+                                       CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}" CaretBrush="{TemplateBinding CaretBrush}"
+                                       CaretIndex="{TemplateBinding CaretIndex}" SelectionBrush="{TemplateBinding SelectionBrush}"
+                                       SelectionEnd="{TemplateBinding SelectionEnd}" SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                       SelectionStart="{TemplateBinding SelectionStart}" Text="{TemplateBinding Text, Mode=TwoWay}"
+                                       TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="NoWrap" />
+                    </Panel>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:not(:empty) /template/ TextBlock#Placeholder">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ButtonSpinner (the frame of NumericUpDown): the field look with the steps at the end, down then up -->
+    <ControlTheme x:Key="{x:Type ButtonSpinner}" TargetType="ButtonSpinner">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                    <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                            BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                    <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                            BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                    <DockPanel Margin="{TemplateBinding BorderThickness}">
+                        <StackPanel Name="PART_SpinnerPanel" DockPanel.Dock="Right" Margin="0,0,3,0" Orientation="Horizontal"
+                                    IsVisible="{TemplateBinding ShowButtonSpinner}">
+                            <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource Nocturne.Styles.RepeatButton.Field}" AutomationProperties.Name="Decrease">
+                                <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.ChevronDown}"
+                                              Foreground="{Binding $parent[RepeatButton].Foreground}" />
+                            </RepeatButton>
+                            <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource Nocturne.Styles.RepeatButton.Field}" AutomationProperties.Name="Increase">
+                                <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.ChevronUp}"
+                                              Foreground="{Binding $parent[RepeatButton].Foreground}" />
+                            </RepeatButton>
+                        </StackPanel>
+                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Padding="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type NumericUpDown}" TargetType="NumericUpDown">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <ButtonSpinner Name="PART_Spinner" IsTabStop="False" MinWidth="0"
+                                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                   AllowSpin="{TemplateBinding AllowSpin}" ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                                   ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
+                                   Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                   BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}"
+                                   h:ControlHelper.HasError="{TemplateBinding h:ControlHelper.HasError}">
+                        <TextBox Name="PART_TextBox" Theme="{StaticResource Nocturne.Styles.TextBox.Inner}" MinWidth="20"
+                                 Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
+                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                 AcceptsReturn="False" IsReadOnly="{TemplateBinding IsReadOnly}" Text="{TemplateBinding Text}"
+                                 TextAlignment="{TemplateBinding TextAlignment}"
+                                 PlaceholderText="{TemplateBinding PlaceholderText}" PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
+                    </ButtonSpinner>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:error /template/ ButtonSpinner#PART_Spinner">
+            <Setter Property="h:ControlHelper.HasError" Value="True" />
+        </Style>
+        <Style Selector="^[IsReadOnly=True] /template/ ButtonSpinner#PART_Spinner">
+            <Setter Property="ShowButtonSpinner" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

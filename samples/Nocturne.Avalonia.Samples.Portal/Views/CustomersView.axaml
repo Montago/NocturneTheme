@@ -1,0 +1,104 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Portal"
+             xmlns:s="using:Nocturne.Avalonia.Samples"
+             x:Class="Nocturne.Avalonia.Samples.Portal.Views.CustomersView">
+    <!-- An accordion on the left, tabs with the selected customer on the right -->
+    <Grid Margin="20,12,28,24" RowDefinitions="Auto,Auto,*" ColumnDefinitions="280,24,*">
+        <TextBlock Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Customers" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro" Text="7 customers in 6 countries" />
+
+        <nc:Accordion Grid.Row="2">
+            <Expander Header="By country" IsExpanded="True">
+                <TreeView Name="Tree" ItemsSource="{x:Static local:SampleData.Countries}">
+                    <TreeView.Styles>
+                        <Style Selector="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.Styles>
+                    <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="local:Country" ItemsSource="{Binding Customers}">
+                            <TextBlock Text="{Binding Name}" />
+                        </TreeDataTemplate>
+                        <DataTemplate DataType="local:Customer">
+                            <TextBlock Text="{Binding Company}" />
+                        </DataTemplate>
+                    </TreeView.DataTemplates>
+                </TreeView>
+            </Expander>
+            <Expander Header="Key accounts">
+                <TextBlock TextWrapping="Wrap" Text="Alfreds Futterkiste and Ernst Handel have framework agreements until 2028." />
+            </Expander>
+            <Expander Header="Archive">
+                <TextBlock TextWrapping="Wrap" Text="12 former customers." />
+            </Expander>
+        </nc:Accordion>
+
+        <Grid Grid.Row="2" Grid.Column="2" RowDefinitions="Auto,*" DataContext="{Binding #Tree.SelectedItem}" x:DataType="local:Customer">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16" Spacing="14">
+                <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile}">
+                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Globe}" />
+                </ContentControl>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Company}" />
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="{Binding Location}" />
+                </StackPanel>
+            </StackPanel>
+
+            <TabControl Grid.Row="1">
+                <TabItem Header="Contact">
+                    <!-- Two columns of fields, each with its label above -->
+                    <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,*">
+                        <StackPanel>
+                            <Label Content="C_ontact" Target="ContactBox" />
+                            <TextBox Name="ContactBox" Text="{Binding Contact, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="_Title" Target="TitleBox" />
+                            <TextBox Name="TitleBox" Text="{Binding Title, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                            <Label Content="_Email" Target="EmailBox" />
+                            <TextBox Name="EmailBox" Text="{Binding Email, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,12,0,0">
+                            <Label Content="_Phone" Target="PhoneBox" />
+                            <TextBox Name="PhoneBox" Width="180" HorizontalAlignment="Left" Text="{Binding Phone, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                            <Label Content="C_ity" Target="CityBox" />
+                            <TextBox Name="CityBox" Text="{Binding City, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="8">
+                            <Button Content="New order" MinWidth="80" />
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" MinWidth="80" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Orders">
+                    <DataGrid ItemsSource="{Binding Orders}" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ORDER" Binding="{Binding Number}" Width="110" x:DataType="local:Order" />
+                            <DataGridTextColumn Header="DATE" Binding="{Binding Date, StringFormat=d}" Width="120" x:DataType="local:Order" />
+                            <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="local:Order">
+                                        <ContentControl Theme="{Binding Status, Converter={x:Static s:SampleConverters.StatusTheme}}" Content="{Binding Status}"
+                                                        HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="*" x:DataType="local:Order" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="Notes">
+                    <TextBox Theme="{StaticResource Nocturne.Styles.TextBox.MultiLine}"
+                             Text="Prefers delivery before 10 am. Invoices go to the accounts department, not to the contact." />
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

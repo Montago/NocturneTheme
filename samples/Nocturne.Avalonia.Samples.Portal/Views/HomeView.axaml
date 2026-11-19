@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Portal"
+             x:Class="Nocturne.Avalonia.Samples.Portal.Views.HomeView">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="20,12,28,28">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Good morning, Lindsey" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro"
+                       Text="Wednesday 18 November · 3 orders are waiting to be packed and 5 products are below their reorder level." />
+
+            <nc:InfoBar Severity="Info" Title="New price list." Margin="0,0,0,18"
+                        Message="Prices for 2027 take effect on 1 January. Customers with open quotes get a reminder on Monday." />
+
+            <!-- Key figures; the first three open the page behind them -->
+            <UniformGrid Rows="1" Margin="-6,0,-6,18">
+                <nc:Tile Title="Open orders" Count="3" Theme="{StaticResource Nocturne.Styles.Tile.Accent}" Margin="6,0" Width="NaN"
+                         HorizontalAlignment="Stretch" Tag="Orders" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.List}" />
+                </nc:Tile>
+                <nc:Tile Title="Below reorder level" Count="5" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch" Tag="Products" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Box}" />
+                </nc:Tile>
+                <nc:Tile Title="Customers" Count="7" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch" Tag="Customers" Click="OnGoToPage">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.People}" />
+                </nc:Tile>
+                <nc:Tile Title="Sales this month" Count="$8.4k" Margin="6,0" Width="NaN" HorizontalAlignment="Stretch">
+                    <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Sample.Icons.Chart}" />
+                </nc:Tile>
+            </UniformGrid>
+
+            <Grid ColumnDefinitions="3*,16,2*">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="LATEST ORDERS">
+                    <DataGrid ItemsSource="{x:Static local:SampleData.Orders}" Height="236" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ORDER" Binding="{Binding Number}" Width="96" x:DataType="local:Order" />
+                            <DataGridTextColumn Header="CUSTOMER" Binding="{Binding Customer}" Width="*" x:DataType="local:Order" />
+                            <DataGridTextColumn Header="DATE" Binding="{Binding Date, StringFormat=MMM d}" Width="80" x:DataType="local:Order" />
+                            <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="100" CellStyleClasses="right" x:DataType="local:Order" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="TOP RATED PRODUCTS">
+                    <ItemsControl ItemsSource="{x:Static local:SampleData.TopRated}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:Product">
+                                <DockPanel Margin="0,0,0,14">
+                                    <nc:Rating DockPanel.Dock="Right" Value="{Binding Rating, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" />
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="{Binding Category}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

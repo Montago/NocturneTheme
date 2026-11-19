@@ -1,0 +1,260 @@
+<!--
+    DataGrid (Avalonia.Controls.DataGrid): no frame and no vertical lines; small bold column headers
+    over a light rule, 42px rows divided by faint lines, a light fill on the selected row. Row headers
+    are off by default (HeadersVisibility Column); with All or Row they are a narrow column that shows
+    an accent bar on the selected rows. Group headers (DataGridCollectionView.GroupDescriptions) are
+    a full-width bar with a chevron, the group's name and its count.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:collections="using:Avalonia.Collections">
+
+    <!-- The text of a DataGridTextColumn cell (the cell has the padding) -->
+    <ControlTheme x:Key="DataGridCellTextBlockTheme" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <!-- The editor of a DataGridTextColumn cell: the field without its own height -->
+    <ControlTheme x:Key="DataGridCellTextBoxTheme" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Margin" Value="-6,4" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DataGridCell}" TargetType="DataGridCell">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="CellBorder" Background="{TemplateBinding Background}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Foreground="{TemplateBinding Foreground}" />
+                        <Rectangle Name="PART_RightGridLine" Grid.Column="1" Width="1" VerticalAlignment="Stretch" />
+                        <Rectangle Name="InvalidVisualElement" Grid.ColumnSpan="2" Stroke="{DynamicResource Nocturne.Brushes.Error}" StrokeThickness="1"
+                                   IsHitTestVisible="False" IsVisible="False" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:invalid /template/ Rectangle#InvalidVisualElement">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DataGridColumnHeader}" TargetType="DataGridColumnHeader">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Label}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="SeparatorBrush" Value="Transparent" />
+        <Setter Property="AreSeparatorsVisible" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="HeaderBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Margin="{TemplateBinding Padding}" Orientation="Horizontal"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center"
+                                              Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            <c:StrokeIcon Name="SortIcon" Width="12" Height="12" Margin="4,0,0,0" StrokeThickness="2.4" IsVisible="False"
+                                          Data="{DynamicResource Nocturne.Icons.ChevronUp}" Foreground="{TemplateBinding Foreground}" />
+                        </StackPanel>
+                        <Rectangle Name="VerticalSeparator" Grid.Column="1" Width="1" VerticalAlignment="Stretch"
+                                   Fill="{TemplateBinding SeparatorBrush}" IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:dragIndicator">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="^:sortascending /template/ c|StrokeIcon#SortIcon">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:sortdescending /template/ c|StrokeIcon#SortIcon">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="Data" Value="{DynamicResource Nocturne.Icons.ChevronDown}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- A row's header: a narrow column with an accent bar while the row is selected -->
+    <ControlTheme x:Key="{x:Type DataGridRowHeader}" TargetType="DataGridRowHeader">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="SeparatorBrush" Value="Transparent" />
+        <Setter Property="AreSeparatorsVisible" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_Root" Background="{TemplateBinding Background}" RowDefinitions="*,*,Auto" ColumnDefinitions="Auto,*">
+                    <Border Name="Bar" Grid.RowSpan="3" Grid.ColumnSpan="2" Width="3" Height="16" CornerRadius="1.5"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Background="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                    <Rectangle Name="HorizontalSeparator" Grid.Row="2" Grid.ColumnSpan="2" Height="1" HorizontalAlignment="Stretch"
+                               Fill="{TemplateBinding SeparatorBrush}" IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                    <ContentPresenter Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      Content="{TemplateBinding Content}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:selected /template/ Border#Bar">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DataGridRow}" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="RowBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <DataGridFrozenGrid Name="PART_Root" ColumnDefinitions="Auto,*" RowDefinitions="*,Auto,Auto">
+                        <Rectangle Name="BackgroundRectangle" Grid.RowSpan="2" Grid.ColumnSpan="2" Fill="Transparent" />
+                        <DataGridRowHeader Name="PART_RowHeader" Grid.RowSpan="3" DataGridFrozenGrid.IsFrozen="True" />
+                        <DataGridCellsPresenter Name="PART_CellsPresenter" Grid.Column="1" DataGridFrozenGrid.IsFrozen="True" />
+                        <DataGridDetailsPresenter Name="PART_DetailsPresenter" Grid.Row="1" Grid.Column="1" />
+                        <Rectangle Name="PART_BottomGridLine" Grid.Row="2" Grid.Column="1" Height="1" HorizontalAlignment="Stretch" />
+                    </DataGridFrozenGrid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Row.Hover}" />
+        </Style>
+        <Style Selector="^:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Row.Selected}" />
+        </Style>
+        <Style Selector="^:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Row.Selected.Hover}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The whole group header bar opens and closes the group; the chevron turns -->
+    <ControlTheme x:Key="Nocturne.Styles.DataGridRowGroupHeader.Toggle" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent">
+                    <c:StrokeIcon Name="Chevron" Width="12" Height="12" Margin="12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  StrokeThickness="2.4" Data="{DynamicResource Nocturne.Icons.ChevronRight}"
+                                  Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}" RenderTransform="rotate(0deg)">
+                        <c:StrokeIcon.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                            </Transitions>
+                        </c:StrokeIcon.Transitions>
+                    </c:StrokeIcon>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:checked /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(90deg)" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DataGridRowGroupHeader}" TargetType="DataGridRowGroupHeader">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Expander.Header}" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="ItemCountFormat" Value="{}{0:N0}" />
+        <Setter Property="IsPropertyNameVisible" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate x:DataType="collections:DataGridCollectionViewGroup">
+                <DataGridFrozenGrid Name="PART_Root" Background="{TemplateBinding Background}" MinHeight="{TemplateBinding MinHeight}"
+                                    ColumnDefinitions="Auto,Auto,*" RowDefinitions="*,Auto">
+                    <Rectangle Name="PART_IndentSpacer" Grid.Column="1" />
+                    <ToggleButton Name="PART_ExpanderButton" Grid.Column="2" Theme="{StaticResource Nocturne.Styles.DataGridRowGroupHeader.Toggle}" />
+                    <StackPanel Grid.Column="2" Margin="34,0,12,0" Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False">
+                        <TextBlock Name="PART_PropertyNameElement" Margin="0,0,6,0" IsVisible="{TemplateBinding IsPropertyNameVisible}"
+                                   Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+                        <TextBlock FontWeight="SemiBold" Text="{Binding Key}" />
+                        <TextBlock Name="PART_ItemCountElement" Margin="8,0,0,0" VerticalAlignment="Center" IsVisible="{TemplateBinding IsItemCountVisible}"
+                                   FontSize="{DynamicResource Nocturne.Font.Size.Small}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+                    </StackPanel>
+                    <DataGridRowHeader Name="PART_RowHeader" Grid.RowSpan="2" DataGridFrozenGrid.IsFrozen="True" />
+                    <Rectangle Name="PART_BottomGridLine" Grid.Row="1" Grid.ColumnSpan="3" Height="1" />
+                </DataGridFrozenGrid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ DataGridFrozenGrid#PART_Root">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Expander.Header.Hover}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="RowBackground" Value="Transparent" />
+        <Setter Property="RowHeight" Value="42" />
+        <Setter Property="ColumnHeaderHeight" Value="38" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource Nocturne.Brushes.Stroke.Subtle}" />
+        <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+        <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="SelectionMode" Value="Extended" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="DropLocationIndicatorTemplate">
+            <Template>
+                <Rectangle Width="2" Fill="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+            </Template>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="DataGridBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto,Auto" ClipToBounds="True">
+                        <DataGridColumnHeader Name="PART_TopLeftCornerHeader" Width="20" />
+                        <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter" Grid.Column="1" />
+                        <DataGridColumnHeader Name="PART_TopRightCornerHeader" Grid.Column="2" />
+                        <Rectangle Name="PART_ColumnHeadersAndRowsSeparator" Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom"
+                                   Fill="Transparent" />
+                        <DataGridRowsPresenter Name="PART_RowsPresenter" Grid.Row="1" Grid.ColumnSpan="2"
+                                               ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                            <DataGridRowsPresenter.GestureRecognizers>
+                                <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"
+                                                         IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowsPresenter}" />
+                            </DataGridRowsPresenter.GestureRecognizers>
+                        </DataGridRowsPresenter>
+                        <Rectangle Name="PART_BottomRightCorner" Grid.Row="2" Grid.Column="2" Fill="Transparent" />
+                        <ScrollBar Name="PART_VerticalScrollbar" Grid.Row="1" Grid.Column="2" Orientation="Vertical"
+                                   AllowAutoHide="{Binding Path=(ScrollViewer.AllowAutoHide), RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Grid Grid.Row="2" Grid.Column="1" ColumnDefinitions="Auto,*">
+                            <Rectangle Name="PART_FrozenColumnScrollBarSpacer" />
+                            <ScrollBar Name="PART_HorizontalScrollbar" Grid.Column="1" Orientation="Horizontal"
+                                       AllowAutoHide="{Binding Path=(ScrollViewer.AllowAutoHide), RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Grid>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

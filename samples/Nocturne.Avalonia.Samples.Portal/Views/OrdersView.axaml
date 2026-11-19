@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Portal"
+             xmlns:s="using:Nocturne.Avalonia.Samples"
+             x:Class="Nocturne.Avalonia.Samples.Portal.Views.OrdersView">
+    <Grid Margin="20,12,28,24" RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Orders" />
+        <TextBlock Grid.Row="1" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro"
+                   Text="Orders from 1 to 18 November. Type a customer to narrow the list." />
+
+        <DockPanel Grid.Row="2" Classes="pageToolbar">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="From" Margin="0,0,8,0" />
+            <CalendarDatePicker Name="From" Width="140" AutomationProperties.Name="From" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="to" Margin="10,0,8,0" />
+            <CalendarDatePicker Name="To" Width="140" AutomationProperties.Name="To" />
+            <AutoCompleteBox Name="CustomerBox" Width="230" Margin="16,0,0,0" ItemsSource="{x:Static local:SampleData.CustomerNames}"
+                             PlaceholderText="Customer" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Search}" FilterMode="ContainsOrdinal"
+                             AutomationProperties.Name="Customer" />
+
+            <DropDownButton DockPanel.Dock="Right" Content="Export">
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="Excel (.xlsx)" />
+                        <MenuItem Header="CSV" />
+                        <MenuItem Header="Packing slips (PDF)" />
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+        </DockPanel>
+
+        <DataGrid Name="OrderGrid" Grid.Row="3" IsReadOnly="True" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ORDER" Binding="{Binding Number}" Width="110" x:DataType="local:Order" />
+                <DataGridTextColumn Header="CUSTOMER" Binding="{Binding Customer}" Width="*" x:DataType="local:Order" />
+                <DataGridTextColumn Header="SHIP TO" Binding="{Binding ShipTo}" Width="180" x:DataType="local:Order" />
+                <DataGridTextColumn Header="DATE" Binding="{Binding Date, StringFormat=d}" Width="120" CellStyleClasses="right" x:DataType="local:Order" />
+                <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="local:Order">
+                            <ContentControl Theme="{Binding Status, Converter={x:Static s:SampleConverters.StatusTheme}}" Content="{Binding Status}"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="110" CellStyleClasses="right" x:DataType="local:Order" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Lines of the selected order -->
+        <Expander Grid.Row="4" Header="Order lines" IsExpanded="True" Margin="0,16,0,0" HorizontalAlignment="Stretch">
+            <DataGrid Name="Lines" Height="120" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PRODUCT" Binding="{Binding Product}" Width="280" x:DataType="local:OrderLine" />
+                    <DataGridTextColumn Header="QUANTITY" Binding="{Binding Quantity}" Width="100" CellStyleClasses="right" x:DataType="local:OrderLine" />
+                    <DataGridTextColumn Header="PRICE" Binding="{Binding Price, StringFormat=C}" Width="100" CellStyleClasses="right" x:DataType="local:OrderLine" />
+                    <DataGridTextColumn Header="AMOUNT" Binding="{Binding Amount, StringFormat=C}" Width="110" CellStyleClasses="right" x:DataType="local:OrderLine" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Expander>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,14,0,0" Spacing="12">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="Shipped on time this month" />
+            <ProgressBar Width="220" Value="92" VerticalAlignment="Center" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="92 % · 10 orders · $8,412.70" />
+        </StackPanel>
+    </Grid>
+</UserControl>

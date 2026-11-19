@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Avalonia.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Nocturne.Avalonia</RootNamespace>
+    <AssemblyName>Nocturne.Avalonia</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- NuGet package. Not released yet; it will get its own avalonia-v* tags. -->
+  <PropertyGroup>
+    <PackageId>Nocturne.Avalonia</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Martin Kirk</Authors>
+    <Copyright>Copyright (c) 2026 Martin Kirk</Copyright>
+    <Description>Nocturne: a dark theme for Avalonia on .NET 10+, for Windows, macOS and Linux.</Description>
+    <PackageTags>avalonia;theme;acrylic;mica;nocturne;dark;controls;styles</PackageTags>
+    <PackageProjectUrl>https://github.com/Montago/NocturneTheme</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Montago/NocturneTheme</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- MIT, except the icons: Material Design Icons (Apache License 2.0, see NOTICE.md) -->
+    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <!-- The theme styles Avalonia's DataGrid, which lives in its own package (and its own version numbers) -->
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaDataGridVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\NOTICE.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\icons\LICENSE" Pack="true" PackagePath="\icons\" />
+    <None Include="..\..\icons\LICENSE-2.0.txt" Pack="true" PackagePath="\icons\" />
+  </ItemGroup>
+
+</Project>

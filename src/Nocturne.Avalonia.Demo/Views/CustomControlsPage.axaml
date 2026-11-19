@@ -1,0 +1,225 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             x:Class="Nocturne.Avalonia.Demo.Views.CustomControlsPage">
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6" Margin="8,8,0,4">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Custom controls" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}"
+                       Text="The controls Avalonia lacks, from Nocturne.Avalonia (nc:), and Avalonia's pickers in the theme." />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*,20,*,20,*">
+            <!-- Column 1 -->
+            <StackPanel Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="PICKERS" Tag="DatePicker · TimePicker · …">
+                    <StackPanel>
+                        <Label Content="_Meeting day" Target="MeetingDay" />
+                        <DatePicker Name="MeetingDay" HorizontalAlignment="Stretch" AutomationProperties.Name="Meeting day" />
+
+                        <Label Margin="0,14,0,0" Content="Meeting _time" Target="MeetingTime" />
+                        <TimePicker Name="MeetingTime" SelectedTime="09:30" MinuteIncrement="15" AutomationProperties.Name="Meeting time" />
+
+                        <Label Margin="0,14,0,0" Content="_Label colour" Target="LabelColour" />
+                        <nc:ColorPicker Name="LabelColour" Width="200" AutomationProperties.Name="Label colour" />
+
+                        <Label Margin="0,14,0,0" Content="_City (AutoCompleteBox)" Target="CityBox" />
+                        <AutoCompleteBox Name="CityBox" PlaceholderText="Start typing a city" FilterMode="StartsWith"
+                                         nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Search}" AutomationProperties.Name="City" />
+
+                        <Label Margin="0,14,0,0" Content="_Owner (SearchComboBox)" Target="OwnerBox" />
+                        <nc:SearchComboBox Name="OwnerBox" PlaceholderText="Choose or type a name" AutomationProperties.Name="Owner" />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="PROGRESSRING" Tag="nc:ProgressRing">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="20">
+                            <nc:ProgressRing Width="20" Height="20" />
+                            <nc:ProgressRing />
+                            <nc:ProgressRing Width="48" Height="48" />
+                        </StackPanel>
+                        <TextBlock Margin="0,16,0,8" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Inside a button" />
+                        <Button HorizontalAlignment="Left" Theme="{StaticResource Nocturne.Styles.Button.Primary}" IsHitTestVisible="False">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <nc:ProgressRing Width="16" Height="16" Foreground="{DynamicResource Nocturne.Brushes.Text.OnAccent}" Background="#33FFFFFF" />
+                                <TextBlock Text="Saving…" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 2 -->
+            <StackPanel Grid.Column="2" Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="RANGESLIDER · RATING" Tag="nc:RangeSlider · Rating">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" FontSize="13" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:0} – {1:0} km">
+                                        <Binding Path="LowerValue" ElementName="DistanceRange" />
+                                        <Binding Path="UpperValue" ElementName="DistanceRange" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Distance" />
+                        </DockPanel>
+                        <nc:RangeSlider Name="DistanceRange" Minimum="0" Maximum="100" LowerValue="20" UpperValue="65" SmallChange="5"
+                                        AutomationProperties.Name="Distance" />
+
+                        <TextBlock Margin="0,18,0,8" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Your rating" />
+                        <nc:Rating Value="4" AutomationProperties.Name="Rating" />
+                        <TextBlock Margin="0,14,0,8" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Average (read-only)" />
+                        <nc:Rating Value="3" IsReadOnly="True" Focusable="False" />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="BADGED" Tag="nc:Badged">
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <nc:Badged Badge="3">
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon}" ToolTip.Tip="Messages" AutomationProperties.Name="Messages">
+                                <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Sync}" />
+                            </Button>
+                        </nc:Badged>
+                        <nc:Badged Badge="12" BadgeBackground="{DynamicResource Nocturne.Brushes.Error}" BadgeForeground="#FF2A0E0B">
+                            <Button Content="Conflicts" />
+                        </nc:Badged>
+                        <nc:Badged Badge="New" BadgeBackground="{DynamicResource Nocturne.Brushes.Warning}" BadgeForeground="#FF2A2108">
+                            <Button Content="Reports" />
+                        </nc:Badged>
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="DIALOG · FLYOUT" Tag="nc:NocturneDialog · nc:Flyout">
+                    <StackPanel>
+                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Body}" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}" LineHeight="21"
+                                   TextWrapping="Wrap"
+                                   Text="A dialog dims the page and waits for an answer (await ShowMessageAsync). A flyout slides in from the edge of the window." />
+                        <WrapPanel Margin="0,16,0,6" ItemSpacing="10" LineSpacing="10">
+                            <Button Name="ShowDialogButton" Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="Show dialog" Click="OnShowDialog" />
+                            <Button Name="OpenFlyoutButton" Content="Open flyout" Click="OnOpenFlyout" />
+                        </WrapPanel>
+                        <TextBlock Name="DialogResultText" Theme="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="No answer yet." />
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 3 -->
+            <StackPanel Grid.Column="4" Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="TILE" Tag="nc:Tile">
+                    <WrapPanel ItemSpacing="12" LineSpacing="12">
+                        <nc:Tile Width="150" Title="Files" Count="1,284">
+                            <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Folder}" />
+                        </nc:Tile>
+                        <nc:Tile Width="150" Theme="{StaticResource Nocturne.Styles.Tile.Accent}" Title="Synchronise" Count="3">
+                            <nc:StrokeIcon Width="24" Height="24" Data="{StaticResource Nocturne.Icons.Sync}" />
+                        </nc:Tile>
+                    </WrapPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="BUSYINDICATOR" Tag="nc:BusyIndicator">
+                    <StackPanel>
+                        <ToggleSwitch Name="BusySwitch" Content="IsBusy" IsChecked="True" />
+                        <nc:BusyIndicator Margin="0,10,0,0" IsBusy="{Binding #BusySwitch.IsChecked}" BusyContent="Uploading 128 files…">
+                            <StackPanel>
+                                <Label Content="Folder" />
+                                <TextBox Text="Projects/Nocturne" />
+                                <Label Margin="0,12,0,0" Content="Destination" />
+                                <TextBox Text="intranet.local/shared" />
+                            </StackPanel>
+                        </nc:BusyIndicator>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+        </Grid>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="INFOBAR" Tag="nc:InfoBar · Severity">
+            <StackPanel Spacing="10">
+                <nc:InfoBar Title="Update available." Message="Nocturne can be updated when you restart the app." IsClosable="False">
+                    <Button Content="Restart" />
+                </nc:InfoBar>
+                <nc:InfoBar Severity="Success" Title="Synchronised." Message="128 files were uploaded at 07:12." />
+                <nc:InfoBar Severity="Warning" Title="Almost full." Message="The shared drive has 2.1 GB free." />
+                <nc:InfoBar Severity="Error" Title="Could not connect." Message="intranet.local did not answer within 30 s.">
+                    <Button Content="Try again" />
+                </nc:InfoBar>
+            </StackPanel>
+        </HeaderedContentControl>
+
+        <Grid ColumnDefinitions="*,20,*,20,*">
+            <HeaderedContentControl Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.Card}" Header="HAMBURGERMENU" Tag="nc:HamburgerMenu · nc:HamburgerMenuItem">
+                <Border CornerRadius="10" ClipToBounds="True" BorderThickness="1" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}">
+                    <nc:HamburgerMenu Name="DemoMenu" Height="330" SelectedIndex="0" AutomationProperties.Name="Sections">
+                        <nc:HamburgerMenu.ContentTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <StackPanel Margin="28,22">
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding}" />
+                                    <TextBlock Margin="0,8,0,0" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" TextWrapping="Wrap"
+                                               Text="The page of the selected item goes here. The ☰ button folds the pane to its icons." />
+                                </StackPanel>
+                            </DataTemplate>
+                        </nc:HamburgerMenu.ContentTemplate>
+                        <nc:HamburgerMenuItem Content="Dashboard">
+                            <nc:HamburgerMenuItem.Icon>
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Grid}" />
+                            </nc:HamburgerMenuItem.Icon>
+                        </nc:HamburgerMenuItem>
+                        <nc:HamburgerMenuItem Content="Files" IsExpanded="True">
+                            <nc:HamburgerMenuItem.Icon>
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Folder}" />
+                            </nc:HamburgerMenuItem.Icon>
+                            <nc:HamburgerMenuItem.Items>
+                                <nc:HamburgerMenuItem Content="Recent" />
+                                <nc:HamburgerMenuItem Content="Shared with me" />
+                            </nc:HamburgerMenuItem.Items>
+                        </nc:HamburgerMenuItem>
+                        <nc:HamburgerMenuItem Content="Security">
+                            <nc:HamburgerMenuItem.Icon>
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Shield}" />
+                            </nc:HamburgerMenuItem.Icon>
+                        </nc:HamburgerMenuItem>
+                        <nc:HamburgerMenuItem Content="Network">
+                            <nc:HamburgerMenuItem.Icon>
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Globe}" />
+                            </nc:HamburgerMenuItem.Icon>
+                        </nc:HamburgerMenuItem>
+                    </nc:HamburgerMenu>
+                </Border>
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Grid.Column="4" Theme="{StaticResource Nocturne.Styles.Card}" Header="ACCORDION" Tag="nc:Accordion">
+                <nc:Accordion Height="330">
+                    <Expander Header="Account" IsExpanded="True">
+                        <TextBlock TextWrapping="Wrap" LineHeight="21" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}"
+                                   Text="Opening one section closes the others; the open one takes the height that is left." />
+                    </Expander>
+                    <Expander Header="Notifications">
+                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}" Text="E-mail, sounds and badges." />
+                    </Expander>
+                    <Expander Header="Privacy">
+                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Nocturne.Brushes.Text.Label}" Text="Who can see your files." />
+                    </Expander>
+                </nc:Accordion>
+            </HeaderedContentControl>
+        </Grid>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="STATUSBAR" Tag="nc:StatusBar · nc:StatusBarItem">
+            <Border CornerRadius="10" ClipToBounds="True" BorderThickness="1" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}">
+                <nc:StatusBar>
+                    <nc:StatusBarItem>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <nc:StrokeIcon Width="14" Height="14" Data="{StaticResource Nocturne.Icons.CheckCircle}" Foreground="{DynamicResource Nocturne.Brushes.Success}" />
+                            <TextBlock Text="Synchronised" />
+                        </StackPanel>
+                    </nc:StatusBarItem>
+                    <Separator />
+                    <nc:StatusBarItem Content="7 items, 1 selected" />
+                    <Separator />
+                    <nc:StatusBarItem Content="UTF-8" />
+                    <nc:StatusBarItem HorizontalAlignment="Right" Content="intranet.local" />
+                </nc:StatusBar>
+            </Border>
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>

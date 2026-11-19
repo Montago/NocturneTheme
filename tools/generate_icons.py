@@ -1,10 +1,11 @@
 """Builds the Nocturne icon set from icons/icons.json and the SVG files in icons/mdi/. Enum names are
 the MDI names in PascalCase, as in MahApps' IconBrowser (view-grid -> ViewGrid):
 
-    src/Nocturne.Wpf/Controls/NocturneIconKind.g.cs   enum + path data for <nc:NocturneIcon Kind="..." />
-    src/Nocturne.Web/TagHelpers/NocturneIconKind.g.cs the same enum for <nc-icon kind="..." />
-    src/Nocturne.Web/wwwroot/img/icons.svg            SVG sprite: one <symbol> per icon (id = MDI name), and
-                                                      the theme's line icons (Styles/Icons.xaml) as stroke-<name>
+    src/Nocturne.Wpf/Controls/NocturneIconKind.g.cs        enum + path data for <nc:NocturneIcon Kind="..." />
+    src/Nocturne.Avalonia/Controls/NocturneIconKind.g.cs   the same for Nocturne.Avalonia
+    src/Nocturne.Web/TagHelpers/NocturneIconKind.g.cs      the same enum for <nc-icon kind="..." />
+    src/Nocturne.Web/wwwroot/img/icons.svg                 SVG sprite: one <symbol> per icon (id = MDI name), and
+                                                           the theme's line icons (Styles/Icons.xaml) as stroke-<name>
 
 The icons are Material Design Icons (Apache License 2.0, see icons/LICENSE), the same set as the
 JetPack theme uses. They are kept in the repository, so building needs no network; --fetch downloads
@@ -26,6 +27,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ICONS = os.path.join(ROOT, 'icons')
 SVG_DIR = os.path.join(ICONS, 'mdi')
 OUT_WPF = os.path.join(ROOT, 'src', 'Nocturne.Wpf', 'Controls', 'NocturneIconKind.g.cs')
+OUT_AVALONIA = os.path.join(ROOT, 'src', 'Nocturne.Avalonia', 'Controls', 'NocturneIconKind.g.cs')
 OUT_WEB_ENUM = os.path.join(ROOT, 'src', 'Nocturne.Web', 'TagHelpers', 'NocturneIconKind.g.cs')
 OUT_SPRITE = os.path.join(ROOT, 'src', 'Nocturne.Web', 'wwwroot', 'img', 'icons.svg')
 ICONS_XAML = os.path.join(ROOT, 'src', 'Nocturne.Wpf', 'Styles', 'Icons.xaml')
@@ -69,9 +71,9 @@ def path_data(mdi):
     return paths[0]
 
 
-def enum(data, icons):
+def enum(data, icons, namespace):
     """The enum plus a lookup from each member to its path data."""
-    lines = [HEADER, 'namespace Nocturne.Wpf.Controls;', '',
+    lines = [HEADER, f'namespace {namespace};', '',
              f"/// <summary>The Nocturne icons: {data['source']}, {data['package']} {data['version']} "
              f"({data['license']}), drawn filled on a 24×24 grid.</summary>",
              'public enum NocturneIconKind', '{', '    None,']
@@ -130,7 +132,8 @@ def outputs():
     data = manifest()
     names = sorted(data['icons'])
     icons = {pascal(mdi): path_data(mdi) for mdi in names}
-    return {OUT_WPF: enum(data, icons),
+    return {OUT_WPF: enum(data, icons, 'Nocturne.Wpf.Controls'),
+            OUT_AVALONIA: enum(data, icons, 'Nocturne.Avalonia.Controls'),
             OUT_WEB_ENUM: web_enum(data, names),
             OUT_SPRITE: sprite(data, {mdi: path_data(mdi) for mdi in names})}
 

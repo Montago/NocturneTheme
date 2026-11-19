@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:demo="using:Nocturne.Avalonia.Demo"
+             x:Class="Nocturne.Avalonia.Demo.Views.MoreControlsPage">
+    <UserControl.Styles>
+        <!-- A folder or file icon in front of a name -->
+        <Style Selector="nc|StrokeIcon.item">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6" Margin="8,8,0,4">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="More controls" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}"
+                       Text="The rest of the standard set: an app frame with a tree, a splitter, a grid and a status bar; dates and row headers." />
+        </StackPanel>
+
+        <!-- A small file manager: everything an app frame is built from -->
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="APP FRAME" Tag="TreeView · GridSplitter · DataGrid · nc:StatusBar">
+            <DockPanel Height="420">
+                <!-- Avalonia has no ToolBar: a row of subtle buttons does the job -->
+                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12" Orientation="Horizontal" Spacing="4">
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Subtle}" ToolTip.Tip="New folder" AutomationProperties.Name="New folder">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Plus}" />
+                            <TextBlock VerticalAlignment="Center" Text="New" />
+                        </StackPanel>
+                    </Button>
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Refresh" AutomationProperties.Name="Refresh">
+                        <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Refresh}" />
+                    </Button>
+                    <Separator Theme="{StaticResource Nocturne.Styles.Separator.Vertical}" Margin="6,8" />
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Cut" AutomationProperties.Name="Cut">
+                        <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Cut}" />
+                    </Button>
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Copy" AutomationProperties.Name="Copy">
+                        <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Copy}" />
+                    </Button>
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Paste" AutomationProperties.Name="Paste">
+                        <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Paste}" />
+                    </Button>
+                    <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Delete" AutomationProperties.Name="Delete">
+                        <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Delete}" />
+                    </Button>
+                    <Separator Theme="{StaticResource Nocturne.Styles.Separator.Vertical}" Margin="6,8" />
+                    <CheckBox Content="Hidden files" VerticalAlignment="Center" />
+                    <Separator Theme="{StaticResource Nocturne.Styles.Separator.Vertical}" Margin="6,8" />
+                    <ComboBox Width="150" SelectedIndex="0" AutomationProperties.Name="Sort by">
+                        <ComboBoxItem Content="Name" />
+                        <ComboBoxItem Content="Date modified" />
+                        <ComboBoxItem Content="Size" />
+                    </ComboBox>
+                    <TextBox Width="180" PlaceholderText="Filter" AutomationProperties.Name="Filter" />
+                </StackPanel>
+
+                <Border DockPanel.Dock="Bottom" Margin="0,12,0,0" CornerRadius="10" ClipToBounds="True" BorderThickness="1"
+                        BorderBrush="{DynamicResource Nocturne.Brushes.Stroke.Subtle}">
+                    <nc:StatusBar>
+                        <nc:StatusBarItem Content="7 items" />
+                        <Separator />
+                        <nc:StatusBarItem Content="1 selected · 388 KB" />
+                        <nc:StatusBarItem HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Ellipse Width="7" Height="7" Fill="{DynamicResource Nocturne.Brushes.Success}" />
+                                <TextBlock Text="Synchronised today 07:12" />
+                            </StackPanel>
+                        </nc:StatusBarItem>
+                    </nc:StatusBar>
+                </Border>
+
+                <Grid ColumnDefinitions="250,9,*">
+                    <TreeView Name="FolderTree" AutomationProperties.Name="Folders">
+                        <TreeView.Styles>
+                            <Style Selector="TreeViewItem" x:DataType="demo:Folder">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneTime}" />
+                            </Style>
+                        </TreeView.Styles>
+                        <TreeView.ItemTemplate>
+                            <TreeDataTemplate x:DataType="demo:Folder" ItemsSource="{Binding Items}">
+                                <StackPanel Orientation="Horizontal">
+                                    <nc:StrokeIcon Classes="item" Data="{StaticResource Nocturne.Icons.Folder}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                </StackPanel>
+                            </TreeDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <GridSplitter Grid.Column="1" ResizeDirection="Columns" AutomationProperties.Name="Resize the folder pane" />
+
+                    <DataGrid Name="FileList" Grid.Column="2" IsReadOnly="True" SelectionMode="Single" AutomationProperties.Name="Files">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="NAME" Width="250" SortMemberPath="Name">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="demo:FileEntry">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <nc:StrokeIcon Classes="item" Data="{StaticResource Nocturne.Icons.File}" IsVisible="{Binding !IsFolder}" />
+                                            <nc:StrokeIcon Classes="item" Data="{StaticResource Nocturne.Icons.Folder}" IsVisible="{Binding IsFolder}" />
+                                            <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="MODIFIED" Width="150" Binding="{Binding Modified}" x:DataType="demo:FileEntry" />
+                            <DataGridTextColumn Header="KIND" Width="140" Binding="{Binding Kind}" x:DataType="demo:FileEntry" />
+                            <DataGridTextColumn Header="SIZE" Width="*" Binding="{Binding Size}" x:DataType="demo:FileEntry" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </DockPanel>
+        </HeaderedContentControl>
+
+        <Grid ColumnDefinitions="*,20,*,20,*">
+            <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="CALENDAR" Tag="Calendar">
+                <Calendar Name="MeetingCalendar" HorizontalAlignment="Left" AutomationProperties.Name="Meeting date" />
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="CALENDARDATEPICKER" Tag="CalendarDatePicker">
+                <StackPanel>
+                    <Label Content="_Meeting" Target="MeetingPicker" />
+                    <CalendarDatePicker Name="MeetingPicker" HorizontalAlignment="Stretch" />
+
+                    <Label Margin="0,14,0,0" Content="_Due date (nothing chosen yet)" Target="DuePicker" />
+                    <CalendarDatePicker Name="DuePicker" HorizontalAlignment="Stretch" PlaceholderText="Choose a date" />
+
+                    <Label Margin="0,14,0,0" Content="_End date" Target="EndPicker" />
+                    <CalendarDatePicker Name="EndPicker" HorizontalAlignment="Stretch" SelectedDate="2026-11-02" Classes="hasError" />
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Must be after the start date." />
+
+                    <Label Margin="0,14,0,0" Content="Created (disabled)" />
+                    <CalendarDatePicker HorizontalAlignment="Stretch" SelectedDate="2026-10-01" IsEnabled="False" />
+                </StackPanel>
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Grid.Column="4" Theme="{StaticResource Nocturne.Styles.Card}" Header="DATAGRID · ROW HEADERS" Tag="DataGridRowHeader">
+                <DataGrid Name="RowHeaderGrid" Height="236" VerticalAlignment="Top" IsReadOnly="True" HeadersVisibility="All" AutomationProperties.Name="People with row headers">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="NAME" Width="*" Binding="{Binding Name}" x:DataType="demo:Person" />
+                        <DataGridTextColumn Header="ROLE" Width="*" Binding="{Binding Role}" x:DataType="demo:Person" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </HeaderedContentControl>
+        </Grid>
+    </StackPanel>
+</UserControl>

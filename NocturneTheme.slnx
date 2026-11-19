@@ -4,6 +4,14 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Avalonia/">
+    <Project Path="src/Nocturne.Avalonia.Demo/Nocturne.Avalonia.Demo.csproj" />
+    <Project Path="src/Nocturne.Avalonia/Nocturne.Avalonia.csproj" />
+  </Folder>
+  <Folder Name="/Avalonia/Samples/">
+    <Project Path="samples/Nocturne.Avalonia.Samples.Admin/Nocturne.Avalonia.Samples.Admin.csproj" />
+    <Project Path="samples/Nocturne.Avalonia.Samples.Portal/Nocturne.Avalonia.Samples.Portal.csproj" />
+  </Folder>
   <Folder Name="/Web/">
     <Project Path="src/Nocturne.Web.Demo/Nocturne.Web.Demo.csproj" />
     <Project Path="src/Nocturne.Web/Nocturne.Web.csproj" />

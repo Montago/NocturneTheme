@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             x:Class="Nocturne.Avalonia.Demo.Views.TokensPage">
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6" Margin="8,8,0,4">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Tokens" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}"
+                       Text="Colours, type and icons. Every surface is a plain brush with alpha over the backdrop; the keys are Nocturne.Brushes.*, the same as in the WPF library." />
+        </StackPanel>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="TYPE" Tag="Nocturne.Font.Size.*">
+            <StackPanel Spacing="8">
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Title · 30 SemiBold" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="Subtitle · 20 SemiBold" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="List title · 16 Medium" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Body}" Text="Body · 14 — the quick brown fox jumps over the lazy dog." />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Caption · 13 in the secondary colour" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Eyebrow}" Text="EYEBROW · 12 BOLD" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Mono}" Text="Mono · 11 — Nocturne.Brushes.Accent" />
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+                    <ContentControl Theme="{StaticResource Nocturne.Styles.Pill.Success}" Content="Active" />
+                    <ContentControl Theme="{StaticResource Nocturne.Styles.Pill.Warning}" Content="Pending" />
+                    <ContentControl Theme="{StaticResource Nocturne.Styles.Pill.Error}" Content="Failed" />
+                    <ContentControl Theme="{StaticResource Nocturne.Styles.Badge}" Content="3" />
+                    <ContentControl Theme="{StaticResource Nocturne.Styles.Tag}" Content="Tag" />
+                    <HyperlinkButton Content="A link" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </HeaderedContentControl>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="COLOURS" Tag="Nocturne.Brushes.*">
+            <WrapPanel Name="Swatches" ItemSpacing="12" LineSpacing="12" />
+        </HeaderedContentControl>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="LINE ICONS" Tag="Nocturne.Icons.* · StrokeIcon">
+            <WrapPanel Name="LineIcons" ItemSpacing="18" LineSpacing="14" />
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>
