@@ -8,6 +8,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers"
                     xmlns:collections="using:Avalonia.Collections">
 
     <!-- The text of a DataGridTextColumn cell (the cell has the padding) -->
@@ -48,6 +49,10 @@
         </Setter>
         <Style Selector="^:invalid /template/ Rectangle#InvalidVisualElement">
             <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <!-- A NocturneGrid cell with search hits (NocturneGridColumn) -->
+        <Style Selector="^.searchHit">
+            <Setter Property="Background" Value="{Binding $parent[c:NocturneGrid].HighlightCellBackground}" />
         </Style>
     </ControlTheme>
 
@@ -151,6 +156,10 @@
         <Style Selector="^:selected:pointerover /template/ Rectangle#BackgroundRectangle">
             <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Row.Selected.Hover}" />
         </Style>
+        <!-- In a NocturneGrid, a selected row keeps its own text colour for the search hits -->
+        <Style Selector="^:selected">
+            <Setter Property="c:NocturneGrid.HighlightForeground" Value="{x:Null}" />
+        </Style>
     </ControlTheme>
 
     <!-- The whole group header bar opens and closes the group; the chevron turns -->
@@ -182,6 +191,7 @@
         <Setter Property="MinHeight" Value="40" />
         <Setter Property="ItemCountFormat" Value="{}{0:N0}" />
         <Setter Property="IsPropertyNameVisible" Value="False" />
+        <Setter Property="IsItemCountVisible" Value="True" />
         <Setter Property="Template">
             <ControlTemplate x:DataType="collections:DataGridCollectionViewGroup">
                 <DataGridFrozenGrid Name="PART_Root" Background="{TemplateBinding Background}" MinHeight="{TemplateBinding MinHeight}"
@@ -253,6 +263,218 @@
                                        AllowAutoHide="{Binding Path=(ScrollViewer.AllowAutoHide), RelativeSource={RelativeSource TemplatedParent}}" />
                         </Grid>
                     </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ===================== NocturneGrid ===================== -->
+
+    <!-- The funnel in a column header: faint until hovered, light accent while the column is filtered -->
+    <ControlTheme x:Key="Nocturne.Styles.NocturneGrid.FilterButton" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="ToolTip.Tip" Value="Filter" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                    <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.Filter}" Foreground="{TemplateBinding Foreground}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:checked">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^.filtered">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        A NocturneGrid column header with the funnel and its filter: the column's values to tick (with their
+        counts), a tree of years, months and days for a column of dates, and a box to type values in.
+        PART_FilterHost gets the column as its DataContext from NocturneGrid (OnHeaderTemplateApplied).
+    -->
+    <ControlTheme x:Key="Nocturne.Styles.NocturneGrid.ColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="HeaderBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <Panel>
+                    <Grid Margin="{TemplateBinding Padding}" ColumnDefinitions="*,Auto">
+                        <StackPanel Orientation="Horizontal" ClipToBounds="True"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center"
+                                              Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            <c:StrokeIcon Name="SortIcon" Width="12" Height="12" Margin="4,0,0,0" StrokeThickness="2.4" IsVisible="False"
+                                          Data="{DynamicResource Nocturne.Icons.ChevronUp}" Foreground="{TemplateBinding Foreground}" />
+                        </StackPanel>
+                        <Panel Name="PART_FilterHost" Grid.Column="1" Margin="2,0,-8,0" VerticalAlignment="Center" x:DataType="DataGridColumn">
+                            <ToggleButton Name="PART_FilterButton" Theme="{StaticResource Nocturne.Styles.NocturneGrid.FilterButton}"
+                                          Classes.filtered="{Binding (c:NocturneGrid.HasFilter)}" />
+                            <Popup Name="PART_FilterPopup" PlacementTarget="{Binding #HeaderBorder}" Placement="BottomEdgeAlignedLeft"
+                                   IsLightDismissEnabled="True" IsOpen="{Binding #PART_FilterButton.IsChecked, Mode=TwoWay}">
+                                <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="16,14,16,16"
+                                                FontWeight="Normal" FontSize="{DynamicResource Nocturne.Font.Size.Default}"
+                                                Foreground="{DynamicResource Nocturne.Brushes.Text}">
+                                    <StackPanel Width="260">
+                                        <TextBlock Margin="0,0,0,10" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                   Text="{Binding Header, StringFormat='Filter {0}'}" />
+                                        <!-- The column's values to tick, when it has few enough of them (NocturneGrid.FilterListLimit) -->
+                                        <Border Margin="0,0,0,10" Padding="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Nocturne.Brushes.Divider}"
+                                                IsVisible="{Binding (c:NocturneGrid.FilterOptions), Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                                <ItemsControl ItemsSource="{Binding (c:NocturneGrid.FilterOptions)}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="c:GridFilterOption">
+                                                            <CheckBox IsChecked="{Binding IsChecked}">
+                                                                <TextBlock TextTrimming="CharacterEllipsis">
+                                                                    <Run Text="{Binding Text, Mode=OneWay}" />
+                                                                    <Run Text="{Binding Count, Mode=OneWay, StringFormat='  {0:N0}'}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                                                         FontSize="{DynamicResource Nocturne.Font.Size.Small}" />
+                                                                </TextBlock>
+                                                            </CheckBox>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Border>
+                                        <!-- A column of dates: years (or decades) with their months and days to tick -->
+                                        <Border Margin="0,0,0,10" Padding="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Nocturne.Brushes.Divider}"
+                                                IsVisible="{Binding (c:NocturneGrid.FilterDateTree), Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            <TreeView MaxHeight="240" ItemsSource="{Binding (c:NocturneGrid.FilterDateTree)}">
+                                                <TreeView.Styles>
+                                                    <Style Selector="TreeViewItem" x:DataType="c:GridDateFilterNode">
+                                                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                                    </Style>
+                                                </TreeView.Styles>
+                                                <TreeView.ItemTemplate>
+                                                    <TreeDataTemplate x:DataType="c:GridDateFilterNode" ItemsSource="{Binding Children}">
+                                                        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" MinHeight="28">
+                                                            <TextBlock TextTrimming="CharacterEllipsis">
+                                                                <Run Text="{Binding Text, Mode=OneWay}" />
+                                                                <Run Text="{Binding Count, Mode=OneWay, StringFormat='  {0:N0}'}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                                                     FontSize="{DynamicResource Nocturne.Font.Size.Small}" />
+                                                            </TextBlock>
+                                                        </CheckBox>
+                                                    </TreeDataTemplate>
+                                                </TreeView.ItemTemplate>
+                                            </TreeView>
+                                        </Border>
+                                        <TextBox Name="PART_FilterBox" Classes="clearButton" PlaceholderText="Values, e.g. volvo saab"
+                                                 h:ControlHelper.Icon="{DynamicResource Nocturne.Icons.Filter}"
+                                                 Text="{Binding (c:NocturneGrid.FilterText), Mode=TwoWay}" />
+                                        <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="17" FontSize="{DynamicResource Nocturne.Font.Size.Small}"
+                                                   Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}"
+                                                   Text="Tick values or type them, separated by spaces or commas. Quote values with spaces; * matches any text. Numbers and dates: &gt;100, &lt;=2019, 2020-01-01..2020-06-30." />
+                                        <StackPanel Margin="0,14,0,0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                            <Button Name="PART_ClearFilter" MinWidth="80" Content="Clear" />
+                                            <Button Name="PART_CloseFilter" MinWidth="80" Content="Done" Theme="{StaticResource Nocturne.Styles.Button.Primary}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ContentControl>
+                            </Popup>
+                        </Panel>
+                    </Grid>
+                    <Rectangle Name="VerticalSeparator" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                               Fill="{TemplateBinding SeparatorBrush}" IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Pager buttons: small subtle icon buttons; Content is the icon's geometry -->
+    <ControlTheme x:Key="Nocturne.Styles.NocturneGrid.PagerButton" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                    <c:StrokeIcon Name="Glyph" Width="16" Height="16" StrokeThickness="2" Data="{TemplateBinding Content}"
+                                  Foreground="{TemplateBinding Foreground}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Pressed}" />
+        </Style>
+        <Style Selector="^:disabled /template/ c|StrokeIcon#Glyph">
+            <Setter Property="Opacity" Value="0.35" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        NocturneGrid: the DataGrid with the filter headers, the search hits in light accent text in faintly lit
+        cells (HighlightBrush, a background behind the words, is unset), and a pager below the rows while there
+        is more than one page.
+    -->
+    <ControlTheme x:Key="{x:Type c:NocturneGrid}" TargetType="c:NocturneGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="ColumnHeaderTheme" Value="{StaticResource Nocturne.Styles.NocturneGrid.ColumnHeader}" />
+        <Setter Property="HighlightForeground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
+        <Setter Property="HighlightCellBackground" Value="{DynamicResource Nocturne.Brushes.DataGrid.SearchHit}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="DataGridBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                    <DockPanel>
+                        <Border Name="PART_Pager" DockPanel.Dock="Bottom" Padding="4,6,4,0" BorderThickness="0,1,0,0"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" IsVisible="{TemplateBinding IsPaging}">
+                            <DockPanel>
+                                <TextBlock Name="PART_RangeText" DockPanel.Dock="Right" Margin="12,0,4,0" VerticalAlignment="Center"
+                                           FontSize="{DynamicResource Nocturne.Font.Size.Caption}" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Name="PART_FirstPage" Theme="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}"
+                                            ToolTip.Tip="First page" AutomationProperties.Name="First page" Content="{DynamicResource Nocturne.Icons.PageFirst}" />
+                                    <Button Name="PART_PreviousPage" Theme="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}"
+                                            ToolTip.Tip="Previous page" AutomationProperties.Name="Previous page" Content="{DynamicResource Nocturne.Icons.ChevronLeft}" />
+                                    <TextBlock Name="PART_PageText" Margin="10,0" VerticalAlignment="Center"
+                                               FontSize="{DynamicResource Nocturne.Font.Size.Caption}" Foreground="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+                                    <Button Name="PART_NextPage" Theme="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}"
+                                            ToolTip.Tip="Next page" AutomationProperties.Name="Next page" Content="{DynamicResource Nocturne.Icons.ChevronRight}" />
+                                    <Button Name="PART_LastPage" Theme="{StaticResource Nocturne.Styles.NocturneGrid.PagerButton}"
+                                            ToolTip.Tip="Last page" AutomationProperties.Name="Last page" Content="{DynamicResource Nocturne.Icons.PageLast}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto,Auto" ClipToBounds="True">
+                            <DataGridColumnHeader Name="PART_TopLeftCornerHeader" Width="20" />
+                            <DataGridColumnHeadersPresenter Name="PART_ColumnHeadersPresenter" Grid.Column="1" />
+                            <DataGridColumnHeader Name="PART_TopRightCornerHeader" Grid.Column="2" />
+                            <Rectangle Name="PART_ColumnHeadersAndRowsSeparator" Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom"
+                                       Fill="Transparent" />
+                            <DataGridRowsPresenter Name="PART_RowsPresenter" Grid.Row="1" Grid.ColumnSpan="2"
+                                                   ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                                <DataGridRowsPresenter.GestureRecognizers>
+                                    <ScrollGestureRecognizer CanHorizontallyScroll="True" CanVerticallyScroll="True"
+                                                             IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowsPresenter}" />
+                                </DataGridRowsPresenter.GestureRecognizers>
+                            </DataGridRowsPresenter>
+                            <Rectangle Name="PART_BottomRightCorner" Grid.Row="2" Grid.Column="2" Fill="Transparent" />
+                            <ScrollBar Name="PART_VerticalScrollbar" Grid.Row="1" Grid.Column="2" Orientation="Vertical"
+                                       AllowAutoHide="{Binding Path=(ScrollViewer.AllowAutoHide), RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Grid Grid.Row="2" Grid.Column="1" ColumnDefinitions="Auto,*">
+                                <Rectangle Name="PART_FrozenColumnScrollBarSpacer" />
+                                <ScrollBar Name="PART_HorizontalScrollbar" Grid.Column="1" Orientation="Horizontal"
+                                           AllowAutoHide="{Binding Path=(ScrollViewer.AllowAutoHide), RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Grid>
+                        </Grid>
+                    </DockPanel>
                 </Border>
             </ControlTemplate>
         </Setter>

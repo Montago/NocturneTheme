@@ -29,12 +29,14 @@
             </DropDownButton>
         </DockPanel>
 
-        <DataGrid Name="OrderGrid" Grid.Row="3" IsReadOnly="True" SelectionMode="Single">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ORDER" Binding="{Binding Number}" Width="110" x:DataType="local:Order" />
-                <DataGridTextColumn Header="CUSTOMER" Binding="{Binding Customer}" Width="*" x:DataType="local:Order" />
-                <DataGridTextColumn Header="SHIP TO" Binding="{Binding ShipTo}" Width="180" x:DataType="local:Order" />
-                <DataGridTextColumn Header="DATE" Binding="{Binding Date, StringFormat=d}" Width="120" CellStyleClasses="right" x:DataType="local:Order" />
+        <!-- The customer box searches the order numbers and customers -->
+        <nc:NocturneGrid Name="OrderGrid" Grid.Row="3" IsReadOnly="True" SelectionMode="Single" SearchText="{Binding #CustomerBox.Text}">
+            <nc:NocturneGrid.Columns>
+                <nc:NocturneGridColumn Header="ORDER" Binding="{Binding Number}" Width="110" x:DataType="local:Order" />
+                <nc:NocturneGridColumn Header="CUSTOMER" Binding="{Binding Customer}" Width="*" x:DataType="local:Order" />
+                <nc:NocturneGridColumn Header="SHIP TO" Binding="{Binding ShipTo}" Width="180" IsSearchable="False" x:DataType="local:Order" />
+                <nc:NocturneGridColumn Header="DATE" Binding="{Binding Date, StringFormat=d}" Width="120" TextAlignment="Right" IsSearchable="False"
+                                       x:DataType="local:Order" />
                 <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="local:Order">
@@ -43,9 +45,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="110" CellStyleClasses="right" x:DataType="local:Order" />
-            </DataGrid.Columns>
-        </DataGrid>
+                <nc:NocturneGridColumn Header="TOTAL" Binding="{Binding Total, StringFormat=C}" Width="110" TextAlignment="Right" IsSearchable="False"
+                                       x:DataType="local:Order" />
+            </nc:NocturneGrid.Columns>
+        </nc:NocturneGrid>
 
         <!-- Lines of the selected order -->
         <Expander Grid.Row="4" Header="Order lines" IsExpanded="True" Margin="0,16,0,0" HorizontalAlignment="Stretch">

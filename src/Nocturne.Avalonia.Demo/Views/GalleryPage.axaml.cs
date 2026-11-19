@@ -40,6 +40,18 @@ public partial class GalleryPage : UserControl
         groups.GroupDescriptions.Add(new DataGridPathGroupDescription(nameof(Person.Role)));
         GroupGrid.ItemsSource = groups;
         GroupGrid.SelectedItem = null;
+        CarSearchGrid.ItemsSource = CarData.Cars.Take(400).ToArray();
+        CarFilterGrid.ItemsSource = CarData.Cars.Take(200).ToArray();
+        CarGroupGrid.ItemsSource = CarData.Cars.Where(c => c.Make is "Skoda" or "Tesla").Take(12).OrderBy(c => c.Make).ToArray();
+        CarPagedGrid.ItemsSource = CarData.Cars.Skip(100).Take(95).ToArray();
+        CarPagedGrid.PageIndex = 1;
+        foreach (var grid in new[] { CarSearchGrid, CarFilterGrid, CarGroupGrid, CarPagedGrid })
+        {
+            // Filter now (not after SearchDelay), with nothing selected, so the pictures show the result
+            grid.ApplyFilters();
+            grid.SelectedItem = null;
+        }
+        CarPagedGrid.PageIndex = 1;
 
         SampleMenu.SelectionChanged += (_, _) => SampleMenu.Content = (SampleMenu.SelectedItem as HamburgerMenuItem)?.Content;
         SampleMenu.Content = (SampleMenu.SelectedItem as HamburgerMenuItem)?.Content;

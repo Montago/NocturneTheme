@@ -33,17 +33,17 @@
             </DropDownButton>
         </DockPanel>
 
-        <!-- One group of rows per employee (DataGridCollectionView.GroupDescriptions) -->
-        <DataGrid Name="Sheet" Grid.Row="3" IsReadOnly="True" SelectionMode="Extended">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="PROJECT" Binding="{Binding Project}" Width="*" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="MON" Binding="{Binding Monday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="TUE" Binding="{Binding Tuesday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="WED" Binding="{Binding Wednesday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="THU" Binding="{Binding Thursday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="FRI" Binding="{Binding Friday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
-                <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=N1}" Width="84" CellStyleClasses="right" FontWeight="SemiBold"
-                                    x:DataType="local:TimesheetRow" />
+        <!-- One group of rows per employee -->
+        <nc:NocturneGrid Name="Sheet" Grid.Row="3" IsReadOnly="True" SelectionMode="Extended" GroupMemberPath="Employee">
+            <nc:NocturneGrid.Columns>
+                <nc:NocturneGridColumn Header="PROJECT" Binding="{Binding Project}" Width="*" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="MON" Binding="{Binding Monday, StringFormat=N1}" Width="74" TextAlignment="Right" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="TUE" Binding="{Binding Tuesday, StringFormat=N1}" Width="74" TextAlignment="Right" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="WED" Binding="{Binding Wednesday, StringFormat=N1}" Width="74" TextAlignment="Right" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="THU" Binding="{Binding Thursday, StringFormat=N1}" Width="74" TextAlignment="Right" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="FRI" Binding="{Binding Friday, StringFormat=N1}" Width="74" TextAlignment="Right" x:DataType="local:TimesheetRow" />
+                <nc:NocturneGridColumn Header="TOTAL" Binding="{Binding Total, StringFormat=N1}" Width="84" TextAlignment="Right" FontWeight="SemiBold"
+                                       x:DataType="local:TimesheetRow" />
                 <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="local:TimesheetRow">
@@ -52,8 +52,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            </nc:NocturneGrid.Columns>
+        </nc:NocturneGrid>
 
         <!-- Week summary -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,14,0,0" Spacing="12">

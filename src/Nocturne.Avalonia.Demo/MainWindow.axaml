@@ -85,6 +85,14 @@
                         <TextBlock VerticalAlignment="Center" Text="Custom controls" />
                     </StackPanel>
                 </ListBoxItem>
+                <ListBoxItem Tag="grid">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Database}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Data grid" />
+                    </StackPanel>
+                </ListBoxItem>
                 <ListBoxItem Tag="icons">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">

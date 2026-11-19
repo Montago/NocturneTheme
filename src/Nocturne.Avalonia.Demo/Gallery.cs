@@ -23,6 +23,20 @@ public class Gallery : AvaloniaObject
     {
         switch (control)
         {
+            case NocturneGrid grid:
+            {
+                // The filter of the first filtered column, as in the WPF gallery
+                var button = grid.GetVisualDescendants().OfType<DataGridColumnHeader>()
+                    .Where(h => DataGridColumn.GetColumnContainingElement(h) is { } column && NocturneGrid.GetHasFilter(column))
+                    .SelectMany(h => h.GetVisualDescendants().OfType<ToggleButton>().Where(b => b.Name == "PART_FilterButton"))
+                    .FirstOrDefault();
+                if (button == null)
+                {
+                    return () => { };
+                }
+                button.IsChecked = true;
+                return () => button.IsChecked = false;
+            }
             case ComboBox combo:
                 combo.IsDropDownOpen = true;
                 return () => combo.IsDropDownOpen = false;
