@@ -118,6 +118,70 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 - On-screen captures (`CopyFromScreen`) fail while the RDP window is minimised ("The handle is
   invalid"); use `--snapshot` then.
 
+## Avalonia port (Nocturne.Avalonia)
+
+The plan, its decisions and its phases are in `plans/avalonia-port.md`; keep its Status line current.
+Decided by the user: cross-platform (`net10.0`, Windows-only parts behind `OperatingSystem.IsWindows()`),
+same repo, Avalonia's own controls where they exist (NumericUpDown, TimePicker, ColorPicker, …) styled
+by the theme, our own classes only for what Avalonia lacks, NocturneGrid in a later version.
+
+```
+src/Avalonia.props             the Avalonia version, imported by every Avalonia project
+src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmlns urn:nocturne-avalonia, prefix nc)
+  NocturneTheme.axaml(.cs)     the Styles class apps add to Application.Styles (<nc:NocturneTheme />); merges Styles/*;
+                               NocturneTheme.Accents.cs: SetAccent, System accent (Windows' AccentPalette, else Avalonia's)
+  Styles/                      Brushes, Icons (generated), Fonts, Controls.*.axaml (ControlThemes keyed {x:Type …});
+                               Controls.Base.axaml holds the hosts every standalone theme needs (PopupRoot,
+                               OverlayPopupHost, AdornerLayer with the focus ring, FlyoutPresenter, ItemsControl, …)
+  Controls/                    NocturneWindow, LightTexture, NativeMethods (Windows only), NocturneIcon (+ Icon/IconGeometry
+                               extensions; NocturneIconKind.g.cs generated), StrokeIcon, TabSelectionIndicator,
+                               NocturneAccent.g.cs (generated)
+  Helpers/                     ControlHelper (attached properties), NocturneConverters
+src/Nocturne.Avalonia.Demo/    demo (Views/ControlsPage, TokensPage); Headless.cs, Snapshot.cs (--snapshot), RenderCommand.cs (--render)
+tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
+                               Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
+```
+
+- The theme stands alone (no Fluent or Simple theme under it), so every control needs a ControlTheme
+  from us or it draws nothing. Avalonia's own Simple theme (same version) is the reference for each
+  control's template parts (`PART_*`) and pseudo-classes.
+- The WPF library stays the source of the design values: change a colour, line icon or palette there
+  and run `python tools/generate_avalonia_tokens.py` (CI runs `--check`); `generate_icons.py` writes both
+  icon enums.
+- `--snapshot` / `--render` run on the headless platform with Skia and system fonts: no screen, a few
+  seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
+  (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
+  (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
+- NocturneWindow extends the client area and marks its title bar and caption buttons with Avalonia 12's
+  `WindowDecorationProperties.ElementRole` (TitleBar, MinimizeButton, MaximizeButton, CloseButton; User for
+  commands inside the bar): Windows drags, snaps and shows the snap layouts itself. macOS keeps its traffic
+  lights (`:macos` hides our buttons). Remote Desktop and the transparency switch are polled every 2 s (no
+  public WndProc hook). Checked on screen on Windows 11: Acrylic, hover on all three buttons, snap layouts,
+  maximised.
+- Avalonia's packages send build statistics; the empty `AvaloniaStats` target in
+  `Directory.Build.targets` turns that off. Keep it.
+- `nuget.config` limits package sources to nuget.org (the user's global config lists a local
+  `C:\Git\Nuget` that does not exist and breaks restore).
+
+### Avalonia gotchas
+
+- `.axaml` files use `x:Double` (not `sys:Double`); relative gradient points need `%` (`0%,0%`; `0,1` is pixels).
+- A `BasedOn` theme gives its setters to the template's children too when its `TargetType` matches them:
+  a shared base with `TargetType="TemplatedControl"` painted the field ground on a TextBox's scroll viewer.
+  Keep base themes as narrow as the control (the field themes repeat their setters instead).
+- A selector may hold one `/template/` (no `^ /template/ Thumb /template/ Border`): reach into a nested
+  template through the inner control's own properties (the scroll thumb's bar follows its `Padding`).
+- Attached properties cannot be selected on (`[(h|ControlHelper.X)=True]` does not parse):
+  `ControlHelper.ClearButton` / `HasError` set the classes `clearButton` / `hasError`, which the themes
+  select; elsewhere bind visibility with a MultiBinding.
+- The window templates need a `VisualLayerManager` named `PART_VisualLayerManager`, or overlay popups
+  find no layer. NocturneWindow's wraps the title bar too, so its commands can open popups.
+- `DataValidationErrors` takes the field's `Background` and `Padding`; its presenter must not bind them.
+- ToggleSwitch moves `PART_MovingKnobs` from 0 to the width of `PART_SwitchKnob` (keep that canvas as
+  wide as the travel, 20).
+- Transitions: `Transitions` on the part (120/150 ms); rotate chevrons with `RenderTransform="rotate(…)"`
+  and a `TransformOperationsTransition`. Headless captures run 30 frames (0.5 s) so they finish.
+
 ## Releases
 
 - Repo: github.com/Montago/NocturneTheme, default branch `master`.

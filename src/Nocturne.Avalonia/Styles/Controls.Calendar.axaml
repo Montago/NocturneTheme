@@ -1,0 +1,288 @@
+<!--
+    Calendar and CalendarDatePicker. The calendar is a sunken glass panel: month and year on the
+    left, arrows on the right, rounded day cells; today has an accent ring, the selected day the
+    accent fill. In the date picker's drop-down (Nocturne.Styles.Calendar.Popup) it takes the popup
+    surface and shadow. The date picker field is the TextBox field with a calendar button.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
+
+    <!-- A day in the month view -->
+    <ControlTheme x:Key="{x:Type CalendarDayButton}" TargetType="CalendarDayButton">
+        <Setter Property="MinWidth" Value="36" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Caption}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0" />
+                    <Border Name="TodayRing" CornerRadius="8" BorderThickness="1.5" BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                    <Border Name="SelectedBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Accent}" IsVisible="False" />
+                    <Border Name="FocusRing" CornerRadius="8" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    <!-- A blacked-out day is struck through -->
+                    <Path Name="Blackout" Width="16" Height="16" Stretch="Fill" Data="M0,16 L16,0" StrokeThickness="1.5"
+                          Stroke="{DynamicResource Nocturne.Brushes.Text.Placeholder}" IsVisible="False" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:inactive">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        </Style>
+        <Style Selector="^:today">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="^:today /template/ Border#TodayRing">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:blackout">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        </Style>
+        <Style Selector="^:blackout /template/ Path#Blackout">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:dayfocused /template/ Border#FocusRing">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- A month in the year view, a year in the decade view -->
+    <ControlTheme x:Key="{x:Type CalendarButton}" TargetType="CalendarButton">
+        <Setter Property="MinWidth" Value="64" />
+        <Setter Property="MinHeight" Value="56" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Caption}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0" />
+                    <Border Name="SelectedBg" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Accent}" IsVisible="False" />
+                    <Border Name="FocusRing" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:inactive">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:btnfocused /template/ Border#FocusRing">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Previous / next arrows -->
+    <ControlTheme x:Key="Nocturne.Styles.Calendar.NavButton" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" CornerRadius="8" Background="Transparent" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Pressed}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Bd">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- "November 2026": switches to the year and decade views -->
+    <ControlTheme x:Key="Nocturne.Styles.Calendar.HeaderButton" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Calendar.NavButton}">
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type CalendarItem}" TargetType="CalendarItem">
+        <Setter Property="DayTitleTemplate">
+            <Template x:DataType="x:String">
+                <TextBlock Margin="0,2,0,6" HorizontalAlignment="Center" Text="{Binding}"
+                           FontSize="{DynamicResource Nocturne.Font.Size.Small}" FontWeight="SemiBold" Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+            </Template>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_Root" RowDefinitions="Auto,*">
+                    <DockPanel Margin="0,0,0,8">
+                        <Button Name="PART_NextButton" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.Calendar.NavButton}" AutomationProperties.Name="Next">
+                            <c:StrokeIcon Width="16" Height="16" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.ChevronRight}"
+                                          Foreground="{Binding $parent[Button].Foreground}" />
+                        </Button>
+                        <Button Name="PART_PreviousButton" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.Calendar.NavButton}" AutomationProperties.Name="Previous">
+                            <c:StrokeIcon Width="16" Height="16" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.ChevronLeft}"
+                                          Foreground="{Binding $parent[Button].Foreground}" />
+                        </Button>
+                        <Button Name="PART_HeaderButton" HorizontalAlignment="Left" Theme="{StaticResource Nocturne.Styles.Calendar.HeaderButton}" />
+                    </DockPanel>
+                    <Grid Name="PART_MonthView" Grid.Row="1" HorizontalAlignment="Center" IsVisible="False"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" />
+                    <Grid Name="PART_YearView" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False"
+                          RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,Auto,Auto,Auto" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:calendardisabled /template/ Grid#PART_Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Calendar}" TargetType="Calendar">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Sunken}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="PART_Root">
+                    <Border Margin="1" CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 10 28 0 #73000000"
+                            IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}">
+                        <CalendarItem Name="PART_CalendarItem" Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- The calendar in a date picker's drop-down; the outer margin leaves room for the shadow -->
+    <ControlTheme x:Key="Nocturne.Styles.Calendar.Popup" TargetType="Calendar" BasedOn="{StaticResource {x:Type Calendar}}">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Popup}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Popup.Border}" />
+        <Setter Property="Margin" Value="14,4,14,28" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </ControlTheme>
+
+    <!-- CalendarDatePicker: the field with a calendar button; the calendar drops down under it -->
+    <ControlTheme x:Key="{x:Type CalendarDatePicker}" TargetType="CalendarDatePicker">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="PART_Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <DockPanel Margin="{TemplateBinding BorderThickness}">
+                            <Button Name="PART_Button" DockPanel.Dock="Right" Margin="0,0,3,0" Theme="{StaticResource Nocturne.Styles.Button.Field}"
+                                    AutomationProperties.Name="Choose date">
+                                <c:StrokeIcon Width="16" Height="16" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Calendar}"
+                                              Foreground="{Binding $parent[Button].Foreground}" />
+                            </Button>
+                            <TextBox Name="PART_TextBox" Theme="{StaticResource Nocturne.Styles.TextBox.Inner}" Padding="{TemplateBinding Padding}"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                     PlaceholderText="{TemplateBinding PlaceholderText}" PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
+                        </DockPanel>
+                        <Popup Name="PART_Popup" PlacementTarget="{TemplateBinding}" Placement="BottomEdgeAlignedLeft"
+                               HorizontalOffset="-14" VerticalOffset="2" IsLightDismissEnabled="True">
+                            <Calendar Name="PART_Calendar" Theme="{StaticResource Nocturne.Styles.Calendar.Popup}"
+                                      DisplayDate="{TemplateBinding DisplayDate}" DisplayDateEnd="{TemplateBinding DisplayDateEnd}"
+                                      DisplayDateStart="{TemplateBinding DisplayDateStart}" FirstDayOfWeek="{TemplateBinding FirstDayOfWeek}"
+                                      IsTodayHighlighted="{TemplateBinding IsTodayHighlighted}"
+                                      SelectedDate="{Binding SelectedDate, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                        </Popup>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd, ^[IsDropDownOpen=True] /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine, ^[IsDropDownOpen=True] /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine, ^[IsDropDownOpen=True] /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#PART_Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

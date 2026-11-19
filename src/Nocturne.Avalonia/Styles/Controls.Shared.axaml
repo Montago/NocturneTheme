@@ -1,0 +1,282 @@
+<!--
+    Shared pieces: the keyboard focus ring, typography, cards, tags, status pills, badges, icon
+    tiles, StrokeIcon and NocturneIcon. Keyed ControlThemes are applied with Theme="{StaticResource …}"
+    (the WPF version's Style="…").
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls">
+
+    <!-- Keyboard focus: a 2px white ring, 2px outside the control (Avalonia shows it on keyboard focus only) -->
+    <FocusAdornerTemplate x:Key="Nocturne.Templates.FocusVisual">
+        <Border Margin="-4" CornerRadius="11" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" />
+    </FocusAdornerTemplate>
+
+    <!-- Keyboard focus inside a popup (combo box options, menu items): the ring sits on the item's edge -->
+    <FocusAdornerTemplate x:Key="Nocturne.Templates.FocusVisual.Inset">
+        <Border CornerRadius="6" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" />
+    </FocusAdornerTemplate>
+
+    <ControlTheme x:Key="{x:Type c:StrokeIcon}" TargetType="c:StrokeIcon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Viewbox Stretch="Uniform">
+                    <Canvas Width="24" Height="24">
+                        <Path Data="{TemplateBinding Data}" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}"
+                              StrokeLineCap="Round" StrokeJoin="Round" />
+                    </Canvas>
+                </Viewbox>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- NocturneIcon: a filled Material Design icon; the 24×24 path scaled into the control, so every
+         icon keeps the padding of its grid -->
+    <ControlTheme x:Key="{x:Type c:NocturneIcon}" TargetType="c:NocturneIcon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Viewbox Stretch="Uniform">
+                    <Canvas Width="24" Height="24">
+                        <Path Data="{TemplateBinding Data}" Fill="{TemplateBinding Foreground}" />
+                    </Canvas>
+                </Viewbox>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Typography -->
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Title" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Title}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Subtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Subtitle}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </ControlTheme>
+    <!-- Section label: write it in capitals -->
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Eyebrow" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.ListTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.ListTitle}" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Caption" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Caption}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Label" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Caption}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Label}" />
+        <Setter Property="Margin" Value="0,0,0,6" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Hint" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Error" TargetType="TextBlock" BasedOn="{StaticResource Nocturne.Styles.TextBlock.Hint}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Error.Text}" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.TextBlock.Mono" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family.Mono}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Tag}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+    </ControlTheme>
+
+    <!-- Link: HyperlinkButton (Avalonia's link), drawn as text in the accent -->
+    <ControlTheme x:Key="{x:Type HyperlinkButton}" TargetType="HyperlinkButton">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusAdorner" Value="{StaticResource Nocturne.Templates.FocusVisual}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}"
+                                  Padding="{TemplateBinding Padding}" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Text.Hover}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter TextBlock">
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Glass card: a plain Border -->
+    <ControlTheme x:Key="Nocturne.Styles.Border.Card" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface1}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="20" />
+    </ControlTheme>
+
+    <!-- Tag: small monospaced chip naming the class, as on the cards -->
+    <ControlTheme x:Key="Nocturne.Styles.Tag" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family.Mono}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Tag}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        <Setter Property="Padding" Value="7,3" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Glass card with a section label (Header) and an optional tag on the right (Tag):
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="BUTTON" Tag="Button · RepeatButton">
+    -->
+    <ControlTheme x:Key="Nocturne.Styles.Card" TargetType="HeaderedContentControl">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface1}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14">
+                    <Panel>
+                        <Border CornerRadius="13" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Nocturne.Brushes.Surface1.Highlight}" />
+                        <DockPanel Margin="{TemplateBinding Padding}">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16"
+                                       IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                <ContentControl DockPanel.Dock="Right" VerticalAlignment="Center" Content="{TemplateBinding Tag}"
+                                                Theme="{StaticResource Nocturne.Styles.Tag}"
+                                                IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <ContentPresenter Name="PART_HeaderPresenter" Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}" VerticalAlignment="Center"
+                                                  FontSize="{DynamicResource Nocturne.Font.Size.Small}" FontWeight="Bold" />
+                            </DockPanel>
+                            <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Status pills: Success, Warning, Error -->
+    <ControlTheme x:Key="Nocturne.Styles.Pill" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Small}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Success}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Success.Background}" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.Pill.Success" TargetType="ContentControl" BasedOn="{StaticResource Nocturne.Styles.Pill}" />
+    <ControlTheme x:Key="Nocturne.Styles.Pill.Warning" TargetType="ContentControl" BasedOn="{StaticResource Nocturne.Styles.Pill}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Warning}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Warning.Background}" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.Pill.Error" TargetType="ContentControl" BasedOn="{StaticResource Nocturne.Styles.Pill}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Error.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Error.Background}" />
+    </ControlTheme>
+
+    <!-- Badge: a small count, e.g. on a document tab -->
+    <ControlTheme x:Key="Nocturne.Styles.Badge" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Tag}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Warning}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Warning.Background}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border MinWidth="18" Height="18" Padding="5,0" CornerRadius="9" Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Icon tile: a rounded square around a StrokeIcon. Inside a selected ListBoxItem it fills
+        with the accent.
+    -->
+    <ControlTheme x:Key="Nocturne.Styles.IconTile" TargetType="ContentControl">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="42" />
+        <Setter Property="Height" Value="42" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Tile}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Tile.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Tile.Icon}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
+                        CornerRadius="10" Classes.selected="{Binding $parent[ListBoxItem].IsSelected, FallbackValue=False}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Border#Bd.selected">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Tile.Border.Selected}" />
+        </Style>
+        <Style Selector="^ /template/ Border#Bd.selected > ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.IconTile.Small" TargetType="ContentControl" BasedOn="{StaticResource Nocturne.Styles.IconTile}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,294 @@
+<!--
+    Button, RepeatButton, ToggleButton, DropDownButton, SplitButton and ToggleSplitButton.
+    Default (secondary): a light glass fill. Variants: Nocturne.Styles.Button.Primary (accent),
+    .Danger (red whatever the accent), .Subtle (no fill until hovered), .Icon and .Icon.Subtle
+    (36 x 36, for a StrokeIcon), each applied with Theme="{StaticResource …}".
+    The background fades to ControlHelper.HoverBackground in 120 ms. A checked ToggleButton takes
+    the primary look. DropDownButton has a chevron after its content; SplitButton a main part and
+    a chevron part that light up on their own, a hairline between them.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
+
+    <ControlTheme x:Key="Nocturne.Styles.Button" TargetType="Button">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Secondary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <!-- Shadow sits on its own layer, under the fill -->
+                    <Border Name="Shadow" CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 1 4 0 #4D000000"
+                            IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
+                    <Border Name="Bg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="HoverBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding h:ControlHelper.HoverBackground}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="PressedBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding h:ControlHelper.PressedBackground}" IsVisible="False" />
+                    <Border Name="Highlight" Margin="1" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,1,0,0"
+                            BorderBrush="{TemplateBinding h:ControlHelper.HighlightBrush}" />
+                    <Border Name="Outline" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                    <DockPanel Name="ContentRow" Margin="{TemplateBinding Padding}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <c:StrokeIcon Name="Chevron" DockPanel.Dock="Right" Width="14" Height="14" Margin="8,0,-2,0" StrokeThickness="2"
+                                      Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}"
+                                      IsVisible="{TemplateBinding h:ControlHelper.ShowChevron}" />
+                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True"
+                                          VerticalAlignment="Center" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bg">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PressedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Highlight">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:pressed /template/ DockPanel#ContentRow">
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.Primary" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </ControlTheme>
+
+    <!-- Danger: shaped like Primary, red whatever the accent, for destructive commands (Delete, Remove) -->
+    <ControlTheme x:Key="Nocturne.Styles.Button.Danger" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Danger}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Danger.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Danger.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.Subtle" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Surface.Pressed}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.Icon" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.Icon.Subtle" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button.Subtle}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button}" />
+    <ControlTheme x:Key="{x:Type RepeatButton}" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.Button}" />
+
+    <!-- A checked ToggleButton takes the primary look -->
+    <ControlTheme x:Key="{x:Type ToggleButton}" TargetType="ToggleButton" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Style Selector="^:checked">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Primary}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+            <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Hover}" />
+            <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Pressed}" />
+            <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- DropDownButton: the button with a chevron after its content; it opens its Flyout -->
+    <ControlTheme x:Key="{x:Type DropDownButton}" TargetType="DropDownButton" BasedOn="{StaticResource Nocturne.Styles.Button}">
+        <Setter Property="h:ControlHelper.ShowChevron" Value="True" />
+        <Setter Property="Padding" Value="16,0,12,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.DropDownButton.Primary" TargetType="DropDownButton" BasedOn="{StaticResource Nocturne.Styles.Button.Primary}">
+        <Setter Property="h:ControlHelper.ShowChevron" Value="True" />
+        <Setter Property="Padding" Value="16,0,12,0" />
+    </ControlTheme>
+
+    <!-- SplitButton parts: the main part (left corners rounded) and the chevron part -->
+    <ControlTheme x:Key="Nocturne.Styles.SplitButton.Main" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Name="Bg" CornerRadius="8,0,0,8" Background="{TemplateBinding Background}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="HoverBg" CornerRadius="8,0,0,8" Background="{TemplateBinding h:ControlHelper.HoverBackground}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="PressedBg" CornerRadius="8,0,0,8" Background="{TemplateBinding h:ControlHelper.PressedBackground}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bg">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PressedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.SplitButton.Arrow" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="34" />
+        <Setter Property="AutomationProperties.Name" Value="More options" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border CornerRadius="0,8,8,0" Background="{TemplateBinding Background}" />
+                    <Border Name="Over" CornerRadius="0,8,8,0" Background="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" Opacity="0" />
+                    <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Over">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <!-- SplitButton tags its parts while the flyout is open -->
+        <Style Selector="^[Tag=flyout-open] /template/ Border#Over, ^[Tag=checked-flyout-open] /template/ Border#Over">
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.SplitButton" TargetType="SplitButton">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Secondary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 1 4 0 #4D000000"
+                            IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
+                    <DockPanel>
+                        <Button Name="PART_SecondaryButton" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.SplitButton.Arrow}"
+                                Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" />
+                        <Border DockPanel.Dock="Right" Width="1" Margin="0,8" Background="{TemplateBinding BorderBrush}" />
+                        <Button Name="PART_PrimaryButton" Theme="{StaticResource Nocturne.Styles.SplitButton.Main}"
+                                Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}"
+                                h:ControlHelper.HoverBackground="{TemplateBinding h:ControlHelper.HoverBackground}"
+                                h:ControlHelper.PressedBackground="{TemplateBinding h:ControlHelper.PressedBackground}"
+                                Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </DockPanel>
+                    <Border Margin="1" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,1,0,0"
+                            BorderBrush="{TemplateBinding h:ControlHelper.HighlightBrush}" IsHitTestVisible="False" />
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" IsHitTestVisible="False" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:flyout-open /template/ Button">
+            <Setter Property="Tag" Value="flyout-open" />
+        </Style>
+        <Style Selector="^:checked /template/ Button">
+            <Setter Property="Tag" Value="checked" />
+        </Style>
+        <Style Selector="^:checked:flyout-open /template/ Button">
+            <Setter Property="Tag" Value="checked-flyout-open" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="{x:Type SplitButton}" TargetType="SplitButton" BasedOn="{StaticResource Nocturne.Styles.SplitButton}" />
+    <ControlTheme x:Key="Nocturne.Styles.SplitButton.Primary" TargetType="SplitButton" BasedOn="{StaticResource Nocturne.Styles.SplitButton}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </ControlTheme>
+
+    <!-- ToggleSplitButton: checked, it takes the primary look -->
+    <ControlTheme x:Key="{x:Type ToggleSplitButton}" TargetType="ToggleSplitButton" BasedOn="{StaticResource Nocturne.Styles.SplitButton}">
+        <Style Selector="^:checked">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Primary}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+            <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Hover}" />
+            <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Pressed}" />
+            <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

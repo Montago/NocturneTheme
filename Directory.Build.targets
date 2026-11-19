@@ -1,0 +1,7 @@
+<Project>
+  <!--
+    Avalonia's packages send build statistics (the AvaloniaStats target in Avalonia.BuildServices).
+    This empty target replaces theirs, so no build of this repo sends anything.
+  -->
+  <Target Name="AvaloniaStats" />
+</Project>

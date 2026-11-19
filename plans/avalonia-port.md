@@ -1,7 +1,13 @@
 # Plan: Nocturne for Avalonia
 
-Status: proposed (2026-11-18). Nothing started. The four decisions below are open; the
-recommendation is given for each.
+Status: phases 0-3 done (2026-11-19, branch `feature/avalonia`); phase 4 next. Avalonia 12.1.6.
+Left from phase 3 for later: document tabs (TabHelper close/add/badge), StatusBar (phase 4),
+Avalonia's DatePicker/TimePicker/ColorPicker/AutoCompleteBox (phase 5, with the own controls), and
+scroll bars that fade in while the content scrolls (they fade in on hover only).
+
+Decided by the user (2026-11-19): 1. cross-platform; 2. same repository; 3. Avalonia's own
+controls, styled by the theme, plus our own classes for what Avalonia lacks; 4. NocturneGrid waits
+for a later version.
 
 This is not a straight copy. The design values (colours, radii, sizes, 120/150 ms transitions),
 the icons, the resource keys and the logic of the custom controls carry over almost unchanged.

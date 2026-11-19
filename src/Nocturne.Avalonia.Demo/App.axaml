@@ -1,0 +1,9 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             x:Class="Nocturne.Avalonia.Demo.App"
+             RequestedThemeVariant="Dark">
+    <Application.Styles>
+        <nc:NocturneTheme />
+    </Application.Styles>
+</Application>

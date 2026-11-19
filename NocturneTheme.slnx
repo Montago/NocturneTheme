@@ -4,6 +4,10 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Avalonia/">
+    <Project Path="src/Nocturne.Avalonia.Demo/Nocturne.Avalonia.Demo.csproj" />
+    <Project Path="src/Nocturne.Avalonia/Nocturne.Avalonia.csproj" />
+  </Folder>
   <Folder Name="/WPF/">
     <Project Path="src/Nocturne.Wpf.Demo/Nocturne.Wpf.Demo.csproj" />
     <Project Path="src/Nocturne.Wpf/Nocturne.Wpf.csproj" />

@@ -1,0 +1,250 @@
+<!--
+    GroupBox, Expander, TabControl and GridSplitter. The default TabControl is a segmented control
+    (tabs share a sunken strip, the selected one has a light fill and a short accent bar, which
+    TabSelectionIndicator glides to a new tab).
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:conv="using:Avalonia.Controls.Converters">
+
+    <conv:BorderGapMaskConverter x:Key="Nocturne.Converters.BorderGapMask" />
+
+    <!-- GroupBox: a sunken frame with the header sitting in a gap in its top edge -->
+    <ControlTheme x:Key="{x:Type GroupBox}" TargetType="GroupBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Sunken}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="16,6,16,10" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="10,Auto,*,10" RowDefinitions="Auto,Auto,*">
+                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="4" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" />
+                    <Border Name="Header" Grid.Column="1" Grid.RowSpan="2" Padding="6,0">
+                        <ContentPresenter Name="PART_HeaderPresenter" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          RecognizesAccessKey="True" FontSize="{DynamicResource Nocturne.Font.Size.Caption}" FontWeight="SemiBold" />
+                    </Border>
+                    <ContentPresenter Name="PART_ContentPresenter" Grid.Row="2" Grid.ColumnSpan="4" Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="4" CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border.OpacityMask>
+                            <MultiBinding Converter="{StaticResource Nocturne.Converters.BorderGapMask}" ConverterParameter="10">
+                                <Binding ElementName="Header" Path="Bounds.Width" />
+                                <Binding RelativeSource="{RelativeSource Self}" Path="Bounds.Width" />
+                                <Binding RelativeSource="{RelativeSource Self}" Path="Bounds.Height" />
+                            </MultiBinding>
+                        </Border.OpacityMask>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Expander: a 48px glass header with a chevron that turns in 150 ms; content below it -->
+    <ControlTheme x:Key="Nocturne.Styles.Expander.Header" TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="Bg" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Expander.Header}" />
+                    <Border Name="HoverBg" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Expander.Header.Hover}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <DockPanel Margin="14,0">
+                        <c:StrokeIcon Name="Chevron" DockPanel.Dock="Right" Width="16" Height="16" StrokeThickness="1.8"
+                                      Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}" RenderTransform="rotate(0deg)">
+                            <c:StrokeIcon.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                                </Transitions>
+                            </c:StrokeIcon.Transitions>
+                        </c:StrokeIcon>
+                        <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center" RecognizesAccessKey="True"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:checked /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Expander}" TargetType="Expander">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Padding" Value="14,14,14,4" />
+        <Setter Property="ContentTransition" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="Root">
+                    <ToggleButton Name="PART_toggle" DockPanel.Dock="Top" Theme="{StaticResource Nocturne.Styles.Expander.Header}"
+                                  IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                                  Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      IsVisible="{TemplateBinding IsExpanded}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:disabled /template/ DockPanel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Segmented TabControl. The header's font and colour sit on the header presenter, not on the
+        TabItem, so the page content does not inherit them. Under a TabSelectionIndicator the tab
+        leaves out its own pill and stripe.
+    -->
+    <ControlTheme x:Key="{x:Type TabItem}" TargetType="TabItem">
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent" Height="36">
+                    <Border Name="HoverBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="SelectedBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Selected}">
+                        <Border.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="!(c:TabSelectionIndicator.DrawsSelection)" RelativeSource="{RelativeSource TemplatedParent}" />
+                            </MultiBinding>
+                        </Border.IsVisible>
+                    </Border>
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="14,0" RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      FontSize="{DynamicResource Nocturne.Font.Size.Default}" FontWeight="SemiBold"
+                                      Foreground="{DynamicResource Nocturne.Brushes.Tab.Text}" />
+                    <Border Name="Indicator" Width="16" Height="3" Margin="0,0,0,3" CornerRadius="1.5" VerticalAlignment="Bottom"
+                            Background="{DynamicResource Nocturne.Brushes.Accent.Light}">
+                        <Border.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="!(c:TabSelectionIndicator.DrawsSelection)" RelativeSource="{RelativeSource TemplatedParent}" />
+                            </MultiBinding>
+                        </Border.IsVisible>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="ZIndex" Value="1" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Selected}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TabControl}" TargetType="TabControl">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Padding" Value="4,16,4,2" />
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <UniformGrid Rows="1" />
+            </ItemsPanelTemplate>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel KeyboardNavigation.TabNavigation="Local">
+                    <Border DockPanel.Dock="Top" CornerRadius="10" Padding="2,4" Background="{DynamicResource Nocturne.Brushes.TabStrip}"
+                            BorderBrush="{DynamicResource Nocturne.Brushes.TabStrip.Border}" BorderThickness="1">
+                        <Panel>
+                            <!-- Draws the selected tab's pill and stripe and glides them to a new tab -->
+                            <c:TabSelectionIndicator PillBrush="{DynamicResource Nocturne.Brushes.Item.Selected}" StripeBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                            <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        </Panel>
+                    </Border>
+                    <Panel Margin="{TemplateBinding Padding}">
+                        <ContentPresenter Name="PART_SelectedContentHost2" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" IsVisible="False" />
+                        <ContentPresenter Name="PART_SelectedContentHost" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding SelectedContent}" ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                    </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        GridSplitter: a hairline along the splitter with a small rounded grip in the middle; both light
+        up under the pointer, and the grip turns accent while dragged. Give it a width of 8 or so;
+        for one between rows, set ResizeDirection="Rows" (and a height).
+    -->
+    <ControlTheme x:Key="{x:Type GridSplitter}" TargetType="GridSplitter">
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.ScrollBar.Thumb}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        <Setter Property="MinWidth" Value="1" />
+        <Setter Property="MinHeight" Value="1" />
+        <Setter Property="PreviewContent">
+            <Template>
+                <Border Background="{DynamicResource Nocturne.Brushes.Accent.Light}" Opacity="0.5" />
+            </Template>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="Line" Width="1" HorizontalAlignment="Center" Background="{TemplateBinding BorderBrush}" />
+                    <Border Name="Grip" Width="4" Height="32" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Background="{TemplateBinding Foreground}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^[ResizeDirection=Rows] /template/ Border#Line">
+            <Setter Property="Width" Value="NaN" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="^[ResizeDirection=Rows] /template/ Border#Grip">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="4" />
+        </Style>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.ScrollBar.Thumb.Hover}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Stroke}" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

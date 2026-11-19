@@ -1,0 +1,353 @@
+<!--
+    ListBox / ListBoxItem (rounded rows that light up on hover and selection),
+    Nocturne.Styles.ListBox.Navigation (a side menu), ComboBox / ComboBoxItem and TreeView /
+    TreeViewItem (full-width rows, a chevron that turns in 150 ms and a short accent bar on the
+    selected item).
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers"
+                    xmlns:conv="using:Avalonia.Controls.Converters">
+
+    <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="{TemplateBinding Background}">
+                    <Border Name="HoverBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="SelectedBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{DynamicResource Nocturne.Brushes.Item.Selected}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                  IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
+                                  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                        <ItemsPresenter Name="PART_ItemsPresenter" Margin="{TemplateBinding Padding}" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Side navigation: a ListBox whose items are an icon tile and a label, e.g.
+        <StackPanel Orientation="Horizontal"><ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">…</ContentControl><TextBlock …/></StackPanel>
+    -->
+    <ControlTheme x:Key="Nocturne.Styles.ListBoxItem.Navigation" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CornerRadius" Value="10" />
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.ListBox.Navigation" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Setter Property="ItemContainerTheme" Value="{StaticResource Nocturne.Styles.ListBoxItem.Navigation}" />
+    </ControlTheme>
+
+    <!-- ComboBox: the field look, a chevron that turns over in 150 ms, the options on the popup surface -->
+    <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,0,36,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MaxDropDownHeight" Value="320" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <c:StrokeIcon Name="Chevron" Width="16" Height="16" Margin="0,0,12,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                      StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}"
+                                      IsHitTestVisible="False" RenderTransform="rotate(0deg)">
+                            <c:StrokeIcon.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                                </Transitions>
+                            </c:StrokeIcon.Transitions>
+                        </c:StrokeIcon>
+                        <TextBlock Name="Placeholder" Margin="{TemplateBinding Padding}" IsHitTestVisible="False"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" TextTrimming="CharacterEllipsis"
+                                   Text="{TemplateBinding PlaceholderText}" Foreground="{TemplateBinding PlaceholderForeground}">
+                            <TextBlock.IsVisible>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding Path="SelectionBoxItem" RelativeSource="{RelativeSource TemplatedParent}" Converter="{x:Static ObjectConverters.IsNull}" />
+                                    <Binding Path="!IsEditable" RelativeSource="{RelativeSource TemplatedParent}" />
+                                </MultiBinding>
+                            </TextBlock.IsVisible>
+                        </TextBlock>
+                        <ContentControl Name="ContentSite" Margin="{TemplateBinding Padding}" IsHitTestVisible="False"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                        IsVisible="{TemplateBinding IsEditable, Converter={x:Static BoolConverters.Not}}" />
+                        <TextBox Name="PART_EditableTextBox" Theme="{StaticResource Nocturne.Styles.TextBox.Inner}" Margin="10,1,36,1"
+                                 Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Text, Mode=TwoWay}"
+                                 PlaceholderText="{TemplateBinding PlaceholderText}" IsVisible="{TemplateBinding IsEditable}" />
+                        <Popup Name="PART_Popup" Placement="BottomEdgeAlignedLeft" HorizontalOffset="-14" VerticalOffset="2"
+                               IsLightDismissEnabled="True" IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                               PlacementTarget="{TemplateBinding}" InheritsTransform="True">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4">
+                                <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                              MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static h:NocturneConverters.Add}, ConverterParameter=-10}"
+                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                              IsScrollChainingEnabled="False">
+                                    <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                </ScrollViewer>
+                            </ContentControl>
+                        </Popup>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+        <Style Selector="^[IsEditable=True]">
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ComboBoxItem}" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusAdorner" Value="{StaticResource Nocturne.Templates.FocusVisual.Inset}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Hover}" IsVisible="False" />
+                    <Border Name="SelectedBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Selected}" IsVisible="False" />
+                    <DockPanel Margin="{TemplateBinding Padding}">
+                        <c:StrokeIcon Name="Check" DockPanel.Dock="Right" Width="16" Height="16" Margin="12,0,0,0" StrokeThickness="2.2" Opacity="0"
+                                      Data="{DynamicResource Nocturne.Icons.Check}" Foreground="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ c|StrokeIcon#Check">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <x:Double x:Key="Nocturne.TreeViewItem.Indent">18</x:Double>
+
+    <!-- The chevron in front of an item with children: points right, turns down in 150 ms when expanded -->
+    <ControlTheme x:Key="Nocturne.Styles.TreeViewItem.Expander" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <c:StrokeIcon Name="Chevron" Width="12" Height="12" StrokeThickness="2.4" Data="{DynamicResource Nocturne.Icons.ChevronRight}"
+                                  Foreground="{TemplateBinding Foreground}" RenderTransform="rotate(0deg)">
+                        <c:StrokeIcon.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                            </Transitions>
+                        </c:StrokeIcon.Transitions>
+                    </c:StrokeIcon>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:checked /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(90deg)" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        The row spans the whole tree; its content steps in 18px per level. The keyboard focus ring
+        goes round the row only (IsTemplateFocusTarget), not round the item and all its children.
+    -->
+    <ControlTheme x:Key="{x:Type TreeViewItem}" TargetType="TreeViewItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="2,0,10,0" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel>
+                    <Panel Name="Row" MinHeight="{TemplateBinding MinHeight}" Margin="0,0,0,2" Background="{TemplateBinding Background}"
+                           Focusable="True" TemplatedControl.IsTemplateFocusTarget="True">
+                        <Panel.FocusAdorner>
+                            <FocusAdornerTemplate>
+                                <Border CornerRadius="8" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" />
+                            </FocusAdornerTemplate>
+                        </Panel.FocusAdorner>
+                        <Border Name="HoverBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+                        <Border Name="SelectedBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Selected}" IsVisible="False" />
+                        <Border Name="SelectedBar" Width="3" Height="16" Margin="1,0,0,0" CornerRadius="1.5" HorizontalAlignment="Left"
+                                Background="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <DockPanel Name="PART_Header">
+                            <DockPanel.Margin>
+                                <MultiBinding Converter="{x:Static conv:TreeViewItemIndentConverter.Instance}">
+                                    <Binding Path="Level" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    <DynamicResource ResourceKey="Nocturne.TreeViewItem.Indent" />
+                                </MultiBinding>
+                            </DockPanel.Margin>
+                            <ToggleButton Name="PART_ExpandCollapseChevron" DockPanel.Dock="Left" Margin="4,0,0,0" ClickMode="Press"
+                                          Theme="{StaticResource Nocturne.Styles.TreeViewItem.Expander}"
+                                          IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
+                            <ContentPresenter Name="PART_HeaderPresenter" Margin="{TemplateBinding Padding}" Focusable="False"
+                                              Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Panel>
+                    <ItemsPresenter Name="PART_ItemsPresenter" IsVisible="{TemplateBinding IsExpanded}" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:empty /template/ ToggleButton#PART_ExpandCollapseChevron">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="^ /template/ Panel#Row:pointerover > Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg, ^:selected /template/ Border#SelectedBar">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Row">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TreeView}" TargetType="TreeView">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                    <ScrollViewer AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                  IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                        <ItemsPresenter Name="PART_ItemsPresenter" Margin="{TemplateBinding Padding}" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:disabled /template/ Border#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

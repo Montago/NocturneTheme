@@ -1,0 +1,6 @@
+<!-- Shared by the Avalonia projects: one place for the Avalonia version. -->
+<Project>
+  <PropertyGroup>
+    <AvaloniaVersion>12.1.6</AvaloniaVersion>
+  </PropertyGroup>
+</Project>

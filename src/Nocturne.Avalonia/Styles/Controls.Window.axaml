@@ -1,0 +1,204 @@
+<!--
+    Window (plain, for dialogs and tool windows) and NocturneWindow: backdrop (or the opaque
+    fallback), tint and the light from the top-left corner, under a 44px title bar with 46 x 32
+    caption buttons: LeftWindowCommands, icon and title, RightWindowCommands, caption buttons.
+    TitleBarStyle puts a strip behind it. Over the content: the Flyouts layer.
+
+    The title bar carries Avalonia's window decoration roles (chrome:WindowDecorationProperties.ElementRole):
+    TitleBar drags, maximises on a double click and snaps; the caption buttons map to the system's
+    own (on Windows the maximise button opens the snap layouts); elements inside the bar that take
+    input need the role User.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:chrome="using:Avalonia.Controls.Chrome">
+
+    <!-- Plain Window: the opaque ground, the theme's font and text colour -->
+    <ControlTheme x:Key="{x:Type Window}" TargetType="Window">
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Window.Fallback}" />
+        <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource Nocturne.Brushes.Window.Fallback}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                    <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
+                    <VisualLayerManager Name="PART_VisualLayerManager">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </VisualLayerManager>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.WindowCaption" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Caption.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Caption.Pressed}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.Button.WindowClose" TargetType="Button" BasedOn="{StaticResource Nocturne.Styles.Button.WindowCaption}">
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Close.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Close.Pressed}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type c:NocturneWindow}" TargetType="c:NocturneWindow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource Nocturne.Brushes.Window.Fallback}" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontFamily" Value="{DynamicResource Nocturne.Fonts.Family}" />
+        <Setter Property="FontSize" Value="{DynamicResource Nocturne.Font.Size.Default}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="PART_Root" Margin="{TemplateBinding OffScreenMargin}">
+                    <!-- Layers, from the bottom -->
+                    <Border Name="Fallback" Background="{DynamicResource Nocturne.Brushes.Window.Fallback}" IsHitTestVisible="False" />
+                    <Rectangle Fill="{DynamicResource Nocturne.Brushes.Window.Tint}" Opacity="{TemplateBinding TintOpacity}" IsHitTestVisible="False" />
+                    <!-- The light from the top-left corner: NocturneWindow draws it dithered for the window's size -->
+                    <Image Name="PART_Light" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" IsHitTestVisible="False"
+                           RenderOptions.BitmapInterpolationMode="None" />
+
+                    <VisualLayerManager Name="PART_VisualLayerManager">
+                    <Grid RowDefinitions="Auto,*">
+                        <!-- The strip behind the title bar: none (Seamless), or a fill with a hairline under it (TitleBarStyle) -->
+                        <Border Name="TitleBarBg" Height="{TemplateBinding TitleBarHeight}" Background="Transparent"
+                                IsVisible="{TemplateBinding IsTitleBarDrawn}" />
+                        <DockPanel Name="TitleBar" Height="{TemplateBinding TitleBarHeight}" Background="Transparent"
+                                   IsVisible="{TemplateBinding IsTitleBarDrawn}"
+                                   chrome:WindowDecorationProperties.ElementRole="TitleBar">
+                            <StackPanel Name="CaptionButtons" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                                <Button Name="PART_MinButton" Theme="{StaticResource Nocturne.Styles.Button.WindowCaption}"
+                                        chrome:WindowDecorationProperties.ElementRole="MinimizeButton" AutomationProperties.Name="Minimize">
+                                    <Path Width="10" Height="10" StrokeThickness="1" Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{DynamicResource Nocturne.Icons.Caption.Minimize}" />
+                                </Button>
+                                <Button Name="PART_MaxButton" Theme="{StaticResource Nocturne.Styles.Button.WindowCaption}"
+                                        chrome:WindowDecorationProperties.ElementRole="MaximizeButton" AutomationProperties.Name="Maximize">
+                                    <Path Name="MaxGlyph" Width="10" Height="10" StrokeThickness="1" Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{DynamicResource Nocturne.Icons.Caption.Maximize}" />
+                                </Button>
+                                <Button Name="PART_CloseButton" Theme="{StaticResource Nocturne.Styles.Button.WindowClose}"
+                                        chrome:WindowDecorationProperties.ElementRole="CloseButton" AutomationProperties.Name="Close">
+                                    <Path Width="10" Height="10" StrokeThickness="1" Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{DynamicResource Nocturne.Icons.Caption.Close}" />
+                                </Button>
+                            </StackPanel>
+                            <ContentPresenter Name="RightCommands" DockPanel.Dock="Right" Margin="0,0,8,0" VerticalAlignment="Center"
+                                              Content="{TemplateBinding RightWindowCommands}"
+                                              chrome:WindowDecorationProperties.ElementRole="User" />
+                            <!-- LeftWindowCommands, then a thin divider before the icon and title -->
+                            <ContentPresenter Name="LeftCommands" DockPanel.Dock="Left" Margin="8,0,0,0" VerticalAlignment="Center"
+                                              Content="{TemplateBinding LeftWindowCommands}" IsVisible="False"
+                                              chrome:WindowDecorationProperties.ElementRole="User" />
+                            <Rectangle Name="LeftDivider" DockPanel.Dock="Left" Width="1" Height="18" Margin="12,0" VerticalAlignment="Center"
+                                       Fill="{DynamicResource Nocturne.Brushes.Divider}" IsVisible="False" />
+                            <StackPanel Name="TitleArea" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <Panel Name="IconHost" Width="16" Height="16" Margin="0,0,10,0" IsVisible="{TemplateBinding ShowIcon}">
+                                    <Image Source="{TemplateBinding IconImage}" RenderOptions.BitmapInterpolationMode="HighQuality"
+                                           IsVisible="{TemplateBinding IconImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <!-- Shown when the window has no Icon -->
+                                    <Canvas Width="16" Height="16" IsVisible="{TemplateBinding IconImage, Converter={x:Static ObjectConverters.IsNull}}">
+                                        <Rectangle Name="DefaultIconFill" Canvas.Left="1" Canvas.Top="1" Width="14" Height="14" RadiusX="4" RadiusY="4"
+                                                   Fill="{DynamicResource Nocturne.Brushes.Accent}" />
+                                        <Rectangle Canvas.Left="4.5" Canvas.Top="4.5" Width="7" Height="7" RadiusX="2" RadiusY="2" Stroke="White" StrokeThickness="1.4" />
+                                    </Canvas>
+                                </Panel>
+                                <TextBlock Name="TitleText" Text="{TemplateBinding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                           FontSize="{DynamicResource Nocturne.Font.Size.Small}" FontWeight="Medium" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <Panel Grid.Row="1">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <ContentPresenter Content="{TemplateBinding Flyouts}" ClipToBounds="True" />
+                        </Panel>
+                    </Grid>
+                    </VisualLayerManager>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsBackdropActive=True] /template/ Border#Fallback">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:leftcommands /template/ ContentPresenter#LeftCommands">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:leftcommands /template/ Rectangle#LeftDivider">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:leftcommands /template/ StackPanel#TitleArea">
+            <Setter Property="Margin" Value="0" />
+        </Style>
+        <Style Selector="^[TitleBarStyle=Separated] /template/ Border#TitleBarBg">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.TitleBar.Separated}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.TitleBar.Separated.Border}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style Selector="^[TitleBarStyle=Accent] /template/ Border#TitleBarBg">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.TitleBar.Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.TitleBar.Accent.Border}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <!-- The accent square would sink into the accent strip: draw it in the light shade -->
+        <Style Selector="^[TitleBarStyle=Accent] /template/ Rectangle#DefaultIconFill">
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
+        </Style>
+        <Style Selector="^:maximized /template/ Path#MaxGlyph">
+            <Setter Property="Data" Value="{DynamicResource Nocturne.Icons.Caption.Restore}" />
+        </Style>
+        <Style Selector="^[IsActive=False] /template/ StackPanel#TitleArea">
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <Style Selector="^[IsActive=False] /template/ StackPanel#CaptionButtons">
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <!-- macOS keeps its traffic lights at the top left: no buttons of ours, room for theirs -->
+        <Style Selector="^:macos /template/ StackPanel#CaptionButtons">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:macos /template/ StackPanel#TitleArea">
+            <Setter Property="Margin" Value="78,0,0,0" />
+        </Style>
+        <Style Selector="^:macos /template/ ContentPresenter#LeftCommands">
+            <Setter Property="Margin" Value="78,0,0,0" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,243 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             x:Class="Nocturne.Avalonia.Demo.Views.ControlsPage">
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6" Margin="8,8,0,4">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Controls" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}"
+                       Text="Avalonia's own controls in the Nocturne theme: buttons, fields, toggles, lists, menus, tabs and pickers." />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*,20,*,20,*">
+            <!-- Column 1 -->
+            <StackPanel Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="BUTTON" Tag="Button · RepeatButton">
+                    <StackPanel Spacing="10">
+                        <WrapPanel ItemSpacing="8" LineSpacing="8">
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" />
+                            <Button Content="Cancel" />
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Subtle}" Content="Subtle" />
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Danger}" Content="Delete" />
+                        </WrapPanel>
+                        <WrapPanel ItemSpacing="8" LineSpacing="8">
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon}" ToolTip.Tip="Search">
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Search}" />
+                            </Button>
+                            <Button Theme="{StaticResource Nocturne.Styles.Button.Icon.Subtle}" ToolTip.Tip="Refresh">
+                                <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Refresh}" />
+                            </Button>
+                            <RepeatButton Content="Repeat" />
+                            <Button Content="Disabled" IsEnabled="False" />
+                        </WrapPanel>
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="DROPDOWN · SPLIT" Tag="DropDownButton · SplitButton">
+                    <WrapPanel ItemSpacing="8" LineSpacing="8">
+                        <DropDownButton Content="Export">
+                            <DropDownButton.Flyout>
+                                <MenuFlyout>
+                                    <MenuItem Header="PDF" />
+                                    <MenuItem Header="Excel" />
+                                </MenuFlyout>
+                            </DropDownButton.Flyout>
+                        </DropDownButton>
+                        <SplitButton Theme="{StaticResource Nocturne.Styles.SplitButton.Primary}" Content="Save">
+                            <SplitButton.Flyout>
+                                <MenuFlyout>
+                                    <MenuItem Header="Save as…" />
+                                    <MenuItem Header="Save all" />
+                                </MenuFlyout>
+                            </SplitButton.Flyout>
+                        </SplitButton>
+                        <ToggleButton Content="Bold" IsChecked="True" />
+                    </WrapPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="TEXTBOX" Tag="TextBox · PasswordChar">
+                    <StackPanel>
+                        <Label Content="Name" />
+                        <TextBox Text="Ada Lovelace" Classes="clearButton" />
+                        <Label Margin="0,12,0,0" Content="Search" />
+                        <TextBox Theme="{StaticResource Nocturne.Styles.TextBox.Search}" PlaceholderText="Search the library" />
+                        <Label Margin="0,12,0,0" Content="Password" />
+                        <TextBox PasswordChar="●" Text="correct horse" Classes="revealPasswordButton" />
+                        <Label Margin="0,12,0,0" Content="E-mail" />
+                        <TextBox Text="ada@example" nc:ControlHelper.HasError="True" />
+                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Error}" Text="Enter a whole e-mail address." />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="NUMERICUPDOWN" Tag="NumericUpDown">
+                    <NumericUpDown Value="42" Minimum="0" Maximum="100" />
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 2 -->
+            <StackPanel Grid.Column="2" Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="COMBOBOX" Tag="ComboBox">
+                    <StackPanel Spacing="10">
+                        <ComboBox SelectedIndex="1" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Small" />
+                            <ComboBoxItem Content="Medium" />
+                            <ComboBoxItem Content="Large" />
+                        </ComboBox>
+                        <ComboBox PlaceholderText="Choose a size" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Small" />
+                            <ComboBoxItem Content="Large" />
+                        </ComboBox>
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="CHECK · RADIO" Tag="CheckBox · RadioButton">
+                    <Grid ColumnDefinitions="*,*">
+                        <StackPanel>
+                            <CheckBox Content="Notifications" IsChecked="True" />
+                            <CheckBox Content="Updates" />
+                            <CheckBox Content="Partial" IsThreeState="True" IsChecked="{x:Null}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <RadioButton GroupName="Size" Content="Compact" />
+                            <RadioButton GroupName="Size" Content="Normal" IsChecked="True" />
+                            <RadioButton GroupName="Size" Content="Roomy" />
+                        </StackPanel>
+                    </Grid>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="GROUPBOX · SWITCH" Tag="GroupBox · ToggleSwitch">
+                    <GroupBox Header="Synchronisation">
+                        <StackPanel>
+                            <ToggleSwitch Content="Sync over mobile data" />
+                            <ToggleSwitch Content="Sync in the background" IsChecked="True" />
+                        </StackPanel>
+                    </GroupBox>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="SLIDER · PROGRESSBAR" Tag="Slider · ProgressBar">
+                    <StackPanel Spacing="14">
+                        <Slider Value="60" />
+                        <ProgressBar Value="72" />
+                        <ProgressBar IsIndeterminate="True" />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="CALENDARDATEPICKER" Tag="CalendarDatePicker">
+                    <CalendarDatePicker SelectedDate="2026-11-12" HorizontalAlignment="Stretch" />
+                </HeaderedContentControl>
+            </StackPanel>
+
+            <!-- Column 3 -->
+            <StackPanel Grid.Column="4" Spacing="20">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="TABCONTROL · SEGMENTS" Tag="TabControl · TabItem">
+                    <TabControl SelectedIndex="0">
+                        <TabItem Header="General">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="The selected tab's pill glides to the next one." />
+                        </TabItem>
+                        <TabItem Header="Network">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Network settings." />
+                        </TabItem>
+                        <TabItem Header="Advanced">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Advanced settings." />
+                        </TabItem>
+                    </TabControl>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="LISTBOX" Tag="ListBox · ListBoxItem">
+                    <ListBox SelectedIndex="0">
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile}">
+                                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Shield}" />
+                                </ContentControl>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Security" />
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Passwords and sign-in" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile}">
+                                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Globe}" />
+                                </ContentControl>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Network" />
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Proxy and connections" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile}">
+                                    <nc:StrokeIcon Data="{StaticResource Nocturne.Icons.Database}" />
+                                </ContentControl>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.ListTitle}" Text="Storage" />
+                                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Disks and backups" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="TREEVIEW" Tag="TreeView · TreeViewItem">
+                    <TreeView>
+                        <TreeViewItem Header="Projects" IsExpanded="True">
+                            <TreeViewItem Header="Nocturne" IsSelected="True" />
+                            <TreeViewItem Header="JetPack" />
+                        </TreeViewItem>
+                        <TreeViewItem Header="Archive">
+                            <TreeViewItem Header="2025" />
+                        </TreeViewItem>
+                    </TreeView>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="EXPANDER" Tag="Expander">
+                    <StackPanel Spacing="8">
+                        <Expander Header="Advanced settings" IsExpanded="True" HorizontalAlignment="Stretch">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="The chevron turns as the content opens." />
+                        </Expander>
+                        <Expander Header="Diagnostics" HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="MENU · CONTEXTMENU" Tag="Menu · MenuItem">
+                    <StackPanel Spacing="10">
+                        <Menu>
+                            <MenuItem Header="_File">
+                                <MenuItem Header="_New" InputGesture="Ctrl+N" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Plus}" />
+                                <MenuItem Header="_Open…" InputGesture="Ctrl+O" />
+                                <Separator />
+                                <MenuItem Header="E_xit" />
+                            </MenuItem>
+                            <MenuItem Header="_Edit">
+                                <MenuItem Header="Cu_t" InputGesture="Ctrl+X" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Cut}" />
+                                <MenuItem Header="_Copy" InputGesture="Ctrl+C" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Copy}" />
+                            </MenuItem>
+                            <MenuItem Header="_View" />
+                        </Menu>
+                        <Border Height="56" CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Surface.Sunken}"
+                                ToolTip.Tip="A tool tip on the popup surface">
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Cut" InputGesture="Ctrl+X" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Cut}" />
+                                    <MenuItem Header="Copy" InputGesture="Ctrl+C" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Copy}" />
+                                    <MenuItem Header="Paste" InputGesture="Ctrl+V" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.Paste}" />
+                                    <Separator />
+                                    <MenuItem Header="Show hidden files" ToggleType="CheckBox" IsChecked="True" />
+                                    <MenuItem Header="Sort by">
+                                        <MenuItem Header="Name" ToggleType="Radio" IsChecked="True" />
+                                        <MenuItem Header="Size" ToggleType="Radio" />
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}"
+                                       Text="Right-click for a context menu" />
+                        </Border>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>
