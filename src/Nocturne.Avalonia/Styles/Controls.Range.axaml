@@ -1,10 +1,11 @@
 <!--
     ScrollViewer / ScrollBar (thin rounded bars without arrows that widen under the pointer and
-    fade out while it is away from the scroll viewer; their room stays), Slider and ProgressBar
+    fade out while it is away from the scroll viewer, in again while the content scrolls; their room stays), Slider and ProgressBar
     (with an indeterminate runner).
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
 
     <!-- Scroll bars: the page parts of the track are invisible buttons -->
     <ControlTheme x:Key="Nocturne.Styles.ScrollBar.PageButton" TargetType="RepeatButton">
@@ -118,9 +119,13 @@
         </Style>
     </ControlTheme>
 
-    <!-- The bars fade out while the pointer is away from the scroll viewer (AllowAutoHide, on by default) -->
+    <!--
+        The bars fade out while the pointer is away from the scroll viewer and in when it comes or the
+        content scrolls (AllowAutoHide, on by default; ScrollViewerHelper.AutoHide)
+    -->
     <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="h:ScrollViewerHelper.AutoHide" Value="True" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto" Background="{TemplateBinding Background}">
@@ -154,7 +159,8 @@
         <Style Selector="^[AllowAutoHide=True] /template/ ScrollBar">
             <Setter Property="Opacity" Value="0" />
         </Style>
-        <Style Selector="^[AllowAutoHide=True]:pointerover /template/ ScrollBar">
+        <!-- ScrollViewerHelper sets barsVisible while the pointer is over the viewer, and for a second after it scrolls -->
+        <Style Selector="^[AllowAutoHide=True].barsVisible /template/ ScrollBar">
             <Setter Property="Opacity" Value="1" />
         </Style>
     </ControlTheme>

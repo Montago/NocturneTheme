@@ -147,8 +147,9 @@ src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmln
                                OverlayPopupHost, AdornerLayer with the focus ring, FlyoutPresenter, ItemsControl, …)
   Controls/                    NocturneWindow, LightTexture, NativeMethods (Windows only), NocturneIcon (+ Icon/IconGeometry
                                extensions; NocturneIconKind.g.cs generated), StrokeIcon, TabSelectionIndicator,
-                               NocturneAccent.g.cs (generated)
-  Helpers/                     ControlHelper (attached properties), NocturneConverters
+                               TabPanelBorder, NocturneAccent.g.cs (generated)
+  Helpers/                     ControlHelper (attached properties), TabHelper (document tabs: close, badge, "+"),
+                               ScrollViewerHelper (bars fade in on hover and while scrolling), NocturneConverters
 src/Nocturne.Avalonia.Demo/    demo (Views/ControlsPage, TokensPage); Headless.cs, Snapshot.cs (--snapshot), RenderCommand.cs (--render)
 tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
                                Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
@@ -164,6 +165,8 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
   (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
   (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
+  `--snapshot` ends with `checks.txt` (behaviour driven with the headless mouse: scroll bars hide and
+  appear, a document tab closes, "+" adds one) and exits with 1 when a check fails, so CI catches it.
 - NocturneWindow extends the client area and marks its title bar and caption buttons with Avalonia 12's
   `WindowDecorationProperties.ElementRole` (TitleBar, MinimizeButton, MaximizeButton, CloseButton; User for
   commands inside the bar): Windows drags, snaps and shows the snap layouts itself. macOS keeps its traffic
@@ -193,6 +196,10 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   wide as the travel, 20).
 - Transitions: `Transitions` on the part (120/150 ms); rotate chevrons with `RenderTransform="rotate(…)"`
   and a `TransformOperationsTransition`. Headless captures run 30 frames (0.5 s) so they finish.
+- Headless, `Dispatcher.UIThread.RunJobs()` never fires a `DispatcherTimer`; run
+  `Dispatcher.UIThread.MainLoop(token)` for the time to wait (`Snapshot.Wait`).
+- Avalonia has no WPF `RoutedCommand`: TabHelper offers `CloseTabCommand` / `AddTabCommand` (ICommand),
+  the `TabClosing` and `AddTabRequested` routed events and an `AddCommand` attached property.
 
 ## Releases
 

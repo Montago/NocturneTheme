@@ -13,7 +13,8 @@ second; they work the same on Windows, macOS and Linux (CI runs `--snapshot` on 
   (`RenderCommand.cs`).
 - `--snapshot <folder>` (`Snapshot.cs`, a few seconds): `controls.png`, `controls-bottom.png`,
   `tokens.png`, `popup-combobox.png` and `popup-menu.png` (drawn open), `accent-<name>.png` and
-  `titlebar-separated.png` / `titlebar-accent.png`.
+  `titlebar-separated.png` / `titlebar-accent.png`; then `checks.txt` (PASS/FAIL per behaviour check,
+  driven with the headless mouse; the command exits with 1 when one fails).
 
 Popups are drawn into the window (`OverlayPopups`), so an open popup shows in the picture.
 

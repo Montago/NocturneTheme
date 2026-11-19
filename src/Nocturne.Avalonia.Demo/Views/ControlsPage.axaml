@@ -72,6 +72,21 @@
                 <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="NUMERICUPDOWN" Tag="NumericUpDown">
                     <NumericUpDown Value="42" Minimum="0" Maximum="100" />
                 </HeaderedContentControl>
+
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="DOCUMENT TABS" Tag="TabHelper">
+                    <TabControl Name="DocumentTabs" Theme="{StaticResource Nocturne.Styles.TabControl.Document}" Height="150" SelectedIndex="0"
+                                nc:TabHelper.ShowCloseButton="True" nc:TabHelper.ShowAddButton="True">
+                        <TabItem Header="Home">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Close a tab with its ×; + adds one." TextWrapping="Wrap" />
+                        </TabItem>
+                        <TabItem Header="Logs">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Logs." />
+                        </TabItem>
+                        <TabItem Header="Issues" nc:TabHelper.Badge="2">
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Text="Two conflicts." />
+                        </TabItem>
+                    </TabControl>
+                </HeaderedContentControl>
             </StackPanel>
 
             <!-- Column 2 -->

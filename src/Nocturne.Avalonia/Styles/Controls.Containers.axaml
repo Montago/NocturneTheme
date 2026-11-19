@@ -1,11 +1,14 @@
 <!--
     GroupBox, Expander, TabControl and GridSplitter. The default TabControl is a segmented control
     (tabs share a sunken strip, the selected one has a light fill and a short accent bar, which
-    TabSelectionIndicator glides to a new tab).
+    TabSelectionIndicator glides to a new tab). Nocturne.Styles.TabControl.Document gives
+    browser-like document tabs with close buttons (TabHelper.ShowCloseButton), badges
+    (TabHelper.Badge) and a "+" button (TabHelper.ShowAddButton).
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers"
                     xmlns:conv="using:Avalonia.Controls.Converters">
 
     <conv:BorderGapMaskConverter x:Key="Nocturne.Converters.BorderGapMask" />
@@ -198,6 +201,144 @@
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Content="{TemplateBinding SelectedContent}" ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
                     </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Document tabs: browser-like tabs on a panel, with close buttons (TabHelper.ShowCloseButton),
+         badges (TabHelper.Badge) and a "+" button (TabHelper.ShowAddButton) -->
+    <ControlTheme x:Key="Nocturne.Styles.TabItem.CloseButton" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" CornerRadius="6" Background="Transparent">
+                    <c:StrokeIcon Width="14" Height="14" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.Close}"
+                                  Foreground="{TemplateBinding Foreground}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Selected}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Pressed}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.TabItem.Document" TargetType="TabItem">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Height="36" Background="Transparent">
+                    <Border Name="Bg" CornerRadius="8,8,0,0" Background="Transparent" />
+                    <Border Name="Line" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" />
+                    <Border Name="Frame" CornerRadius="8,8,0,0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}" IsVisible="False" />
+                    <Rectangle Name="Separator" Width="1" Margin="0,10" HorizontalAlignment="Left" Fill="{DynamicResource Nocturne.Brushes.Stroke}" IsVisible="False" />
+                    <DockPanel Name="HeaderRow" Margin="12,0" TextElement.Foreground="{DynamicResource Nocturne.Brushes.Text.Label}">
+                        <!-- Its negative right margin takes back 8 of the row's 12, so a tab with a close button ends 4 from it -->
+                        <Button Name="CloseButton" DockPanel.Dock="Right" Margin="4,0,-8,0" Theme="{StaticResource Nocturne.Styles.TabItem.CloseButton}"
+                                IsVisible="{TemplateBinding h:TabHelper.ShowCloseButton}"
+                                Command="{x:Static h:TabHelper.CloseTabCommand}" CommandParameter="{Binding $parent[TabItem]}"
+                                ToolTip.Tip="Close" AutomationProperties.Name="Close" />
+                        <ContentControl Name="Badge" DockPanel.Dock="Right" Margin="6,0,0,0" Theme="{StaticResource Nocturne.Styles.Badge}"
+                                        Content="{TemplateBinding h:TabHelper.Badge}"
+                                        IsVisible="{TemplateBinding h:TabHelper.Badge, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center" RecognizesAccessKey="True"
+                                          Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          FontSize="{DynamicResource Nocturne.Font.Size.Caption}" FontWeight="SemiBold" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^.separator /template/ Rectangle#Separator">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bg">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.DocumentTab.Hover}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ DockPanel#HeaderRow">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="ZIndex" Value="1" />
+        </Style>
+        <Style Selector="^:selected /template/ Panel#Root">
+            <Setter Property="Height" Value="40" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#Bg">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.DocumentTab.Selected}" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#Line">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#Frame">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ DockPanel#HeaderRow">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Selected}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.TabItem.AddButton" TargetType="Button">
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="ToolTip.Tip" Value="New tab" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" CornerRadius="6" Background="Transparent">
+                    <c:StrokeIcon Width="16" Height="16" StrokeThickness="2" Data="{DynamicResource Nocturne.Icons.Plus}" Foreground="{TemplateBinding Foreground}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Row.Selected}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Pressed}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.TabControl.Document" TargetType="TabControl">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Padding" Value="17" />
+        <Setter Property="ItemContainerTheme" Value="{StaticResource Nocturne.Styles.TabItem.Document}" />
+        <Setter Property="h:TabHelper.TracksSeparators" Value="True" />
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" />
+            </ItemsPanelTemplate>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel KeyboardNavigation.TabNavigation="Local">
+                    <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*">
+                        <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" VerticalAlignment="Bottom" />
+                        <!-- The strip's bottom line stops 10px short so the panel's rounded corner can meet it -->
+                        <Border Grid.Column="1" Height="36" Margin="0,0,10,0" VerticalAlignment="Bottom" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}">
+                            <Button Name="AddButton" Margin="4,0,0,0" HorizontalAlignment="Left" Theme="{StaticResource Nocturne.Styles.TabItem.AddButton}"
+                                    IsVisible="{TemplateBinding h:TabHelper.ShowAddButton}"
+                                    Command="{x:Static h:TabHelper.AddTabCommand}" CommandParameter="{Binding $parent[TabControl]}"
+                                    AutomationProperties.Name="New tab" />
+                        </Border>
+                    </Grid>
+                    <c:TabPanelBorder CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.DocumentTab.Selected}"
+                                      BorderBrush="{DynamicResource Nocturne.Brushes.Stroke}">
+                        <Panel Margin="{TemplateBinding Padding}">
+                            <ContentPresenter Name="PART_SelectedContentHost2" IsVisible="False" />
+                            <ContentPresenter Name="PART_SelectedContentHost" Content="{TemplateBinding SelectedContent}"
+                                              ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Panel>
+                    </c:TabPanelBorder>
                 </DockPanel>
             </ControlTemplate>
         </Setter>
