@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-demo",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["C:/Users/MDK/AppData/Local/Temp/claude/1e65e5383d41db0c/b9d6ecf2-c22a-4e0c-a596-a085f6fb1d78/scratchpad/demo/Nocturne.Web.Demo.dll", "--urls", "http://localhost:5190", "--environment", "Development", "--contentRoot", "D:/Develop/NocturneTheme/src/Nocturne.Web.Demo"],
+      "port": 5190
+    },
+    {
+      "name": "web-sample",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["C:/Users/MDK/AppData/Local/Temp/claude/1e65e5383d41db0c/b9d6ecf2-c22a-4e0c-a596-a085f6fb1d78/scratchpad/mvc/Nocturne.Web.Samples.Mvc.dll", "--urls", "http://localhost:5192", "--environment", "Development", "--contentRoot", "D:/Develop/NocturneTheme/samples/Nocturne.Web.Samples.Mvc"],
+      "port": 5192
+    }
+  ]
+}
