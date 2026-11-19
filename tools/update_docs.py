@@ -289,7 +289,9 @@ def check_controls_documented(report):
     for path in glob.glob(os.path.join(ROOT, 'src', 'Nocturne.Avalonia', 'Controls', '*.cs')):
         classes += re.findall(r'^public (?:sealed |abstract |partial )*class (\w+)\s*:\s*(?:\w+)', open(path, encoding='utf-8').read(), re.M)
     # Building blocks of templates that apps do not use directly
-    internal = {'AccordionPanel', 'TabPanelBorder', 'TabSelectionIndicator'}
+    internal = {'AccordionPanel', 'TabPanelBorder', 'TabSelectionIndicator',
+                # data classes of NocturneGrid's filters and events
+                'GridDateFilterNode', 'GridFilterOption', 'GridFilteredEventArgs', 'GridSelectedItemChangedEventArgs'}
     for name in sorted(set(classes) - internal):
         if f'`{name}`' not in pages and f'nc:{name}' not in pages:
             report.warn(f'Avalonia control {name} is not mentioned on the avalonia*.md pages')

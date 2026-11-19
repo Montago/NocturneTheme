@@ -433,6 +433,58 @@
             </DataGrid>
         </ContentControl>
 
+        <ContentControl Classes="sample" Tag="nocturnegrid" Width="860">
+            <StackPanel>
+                <TextBox Width="280" HorizontalAlignment="Left" Margin="0,0,0,12" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" Text="volvo automatic"
+                         Classes="clearButton" />
+                <nc:NocturneGrid Name="CarSearchGrid" Height="300" SelectionMode="Single" SearchText="volvo automatic">
+                    <nc:NocturneGrid.Columns>
+                        <nc:NocturneGridColumn Width="110" Header="STOCK NO." Binding="{Binding StockNo}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="110" Header="MAKE" Binding="{Binding Make}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="120" Header="MODEL" Binding="{Binding Model}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="76" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="92" Header="FUEL" Binding="{Binding Fuel}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="116" Header="GEARBOX" Binding="{Binding Gearbox}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                    </nc:NocturneGrid.Columns>
+                </nc:NocturneGrid>
+            </StackPanel>
+        </ContentControl>
+
+        <ContentControl Classes="sample" Tag="nocturnegrid-filter" Width="640">
+            <nc:NocturneGrid Name="CarFilterGrid" Height="420" VerticalAlignment="Top" demo:Gallery.Open="True">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="140" Header="BODY" Binding="{Binding Body}" FilterText="estate suv" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="110" Header="FUEL" Binding="{Binding Fuel}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" x:DataType="demo:Car" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
+        </ContentControl>
+
+        <ContentControl Classes="sample" Tag="nocturnegrid-groups" Width="640">
+            <nc:NocturneGrid Name="CarGroupGrid" Height="330" GroupMemberPath="Make">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Width="116" Header="MAKE" Binding="{Binding Make}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="134" Header="MODEL" Binding="{Binding Model}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="80" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" x:DataType="demo:Car" />
+                    <nc:NocturneGridCheckBoxColumn Width="80" Header="SOLD" Binding="{Binding IsSold}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" x:DataType="demo:Car" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
+        </ContentControl>
+
+        <ContentControl Classes="sample" Tag="nocturnegrid-paging" Width="640">
+            <nc:NocturneGrid Name="CarPagedGrid" Height="300" PageSize="25">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Width="110" Header="STOCK NO." Binding="{Binding StockNo}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="140" Header="MODEL" Binding="{Binding Model}" x:DataType="demo:Car" />
+                    <nc:NocturneGridColumn Width="*" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" TextAlignment="Right" x:DataType="demo:Car" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
+        </ContentControl>
+
         <ContentControl Classes="sample" Tag="calendar" Width="360">
             <Calendar Name="MeetingCalendar" HorizontalAlignment="Left" IsTodayHighlighted="False" />
         </ContentControl>

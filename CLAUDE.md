@@ -145,7 +145,7 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 The plan, its decisions and its phases are in `plans/avalonia-port.md`; keep its Status line current.
 Decided by the user: cross-platform (`net10.0`, Windows-only parts behind `OperatingSystem.IsWindows()`),
 same repo, Avalonia's own controls where they exist (NumericUpDown, TimePicker, ColorPicker, …) styled
-by the theme, our own classes only for what Avalonia lacks, NocturneGrid in a later version.
+by the theme, our own classes only for what Avalonia lacks; NocturneGrid stays in Nocturne.Avalonia.
 
 ```
 src/Avalonia.props             the Avalonia and Avalonia.Controls.DataGrid versions, imported by every Avalonia project
@@ -161,14 +161,16 @@ src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmln
                                TabSelectionIndicator, TabPanelBorder, NocturneAccent.g.cs (generated); own controls:
                                Tile, Badged, BusyIndicator, Accordion, StatusBar (ContentControls.cs), ProgressRing, InfoBar
                                (StatusControls.cs), Rating, RangeSlider (RangeControls.cs), HamburgerMenu, SearchComboBox,
-                               ColorPicker, NocturneDialog, Flyout (Overlays.cs)
+                               ColorPicker, NocturneDialog, Flyout (Overlays.cs); NocturneGrid (NocturneGrid.cs, the search
+                               and filter rules in NocturneGrid.Filtering.cs, ported from WPF), NocturneGridColumn (with the
+                               internal GridCellText that marks the hits), NocturneGridCheckBoxColumn, GridDateFilterNode
   Helpers/                     ControlHelper (attached properties), TabHelper (document tabs: close, badge, "+"),
                                ScrollViewerHelper (bars fade in on hover and while scrolling), NocturneConverters
-src/Nocturne.Avalonia.Demo/    demo (Views/: Controls, MoreControls, CustomControls, Icons, Tokens pages; GalleryPage with one
-                               sample per control, Tag = file name); DemoData.cs; Headless.cs, Snapshot.cs (--snapshot),
+src/Nocturne.Avalonia.Demo/    demo (Views/: Controls, MoreControls, CustomControls, Grid, Icons, Tokens pages; GalleryPage with one
+                               sample per control, Tag = file name); DemoData.cs, CarData.cs (the WPF demo's 3,000 cars); Headless.cs, Snapshot.cs (--snapshot),
                                RenderCommand.cs (--render, --render-gallery), GallerySnapshot.cs + Gallery.cs (Gallery.Open:
                                the drop-down, menu or tool tip drawn open in a sample's picture)
-samples/Nocturne.Avalonia.Samples.Admin, .Portal   the WPF samples' pages on Avalonia (DataGrid where WPF has NocturneGrid);
+samples/Nocturne.Avalonia.Samples.Admin, .Portal   the WPF samples' pages on Avalonia (NocturneGrid on Employees, Timesheets, Orders);
                                samples/Shared/Avalonia: SampleIcons.axaml, SampleSnapshot.cs (--snapshot), SampleConverters.cs
 tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
                                Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
@@ -257,6 +259,19 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
 - Resources and the clipboard: `Application.Current.TryFindResource` works before a
   control is in the tree, `control.TryFindResource` does not; `IClipboard.SetTextAsync` is an extension in
   `Avalonia.Input.Platform`; `InputElement.TappedEvent` (not `Gestures`).
+- NocturneGrid shows its rows through a `DataGridCollectionView` (Filter for the search and header filters,
+  PageSize/MoveToPage for paging, a `DataGridPathGroupDescription` for `GroupMemberPath`): one it makes for any other
+  ItemsSource, in a coerce callback. Setting ItemsSource again from OnPropertyChanged while the DataGrid takes the first
+  value is lost (the grid kept showing the raw list).
+- The view makes its first row current on every refresh and page change, and the DataGrid selects the current item:
+  NocturneGrid moves the current item to the row that was selected (or to none) afterwards. Sort descriptions change
+  while the view defers its refresh: react to them by posting to the dispatcher (`Contains` throws inside a deferral).
+- DataGridColumnHeader has no public Column: `DataGridColumn.GetColumnContainingElement(header)` finds it. NocturneGrid
+  sets the column as the DataContext of the header's `PART_FilterHost` (class handler on TemplateApplied); the template
+  binds `(c:NocturneGrid.FilterText)` and the other attached properties on it. A grouped grid has a spacer column of the
+  DataGrid's own (the group indent) with a header: only columns of the grid's Columns get the funnel.
+- A ControlTheme may not hold descendant selectors (`^ DataGridCell.searchHit` throws when the theme loads): put such
+  rules in the inner control's own theme (the cell and row themes carry NocturneGrid's search hit and selection rules).
 - DataGrid: a `DataGridTextColumn` cell's text takes the theme `DataGridCellTextBlockTheme` (and the editor
   `DataGridCellTextBoxTheme`), found by key; right-aligned columns use `CellStyleClasses` and a
   `DataGridCell.<class>` style; grouping is `DataGridCollectionView.GroupDescriptions`, and a grid selects

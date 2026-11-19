@@ -83,6 +83,7 @@ internal static class Snapshot
         Save(window, folder, "icons.png");
 
         SaveCustomPage(window, folder);
+        SaveGridPage(window, folder);
 
         window.Close();
         GallerySnapshot.Save(Path.Combine(folder, "controls"), scale: scale);
@@ -129,6 +130,7 @@ internal static class Snapshot
         Check("the + button adds a tab", tabs.ItemCount == 3 && (tabs.SelectedItem as TabItem)?.Header as string == "New 1");
 
         CheckCustomPage(window, Check);
+        CheckGridPage(window, Check);
 
         window.Close();
         var path = Path.Combine(folder, "checks.txt");
@@ -265,6 +267,138 @@ internal static class Snapshot
         Headless.Capture(window);
         check("Escape closes the flyout", !window.SettingsFlyout.IsOpen);
     }
+
+    /// <summary>
+    /// The data grid page (grid.png), the filters of the Body and Registered columns drawn open (popup-filter.png,
+    /// popup-filter-dates.png), its last columns with the check boxes (grid-right.png) and the grid grouped by
+    /// make (grid-grouped.png).
+    /// </summary>
+    private static void SaveGridPage(MainWindow window, string folder)
+    {
+        window.ShowPage("grid");
+        var page = window.GetVisualDescendants().OfType<GridPage>().First();
+        var grid = page.Grid;
+        ScrollTo(window, grid);
+        Save(window, folder, "grid.png");
+
+        foreach (var (header, file) in new[] { ("BODY", "popup-filter.png"), ("REGISTERED", "popup-filter-dates.png") })
+        {
+            var column = grid.Columns.First(c => Equals(c.Header, header));
+            grid.ScrollIntoView(null, column);
+            Headless.Capture(window);
+            if (FilterButton(grid, column) is { } button)
+            {
+                button.IsChecked = true;
+                Save(window, folder, file);
+                button.IsChecked = false;
+                Headless.Capture(window);
+            }
+        }
+
+        grid.ScrollIntoView(null, grid.Columns[^1]);
+        Save(window, folder, "grid-right.png");
+        grid.ScrollIntoView(null, grid.Columns[2]); // the first non-frozen column: the grid scrolls back to the start
+        page.FindControl<ComboBox>("GroupBy")!.SelectedIndex = 1;
+        Save(window, folder, "grid-grouped.png");
+        page.FindControl<ComboBox>("GroupBy")!.SelectedIndex = 0;
+        ScrollToStart(window);
+    }
+
+    /// <summary>
+    /// The data grid page: the search and the Body filter keep only the matching rows, a header click sorts
+    /// ascending, descending and back, ticking a value in a header filter filters the column, a range and a
+    /// day in the date tree filter, the pager moves to the next page and Clear filters shows every row.
+    /// </summary>
+    private static void CheckGridPage(MainWindow window, Action<string, bool> check)
+    {
+        window.ShowPage("grid");
+        var page = window.GetVisualDescendants().OfType<GridPage>().First();
+        var grid = page.Grid;
+        ScrollTo(window, grid);
+        grid.ApplyFilters();
+        Headless.Capture(window);
+
+        var rows = grid.GetVisibleItems().Cast<Car>().ToList();
+        check("the search and the Body filter keep only matching rows",
+            rows.Count > 0 && rows.Count < CarData.Cars.Length && grid.FilteredItemCount == rows.Count
+            && rows.All(c => c.Make == "Volvo" && c.Gearbox == "Automatic" && c.Body is "Estate" or "SUV"));
+
+        var year = grid.Columns.First(c => Equals(c.Header, "YEAR"));
+        var yearHeader = Header(grid, year)!;
+        Click(window, yearHeader);
+        var ascending = grid.GetVisibleItems().Cast<Car>().Select(c => c.Year).ToList();
+        Click(window, yearHeader);
+        var descending = grid.GetVisibleItems().Cast<Car>().Select(c => c.Year).ToList();
+        Click(window, yearHeader);
+        check("a header click sorts ascending, then descending, then back to the source order",
+            ascending.SequenceEqual(ascending.Order()) && descending.SequenceEqual(descending.OrderDescending())
+            && grid.View?.SortDescriptions.Count == 0);
+
+        page.FindControl<TextBox>("Search")!.Text = "";
+        grid.ApplyFilters();
+        var fuel = grid.Columns.First(c => Equals(c.Header, "FUEL"));
+        var fuelButton = FilterButton(grid, fuel)!;
+        Click(window, fuelButton);
+        var options = NocturneGrid.GetFilterOptions(fuel);
+        var diesel = window.GetVisualDescendants().OfType<CheckBox>()
+            .FirstOrDefault(b => b.IsEffectivelyVisible && b.DataContext is GridFilterOption { Text: "Diesel" });
+        if (diesel != null)
+        {
+            Click(window, diesel);
+        }
+        grid.ApplyFilters();
+        Headless.Capture(window);
+        rows = grid.GetVisibleItems().Cast<Car>().ToList();
+        check("ticking a value in a header filter keeps only those rows",
+            options?.Count == 4 && NocturneGrid.GetFilterText(fuel) == "Diesel" && rows.Count > 0 && rows.All(c => c.Fuel == "Diesel"));
+        fuelButton.IsChecked = false;
+        Headless.Capture(window);
+
+        NocturneGrid.SetFilterText(year, ">2023");
+        grid.ApplyFilters();
+        rows = grid.GetVisibleItems().Cast<Car>().ToList();
+        check("a range in a header filter compares the values", rows.Count > 0 && rows.All(c => c.Year > 2023 && c.Fuel == "Diesel"));
+
+        grid.ClearFilters();
+        var registered = grid.Columns.First(c => Equals(c.Header, "REGISTERED"));
+        grid.ScrollIntoView(null, registered);
+        Headless.Capture(window);
+        var registeredButton = FilterButton(grid, registered)!;
+        registeredButton.IsChecked = true;
+        Headless.Capture(window);
+        var tree = NocturneGrid.GetFilterDateTree(registered);
+        var year2020 = tree?.SelectMany(n => n.Level == GridDateFilterLevel.Decade ? n.Children : [n]).FirstOrDefault(n => n.Text == "2020");
+        if (year2020 != null)
+        {
+            year2020.IsChecked = true;
+        }
+        grid.ApplyFilters();
+        rows = grid.GetVisibleItems().Cast<Car>().ToList();
+        check("ticking a year in the date tree keeps that year's rows",
+            tree != null && rows.Count > 0 && rows.All(c => c.Registered.Year == 2020) && rows.Count == CarData.Cars.Count(c => c.Registered.Year == 2020));
+        registeredButton.IsChecked = false;
+        grid.ScrollIntoView(null, grid.Columns[2]); // the first non-frozen column: the grid scrolls back to the start
+        Headless.Capture(window);
+
+        grid.ClearFilters();
+        Headless.Capture(window);
+        var next = grid.GetVisualDescendants().OfType<Button>().First(b => b.Name == "PART_NextPage");
+        Click(window, next);
+        check("Clear filters shows every row, and the pager moves to the next page",
+            grid.FilteredItemCount == CarData.Cars.Length && grid.IsPaging && grid.PageNumber == 2 && grid.PageFirstRow == 101
+            && grid.View?.Count == 100);
+        grid.PageIndex = 0;
+        Headless.Capture(window);
+        ScrollToStart(window);
+    }
+
+    /// <summary>The header of a column in a grid.</summary>
+    private static DataGridColumnHeader? Header(DataGrid grid, DataGridColumn column) =>
+        grid.GetVisualDescendants().OfType<DataGridColumnHeader>().FirstOrDefault(h => DataGridColumn.GetColumnContainingElement(h) == column);
+
+    /// <summary>The funnel in a NocturneGrid column header.</summary>
+    private static ToggleButton? FilterButton(DataGrid grid, DataGridColumn column) =>
+        Header(grid, column)?.GetVisualDescendants().OfType<ToggleButton>().FirstOrDefault(b => b.Name == "PART_FilterButton");
 
     /// <summary>The button that makes up the field of a DatePicker or TimePicker.</summary>
     private static Button FlyoutButton(TemplatedControl picker) =>

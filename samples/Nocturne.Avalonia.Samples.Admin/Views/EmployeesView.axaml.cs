@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
@@ -11,40 +10,27 @@ namespace Nocturne.Avalonia.Samples.Admin.Views;
 public partial class EmployeesView : UserControl
 {
     private readonly ObservableCollection<Employee> employees = new(SampleData.Employees);
-    private readonly DataGridCollectionView view;
     private NocturneDialog? dialog;
 
     public EmployeesView()
     {
         InitializeComponent();
 
-        // The search box filters the rows on every word, in any column but the dates
-        view = new DataGridCollectionView(employees) { Filter = Matches };
-        List.ItemsSource = view;
+        // NocturneGrid searches every word in any column but the dates, and filters from its headers
+        List.ItemsSource = employees;
         List.SelectedItem = employees.First(e => e.Name == "Heather Andrade");
-        Search.TextChanged += (_, _) =>
+        List.Filtered += (_, e) => ShowCount(e.Count, e.TotalCount);
+        List.PropertyChanged += (_, e) =>
         {
-            view.Refresh();
-            ShowCount();
+            // A row added or removed changes the counts without a new filter
+            if (e.Property == NocturneGrid.FilteredItemCountProperty || e.Property == NocturneGrid.TotalItemCountProperty)
+                ShowCount(List.FilteredItemCount, List.TotalItemCount);
         };
-        employees.CollectionChanged += (_, _) => ShowCount();
-        ShowCount();
+        ShowCount(employees.Count, employees.Count);
     }
 
-    private bool Matches(object item)
-    {
-        var words = (Search.Text ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        return item is Employee e && words.All(w =>
-            e.Name.Contains(w, StringComparison.CurrentCultureIgnoreCase)
-            || e.Title.Contains(w, StringComparison.CurrentCultureIgnoreCase)
-            || e.Department.Contains(w, StringComparison.CurrentCultureIgnoreCase));
-    }
-
-    private void ShowCount()
-    {
-        var shown = view.Count;
-        Count.Text = shown == employees.Count ? $"{employees.Count} employees" : $"{shown} of {employees.Count} employees";
-    }
+    private void ShowCount(int shown, int total) =>
+        Count.Text = shown == total ? $"{total} employees" : $"{shown} of {total} employees";
 
     private void OnSave(object? sender, RoutedEventArgs e) => Saved.IsOpen = true;
 

@@ -12,6 +12,7 @@ public partial class MainWindow : NocturneWindow
         ["controls"] = new ControlsPage(),
         ["more"] = new MoreControlsPage(),
         ["custom"] = new CustomControlsPage(),
+        ["grid"] = new GridPage(),
         ["icons"] = new IconsPage(),
         ["tokens"] = new TokensPage(),
     };

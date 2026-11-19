@@ -4,25 +4,37 @@ Status: phases 0-6 are done and merged into master (2026-11-19, PR #4): tokens, 
 standard controls, StatusBar, the own controls, Avalonia's pickers, a plain DataGrid theme, the demo
 pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs, package README, `avalonia-v*`
 release tags, frozen animations in the pictures) is done, and Nocturne.Avalonia 0.1.0 is released
-(2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). What is built, how it works and its gotchas are in
-CLAUDE.md ("Avalonia port"). Left: NocturneGrid (phase 7).
+(2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). Phase 7 (NocturneGrid) is built on branch
+`feature/avalonia-grid` (2026-11-19), not released yet. What is built, how it works and its gotchas are in
+CLAUDE.md ("Avalonia port").
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
 Decided by the user (2026-11-19): cross-platform (`net10.0`, Windows-only parts behind
 `OperatingSystem.IsWindows()`); same repository; Avalonia's own controls styled by the theme, our own
-classes only for what Avalonia lacks; NocturneGrid in a later version.
+classes only for what Avalonia lacks; NocturneGrid in a later version. NocturneGrid and the DataGrid
+theme stay in Nocturne.Avalonia (no package of their own).
 
 ## 7. NocturneGrid
 
-- On `Avalonia.Controls.DataGrid` and the theme's DataGrid styles: search with hits marked in the
-  cells, a filter in each column header, grouping through `DataGridCollectionView`, the pager, the
-  check-box column and the thumb-drag preview. The WPF version is ~3,500 lines on WPF's DataGrid and
-  the heaviest part of the port.
-- Then the WPF demo's Grid page and the gallery's NocturneGrid samples (`nocturnegrid`, `-filter`,
-  `-groups`, `-paging`), and the sample apps switch from DataGrid with their own search filter to it
-  (Admin: Employees and Timesheets; Portal: Orders).
-- Open: the DataGrid theme now sits in Nocturne.Avalonia, which references the DataGrid package.
-  It could move to a package of its own (as Avalonia ships it) together with NocturneGrid.
+Done (branch `feature/avalonia-grid`):
+- `NocturneGrid` on Avalonia's DataGrid, through a `DataGridCollectionView`: the word search with the hits
+  marked in `NocturneGridColumn` cells, a filter in every column header (values to tick with their counts, the
+  date tree, typed values, wildcards and ranges; the rules ported from WPF), three-state sorting,
+  `GroupMemberPath` (Avalonia's group headers, with counts), paging with a pager, `NocturneGridCheckBoxColumn`,
+  the counts, `Filtered` and `SelectedItemChanged`. Same property names as in WPF.
+- The demo's Data grid page (3,000 cars), the gallery samples `nocturnegrid`, `-filter`, `-groups`, `-paging`,
+  `--snapshot` pictures (`grid.png`, `grid-right.png`, `grid-grouped.png`, `popup-filter.png`,
+  `popup-filter-dates.png`) and six behaviour checks; the samples use it (Admin: Employees, Timesheets;
+  Portal: Orders).
+
+Not ported (WPF-only work-arounds): the glyph-run cell text (`EnableLightweightTextRendering`), the cell style
+scoping, the group rows of its own (Avalonia groups natively), the alternating rows within groups.
+
+Left:
+- The thumb-drag preview: check on screen whether dragging the scroll bar thumb over the 3,000 rows keeps up
+  in Avalonia; port the preview only if it lags.
+- Docs for the next Avalonia release: NocturneGrid on `docs/avalonia-controls.md` (the three classes are not
+  mentioned yet; `update_docs.py` warns), `PACKAGE.md` and the new gallery pictures.
 
 ## 8. Docs and release
 

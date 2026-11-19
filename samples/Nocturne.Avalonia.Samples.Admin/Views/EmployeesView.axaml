@@ -22,16 +22,16 @@
         </DockPanel>
 
         <Grid Grid.Row="3" ColumnDefinitions="*,16,340">
-            <DataGrid Name="List" IsReadOnly="True" SelectionMode="Single">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="NAME" Binding="{Binding Name}" Width="*" x:DataType="local:Employee" />
-                    <DataGridTextColumn Header="TITLE" Binding="{Binding Title}" Width="150" x:DataType="local:Employee" />
-                    <DataGridTextColumn Header="DEPARTMENT" Binding="{Binding Department}" Width="130" x:DataType="local:Employee" />
-                    <DataGridTextColumn Header="STARTED" Binding="{Binding StartDate, StringFormat=d}" Width="110" CellStyleClasses="right"
-                                        x:DataType="local:Employee" />
-                    <DataGridCheckBoxColumn Header="ACTIVE" Binding="{Binding IsActive}" Width="90" x:DataType="local:Employee" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <nc:NocturneGrid Name="List" IsReadOnly="True" SelectionMode="Single" SearchText="{Binding #Search.Text}">
+                <nc:NocturneGrid.Columns>
+                    <nc:NocturneGridColumn Header="NAME" Binding="{Binding Name}" Width="*" x:DataType="local:Employee" />
+                    <nc:NocturneGridColumn Header="TITLE" Binding="{Binding Title}" Width="150" x:DataType="local:Employee" />
+                    <nc:NocturneGridColumn Header="DEPARTMENT" Binding="{Binding Department}" Width="130" x:DataType="local:Employee" />
+                    <nc:NocturneGridColumn Header="STARTED" Binding="{Binding StartDate, StringFormat=d}" Width="110" TextAlignment="Right"
+                                           IsSearchable="False" x:DataType="local:Employee" />
+                    <nc:NocturneGridCheckBoxColumn Header="ACTIVE" Binding="{Binding IsActive}" Width="90" x:DataType="local:Employee" />
+                </nc:NocturneGrid.Columns>
+            </nc:NocturneGrid>
 
             <!-- The details follow the selected row -->
             <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="DETAILS" VerticalAlignment="Top"

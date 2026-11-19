@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:demo="using:Nocturne.Avalonia.Demo"
+             x:Class="Nocturne.Avalonia.Demo.Views.GridPage">
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="6" Margin="8,8,0,4">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Data grid" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" TextWrapping="Wrap" MaxWidth="1000" HorizontalAlignment="Left"
+                       Text="nc:NocturneGrid with 3,000 used cars in 21 columns. Every word of the search must be found somewhere in a row; the hits are drawn in the light accent in faintly lit cells. Click a header to sort (a third click goes back to the source order); the funnel keeps only the rows with the values you tick or type, and a column of dates gets a tree of years, months and days. Rows and columns are virtualized." />
+        </StackPanel>
+
+        <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="NOCTURNEGRID" Tag="nc:NocturneGrid · nc:NocturneGridColumn">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,14" LastChildFill="False">
+                    <TextBox Name="Search" Width="280" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" Text="volvo automatic"
+                             PlaceholderText="Search, e.g. volvo estate automatic" Classes="clearButton" AutomationProperties.Name="Search" />
+                    <TextBlock Margin="20,0,8,0" VerticalAlignment="Center" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Group by" />
+                    <ComboBox Name="GroupBy" Width="130" SelectedIndex="0" AutomationProperties.Name="Group by">
+                        <ComboBoxItem Content="Nothing" Tag="" />
+                        <ComboBoxItem Content="Make" Tag="Make" />
+                        <ComboBoxItem Content="Body" Tag="Body" />
+                        <ComboBoxItem Content="Fuel" Tag="Fuel" />
+                        <ComboBoxItem Content="Dealer" Tag="Dealer" />
+                    </ComboBox>
+                    <TextBlock Margin="20,0,8,0" VerticalAlignment="Center" Theme="{StaticResource Nocturne.Styles.TextBlock.Label}" Text="Rows per page" />
+                    <ComboBox Name="PageSizeBox" Width="90" SelectedIndex="2" AutomationProperties.Name="Rows per page">
+                        <ComboBoxItem Content="All" Tag="0" />
+                        <ComboBoxItem Content="50" Tag="50" />
+                        <ComboBoxItem Content="100" Tag="100" />
+                        <ComboBoxItem Content="500" Tag="500" />
+                    </ComboBox>
+                    <Button Name="ClearButton" DockPanel.Dock="Right" Content="Clear filters" />
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                    <TextBlock Name="Selection" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" />
+                    <TextBlock Name="Status" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" />
+                </DockPanel>
+
+                <nc:NocturneGrid Name="Cars" Height="560" FrozenColumnCount="2" SelectionMode="Single"
+                                 SearchText="{Binding #Search.Text}" AutomationProperties.Name="Cars">
+                    <nc:NocturneGrid.Columns>
+                        <nc:NocturneGridColumn Width="124" Header="STOCK NO." Binding="{Binding StockNo}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="150" Header="MODEL" Binding="{Binding Model}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="100" Header="TRIM" Binding="{Binding Trim}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="110" Header="BODY" Binding="{Binding Body}" FilterText="estate suv" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="80" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="150" Header="MILEAGE (KM)" Binding="{Binding Mileage, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="92" Header="FUEL" Binding="{Binding Fuel}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="116" Header="GEARBOX" Binding="{Binding Gearbox}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="84" Header="DRIVE" Binding="{Binding Drive}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="100" Header="POWER" Binding="{Binding Power, StringFormat='{}{0} hp'}" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="100" Header="CO₂" Binding="{Binding Co2, StringFormat='{}{0} g/km'}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="104" Header="COLOUR" Binding="{Binding Colour}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="92" Header="DOORS" Binding="{Binding Doors}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="92" Header="SEATS" Binding="{Binding Seats}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="104" Header="OWNERS" Binding="{Binding Owners}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="136" Header="REGISTERED" Binding="{Binding Registered, StringFormat=d}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="136" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="114" Header="DEALER" Binding="{Binding Dealer}" x:DataType="demo:Car" />
+                        <nc:NocturneGridColumn Width="104" Header="STATUS" Binding="{Binding Status}" x:DataType="demo:Car" />
+                        <nc:NocturneGridCheckBoxColumn Width="92" Header="SOLD" Binding="{Binding IsSold}" x:DataType="demo:Car" />
+                    </nc:NocturneGrid.Columns>
+                </nc:NocturneGrid>
+            </DockPanel>
+        </HeaderedContentControl>
+    </StackPanel>
+</UserControl>
