@@ -25,8 +25,8 @@
     <PackageProjectUrl>https://github.com/Montago/NocturneTheme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Montago/NocturneTheme</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!-- MIT, except the icons: Material Design Icons (Apache License 2.0, see NOTICE.md) -->
-    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
+    <!-- MIT, except the icons (Material Design Icons, Apache License 2.0) and the font (Inter, SIL OFL 1.1); see NOTICE.md -->
+    <PackageLicenseExpression>MIT AND Apache-2.0 AND OFL-1.1</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -48,6 +48,12 @@
     <None Include="..\..\NOTICE.md" Pack="true" PackagePath="\" />
     <None Include="..\..\icons\LICENSE" Pack="true" PackagePath="\icons\" />
     <None Include="..\..\icons\LICENSE-2.0.txt" Pack="true" PackagePath="\icons\" />
+    <None Include="..\..\fonts\inter\LICENSE.txt" Pack="true" PackagePath="\fonts\" Link="Fonts\LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The font, Inter (SIL OFL 1.1), one static file per weight: avares://Nocturne.Avalonia/Assets/Fonts#Inter -->
+    <AvaloniaResource Include="..\..\fonts\inter\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

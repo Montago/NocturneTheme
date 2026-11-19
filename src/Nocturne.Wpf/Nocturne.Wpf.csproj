@@ -25,8 +25,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <!-- MIT, except the icons: Material Design Icons (Apache License 2.0, see NOTICE.md) -->
-    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
+    <!-- MIT, except the icons (Material Design Icons, Apache License 2.0) and the font (Inter, SIL OFL 1.1); see NOTICE.md -->
+    <PackageLicenseExpression>MIT AND Apache-2.0 AND OFL-1.1</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -46,6 +46,13 @@
     <!-- The icons are Material Design Icons (Apache License 2.0) -->
     <None Include="..\..\icons\LICENSE" Pack="true" PackagePath="\icons\" />
     <None Include="..\..\icons\LICENSE-2.0.txt" Pack="true" PackagePath="\icons\" />
+    <!-- The font is Inter (SIL Open Font License 1.1) -->
+    <None Include="..\..\fonts\inter\LICENSE.txt" Pack="true" PackagePath="\fonts\" Link="Fonts\LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Inter, one static file per weight: pack://application:,,,/Nocturne.Wpf;component/Fonts/#Inter -->
+    <Resource Include="..\..\fonts\inter\*.ttf" Link="Fonts\%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

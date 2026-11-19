@@ -1,11 +1,12 @@
 <!--
-    Type: Segoe UI where it exists (Windows), then the platform's own UI font. The design's Figtree
-    can be swapped in by overriding Nocturne.Fonts.Family. No fonts ship with the theme.
+    Type: Inter, embedded in the library (fonts/inter, SIL OFL 1.1), so the theme looks the same on
+    Windows, macOS and Linux; the platform's UI fonts stand behind it for characters Inter lacks.
+    Apps can override Nocturne.Fonts.Family (the design used Figtree).
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <FontFamily x:Key="Nocturne.Fonts.Family">Segoe UI, .AppleSystemUIFont, Ubuntu, Cantarell, Noto Sans, DejaVu Sans</FontFamily>
+    <FontFamily x:Key="Nocturne.Fonts.Family">avares://Nocturne.Avalonia/Assets/Fonts#Inter, Segoe UI, .AppleSystemUIFont, Ubuntu, Cantarell, Noto Sans, DejaVu Sans</FontFamily>
     <FontFamily x:Key="Nocturne.Fonts.Family.Mono">Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono</FontFamily>
 
     <x:Double x:Key="Nocturne.Font.Size.Title">30</x:Double>

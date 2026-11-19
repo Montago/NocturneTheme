@@ -103,9 +103,6 @@ def read_brushes():
     return out
 
 
-WEB_FONT = 'Inter'
-
-
 def read_fonts():
     tree = ET.parse(os.path.join(WPF, 'Styles', 'Fonts.xaml'))
     out = []
@@ -113,11 +110,9 @@ def read_fonts():
         key = el.get(X + 'Key')
         tag = el.tag.split('}')[-1]
         if tag == 'FontFamily':
-            families = [f.strip() for f in el.text.split(',')]
-            # Nocturne.Web ships Inter (wwwroot/fonts, @font-face in nocturne.src.css) ahead of the
-            # WPF library, which still draws Segoe UI; the WPF families stay as the fallback.
-            if key == 'Nocturne.Fonts.Family' and WEB_FONT not in families:
-                families.insert(0, WEB_FONT)
+            # An embedded font (/Nocturne.Wpf;component/Fonts/#Inter) is its family name on the web,
+            # where nocturne.src.css declares it with @font-face
+            families = [f.strip().split('#')[-1] for f in el.text.split(',')]
             generic = 'monospace' if key.endswith('Mono') else 'system-ui, sans-serif'
             value = ', '.join(f'"{f}"' if ' ' in f else f for f in families) + ', ' + generic
             out.append(('font-' + kebab(key), value))
