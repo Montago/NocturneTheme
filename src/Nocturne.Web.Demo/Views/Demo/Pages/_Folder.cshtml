@@ -1,0 +1,11 @@
+@* One folder of the tree on the More controls page, with its sub-folders (the HierarchicalDataTemplate) *@
+@model Folder
+<nc-tree-view-item header="@Model.Name" stroke-icon="Folder" is-expanded="Model.IsExpanded" is-selected="Model.IsSelected">
+    @if (Model.Children is { } children)
+    {
+        foreach (var child in children)
+        {
+            <partial name="Pages/_Folder" model="child" />
+        }
+    }
+</nc-tree-view-item>

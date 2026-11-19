@@ -1,0 +1,53 @@
+/* Views/Demo/Gallery.cshtml: the samples for the documentation pictures (Demo.Sample in App.xaml) */
+@layer components {
+  /* The WPF gallery draws its samples on the fallback ground (no window, so no tint): the same here */
+  body.gallery { --nc-window-ground: var(--nc-window-fallback); min-height: 100vh; background: var(--nc-window-ground); }
+  .gallery-samples { display: flex; flex-wrap: wrap; align-items: flex-start; padding: 16px; }
+  /* Demo.Sample: 472px wide unless the sample says otherwise, a card 16px in from its edges */
+  .gallery-sample { box-sizing: border-box; width: 472px; padding: 16px; }
+  .gallery-pane {
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--nc-surface-sunken);
+    color: var(--nc-text-secondary);
+    font-size: var(--nc-font-size-caption);
+  }
+  .gallery-icons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px 0; }
+  .gallery-icon { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--nc-text); }
+  .gallery-icon > .nc-icon, .gallery-icon > .nc-stroke-icon { width: 20px; height: 20px; }
+  .gallery-icon > span { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--nc-text-secondary); font-size: var(--nc-font-size-tag); }
+  /* The dialog drawn in place for its picture */
+  .gallery-static { position: static; display: block; margin: 0; }
+  .gallery-static .nc-dialog__card { animation: none; }
+  .gallery-backdrop { display: none; }
+
+  /* ?shot=<name>: one sample on magenta, the window ground only behind it and its popups */
+  body.gallery[data-shot]:not([data-shot=""]) { background: #FF00FF; }
+  body.gallery[data-shot]:not([data-shot=""]) .gallery-samples { display: block; padding: 0; }
+  body.gallery[data-shot]:not([data-shot=""]) .gallery-sample { display: none; }
+  body.gallery[data-shot]:not([data-shot=""]) .gallery-sample.is-shot {
+    display: block;
+    position: absolute;
+    left: 120px;
+    top: 80px;
+    z-index: 1;
+  }
+  body.gallery[data-shot]:not([data-shot=""]) .gallery-backdrop {
+    display: block;
+    position: absolute;
+    background: var(--nc-window-ground);
+  }
+  /* Endless animations stand still, so a picture only changes when the look does */
+  body.gallery[data-shot]:not([data-shot=""]) *,
+  body.gallery[data-shot]:not([data-shot=""]) *::before,
+  body.gallery[data-shot]:not([data-shot=""]) *::after {
+    animation-play-state: paused !important;
+    animation-delay: -0.3s !important;
+    transition: none !important;
+  }
+}
+/* The dialog and the flyout cast a long shadow: room for it inside the picture */
+@layer components {
+  .gallery-sample:is([data-shot="dialog"], [data-shot="flyout"]) { padding: 24px 40px 64px; }
+}

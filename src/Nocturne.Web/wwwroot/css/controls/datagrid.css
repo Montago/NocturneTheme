@@ -1,0 +1,337 @@
+/* Nocturne for the web · DataGrid, NocturneGrid (Controls.DataGrid.xaml) */
+@layer components {
+
+  /* ------------------------------------------------------------ data grid */
+  /*
+  No frame and no vertical lines: small bold column headers in capitals over a light rule, 42px
+  rows divided by faint lines, a light fill on the selected row. Row headers (nc-data-grid--row-headers)
+  are a narrow column with an accent bar on the selected row.
+  <div class="nc-data-grid-host"><table class="nc-data-grid">…</table></div>
+  */
+  .nc-data-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+  }
+  .nc-data-grid th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    box-sizing: border-box;
+    height: 38px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--nc-stroke);
+    background: var(--nc-local-ground);
+    color: var(--nc-text-label);
+    font-size: var(--nc-font-size-small);
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  /* the sort arrow: a small chevron after the header */
+  .nc-data-grid th[aria-sort]::after {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    vertical-align: -2px;
+    background: currentColor;
+    mask: var(--nc-glyph-chevron-up) center / 12px no-repeat;
+  }
+  .nc-data-grid th[aria-sort="descending"]::after { mask-image: var(--nc-glyph-chevron-down); }
+  .nc-data-grid th > a { color: inherit; text-decoration: none; }
+  .nc-data-grid td {
+    box-sizing: border-box;
+    height: 42px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--nc-stroke-subtle);
+    white-space: nowrap;
+  }
+  .nc-data-grid tbody tr:hover > * { background: var(--nc-row-hover); }
+  .nc-data-grid tbody tr[aria-selected="true"] > * { background: var(--nc-row-selected); }
+  .nc-data-grid tbody tr[aria-selected="true"]:hover > * { background: var(--nc-row-selected-hover); }
+  .nc-data-grid tbody tr[data-href] { cursor: pointer; }
+  .nc-data-grid tfoot td { font-weight: 600; border-bottom: 0; border-top: 1px solid var(--nc-stroke); }
+  .nc-data-grid .nc-data-grid__number { text-align: right; font-variant-numeric: tabular-nums; }
+  .nc-data-grid .nc-data-grid__row-header { width: 20px; min-width: 20px; padding: 0; position: relative; }
+  .nc-data-grid tbody .nc-data-grid__row-header { border-bottom: 1px solid var(--nc-stroke-subtle); }
+  .nc-data-grid thead .nc-data-grid__row-header { left: 0; z-index: 2; }
+  .nc-data-grid tbody tr[aria-selected="true"] .nc-data-grid__row-header::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    margin: -8px 0 0 -1.5px;
+    border-radius: 1.5px;
+    background: var(--nc-accent-light);
+  }
+  .nc-data-grid-host { overflow: auto; }
+  .nc-data-grid[data-nc-selection] tbody tr { cursor: default; }
+  /* Sorting and resizing (nocturne.js): the header lights up while it can sort */
+  .nc-data-grid th.is-sortable { cursor: pointer; }
+  .nc-data-grid th.is-sortable:hover { color: var(--nc-text); }
+  .nc-data-grid th.is-sortable:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: -2px; }
+  .nc-data-grid__resizer { position: absolute; top: 0; right: 0; bottom: 0; width: 8px; cursor: col-resize; touch-action: none; }
+  .nc-data-grid.is-resized :is(th, td) { overflow: hidden; text-overflow: ellipsis; }
+  .nc-data-grid th.nc-data-grid__filler { padding: 0; }
+  .nc-data-grid.is-resizing { cursor: col-resize; user-select: none; }
+  .nc-data-grid.is-resizing th { cursor: col-resize; }
+
+  /* ----------------------------------------------------------- NocturneGrid */
+  /*
+  The DataGrid look plus a funnel in each header that opens a filter, group header rows and a
+  pager below the rows. <nc-nocturne-grid> writes the frame and the rows as JSON; nocturne.js draws
+  the rows of the page shown:
+  <div class="nc-nocturne-grid"><div class="nc-nocturne-grid__viewport"><table class="nc-nocturne-grid__table">…
+  */
+  .nc-nocturne-grid {
+    --nc-nocturne-grid-highlight-foreground: var(--nc-accent-text);
+    --nc-nocturne-grid-highlight-cell-background: var(--nc-data-grid-search-hit);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 0;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    overflow: hidden;
+  }
+  .nc-nocturne-grid[aria-disabled="true"] { opacity: 0.42; pointer-events: none; }
+  .nc-nocturne-grid[aria-busy="true"] .nc-nocturne-grid__table tbody { opacity: 0.6; transition: opacity 0.1s 0.25s; }
+  .nc-nocturne-grid__viewport { flex: 1; min-height: 0; overflow: auto; outline: none; contain: inline-size; }
+  .nc-nocturne-grid__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+  }
+  .nc-nocturne-grid__table th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    height: 38px;
+    padding: 0 8px 0 12px;
+    border-bottom: 1px solid var(--nc-stroke);
+    background: var(--nc-local-ground);
+    color: var(--nc-text-label);
+    font-size: var(--nc-font-size-small);
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .nc-nocturne-grid__table th.is-sortable { cursor: pointer; }
+  .nc-nocturne-grid__table th.is-sortable:hover { color: var(--nc-text); }
+  .nc-nocturne-grid__head { display: flex; align-items: center; min-width: 0; }
+  /* the label and the sort arrow on the left, the funnel at the right end (DockPanel.Dock="Right") */
+  .nc-nocturne-grid__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .nc-nocturne-grid__sort { display: none; flex: none; width: 12px; height: 12px; margin-left: 4px; background: currentColor; }
+  .nc-nocturne-grid__table th[aria-sort="ascending"] .nc-nocturne-grid__sort { display: block; mask: var(--nc-glyph-chevron-up) center / 12px no-repeat; }
+  .nc-nocturne-grid__table th[aria-sort="descending"] .nc-nocturne-grid__sort { display: block; mask: var(--nc-glyph-chevron-down) center / 12px no-repeat; }
+  /* The funnel: faint until hovered, light accent while the column is filtered */
+  .nc-nocturne-grid__filter-button {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin: 0 -6px 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--nc-text-hint);
+    cursor: pointer;
+  }
+  .nc-nocturne-grid__filter-button::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    mask: var(--nc-glyph-filter) center / 14px no-repeat;
+  }
+  .nc-nocturne-grid__filter-button:hover { background: var(--nc-button-subtle-hover); color: var(--nc-text); }
+  .nc-nocturne-grid__filter-button[aria-expanded="true"] { background: var(--nc-item-selected); color: var(--nc-text); }
+  .nc-nocturne-grid__table th.has-filter .nc-nocturne-grid__filter-button { color: var(--nc-accent-light); }
+  .nc-nocturne-grid__table th.nc-nocturne-grid__filler { padding: 0; }
+  .nc-nocturne-grid__resizer { position: absolute; top: 0; right: -4px; bottom: 0; z-index: 1; width: 8px; cursor: col-resize; touch-action: none; }
+  .nc-nocturne-grid__table th:last-child > .nc-nocturne-grid__resizer { right: 0; width: 4px; }
+  .nc-nocturne-grid.is-resizing { cursor: col-resize; user-select: none; }
+
+  .nc-nocturne-grid__table td {
+    box-sizing: border-box;
+    height: 42px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--nc-stroke-subtle);
+    /* the light of a cell with search hits, over the row's fill, over the cell's own ground (frozen cells only) */
+    background:
+      linear-gradient(var(--nc-cell-hit, transparent), var(--nc-cell-hit, transparent)),
+      linear-gradient(var(--nc-nocturne-grid-row-background), var(--nc-nocturne-grid-row-background)),
+      var(--nc-cell-ground, transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+  }
+  /* The row's ground (a grouped grid alternates it within each group), the faint light of a cell
+     with search hits over it, hover and selection over everything */
+  .nc-nocturne-grid__table tr { --nc-nocturne-grid-row-background: transparent; }
+  /* AlternatingRowBackground is transparent in the Nocturne DataGrid: is-alternate rows look the same */
+  .nc-nocturne-grid__table tr.nc-nocturne-grid__row:hover { --nc-nocturne-grid-row-background: var(--nc-row-hover); }
+  .nc-nocturne-grid__table td.is-hit { --nc-cell-hit: var(--nc-nocturne-grid-highlight-cell-background); }
+  .nc-nocturne-grid__table tr[aria-selected="true"] { --nc-nocturne-grid-row-background: var(--nc-row-selected); }
+  .nc-nocturne-grid__table tr[aria-selected="true"]:hover { --nc-nocturne-grid-row-background: var(--nc-row-selected-hover); }
+  .nc-nocturne-grid__table td.is-right { text-align: right; font-variant-numeric: tabular-nums; }
+  .nc-nocturne-grid__table td.is-center { text-align: center; }
+  .nc-nocturne-grid__hit { background: none; color: var(--nc-nocturne-grid-highlight-foreground); }
+  /* Frozen columns stay in view; they paint the ground under them, so the columns that scroll pass behind */
+  .nc-nocturne-grid__table :is(th, td).is-frozen { position: sticky; z-index: 1; --nc-cell-ground: var(--nc-local-ground); }
+  .nc-nocturne-grid__table th.is-frozen { z-index: 3; }
+  .nc-nocturne-grid__viewport:focus-visible tr.is-current td { box-shadow: inset 0 2px 0 var(--nc-focus), inset 0 -2px 0 var(--nc-focus); }
+  .nc-nocturne-grid__viewport:focus-visible tr.is-current td:first-child { box-shadow: inset 2px 2px 0 var(--nc-focus), inset 0 -2px 0 var(--nc-focus); }
+  .nc-nocturne-grid__viewport:focus-visible tr.is-current td:last-child { box-shadow: inset -2px 2px 0 var(--nc-focus), inset 0 -2px 0 var(--nc-focus); }
+
+  /* NocturneGridCheckBoxColumn: the Nocturne check box, read only */
+  .nc-nocturne-grid__table td.nc-nocturne-grid__check { text-align: center; }
+  .nc-nocturne-grid__check > .nc-check-box { min-height: 0; vertical-align: middle; pointer-events: none; }
+
+  /* Group header rows: a faint 40px strip with a chevron, the group's value and its row count, as
+     wide as the grid and kept in view when the columns scroll sideways */
+  .nc-nocturne-grid__table td.nc-nocturne-grid__group { height: auto; padding: 0; border: 0; background: transparent; overflow: visible; }
+  .nc-nocturne-grid__group-header {
+    position: sticky;
+    left: 0;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: var(--nc-nocturne-grid-viewport-width, 100%);
+    height: 40px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--nc-stroke-subtle);
+    background: var(--nc-expander-header);
+    color: var(--nc-text);
+    cursor: default;
+    user-select: none;
+  }
+  .nc-nocturne-grid__group-header:hover { background: var(--nc-expander-header-hover); }
+  .nc-nocturne-grid__group-header::before {
+    content: "";
+    flex: none;
+    width: 12px;
+    height: 12px;
+    margin-right: 10px;
+    background: var(--nc-text-secondary);
+    mask: var(--nc-glyph-chevron-right) center / 12px no-repeat;
+    transform: rotate(90deg);
+  }
+  .nc-nocturne-grid__group-header[aria-expanded="false"]::before { transform: none; }
+  .nc-nocturne-grid__group-name { font-weight: 600; }
+  .nc-nocturne-grid__group-count { margin-left: 8px; color: var(--nc-text-hint); font-size: var(--nc-font-size-small); }
+
+  /* The pager under the rows: small subtle buttons, "Page 1 of 2", the range on the right */
+  .nc-nocturne-grid__pager {
+    display: flex;
+    align-items: center;
+    flex: none;
+    padding: 6px 4px 0;
+    border-top: 1px solid var(--nc-stroke);
+    font-size: var(--nc-font-size-caption);
+  }
+  .nc-nocturne-grid__pager[hidden] { display: none; }
+  .nc-nocturne-grid__page { margin: 0 8px; }
+  .nc-nocturne-grid__range { margin: 0 4px 0 auto; padding-left: 12px; color: var(--nc-text-hint); }
+  .nc-nocturne-grid__pager-button {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--nc-text);
+    cursor: pointer;
+  }
+  .nc-nocturne-grid__pager-button::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    mask: var(--nc-pager-glyph) center / 16px no-repeat;
+  }
+  .nc-nocturne-grid__pager-button:hover { background: var(--nc-button-subtle-hover); }
+  .nc-nocturne-grid__pager-button:active { background: var(--nc-surface-pressed); }
+  .nc-nocturne-grid__pager-button:disabled { background: transparent; cursor: default; }
+  .nc-nocturne-grid__pager-button:disabled::before { opacity: 0.35; }
+  .nc-nocturne-grid__pager-button[data-page="first"] { --nc-pager-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17,6 L11,12 L17,18 M7,6 V18'/%3E%3C/svg%3E"); }
+  .nc-nocturne-grid__pager-button[data-page="previous"] { --nc-pager-glyph: var(--nc-glyph-chevron-left); }
+  .nc-nocturne-grid__pager-button[data-page="next"] { --nc-pager-glyph: var(--nc-glyph-chevron-right); }
+  .nc-nocturne-grid__pager-button[data-page="last"] { --nc-pager-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7,6 L13,12 L7,18 M17,6 V18'/%3E%3C/svg%3E"); }
+
+  /* The filter under a header: the popup surface, 260px wide; the values to tick, a tree of dates,
+     a box to type values in, a hint and Clear / Done */
+  .nc-nocturne-grid-filter {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    width: 294px;
+    margin: 0;
+    padding: 14px 16px 16px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 10px;
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    text-transform: none;
+    overflow: visible;
+  }
+  .nc-nocturne-grid-filter:popover-open { animation: nc-fade-in var(--nc-slow) ease-out; }
+  .nc-nocturne-grid-filter__title { margin-bottom: 10px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nc-nocturne-grid-filter__list {
+    max-height: 220px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--nc-divider);
+    overflow: auto;
+  }
+  .nc-nocturne-grid-filter__list[hidden] { display: none; }
+  .nc-nocturne-grid-filter__list .nc-check-box { display: flex; min-width: 0; }
+  .nc-nocturne-grid-filter__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nc-nocturne-grid-filter__count { margin-left: 4px; color: var(--nc-text-hint); font-size: var(--nc-font-size-small); font-weight: 400; }
+  .nc-nocturne-grid-filter .nc-text-box-host > .nc-text-box,
+  .nc-nocturne-grid-filter > .nc-text-box { width: 100%; box-sizing: border-box; }
+  .nc-nocturne-grid-filter__hint { margin-top: 8px; color: var(--nc-text-hint); font-size: var(--nc-font-size-small); line-height: 17px; }
+  .nc-nocturne-grid-filter__buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  .nc-nocturne-grid-filter__buttons > .nc-button { min-width: 80px; }
+  /* The date tree: years (or decades), months and days with the TreeView's chevron */
+  .nc-nocturne-grid-filter__tree, .nc-nocturne-grid-filter__tree ul { list-style: none; margin: 0; padding: 0; }
+  .nc-nocturne-grid-filter__tree { max-height: 240px; }
+  .nc-nocturne-grid-filter__tree ul { padding-left: 18px; }
+  .nc-nocturne-grid-filter__tree ul[hidden] { display: none; }
+  .nc-nocturne-grid-filter__node { display: flex; align-items: center; gap: 2px; min-height: 32px; border-radius: 8px; }
+  .nc-nocturne-grid-filter__node:hover { background: var(--nc-item-hover); }
+  .nc-nocturne-grid-filter__node > .nc-check-box { min-height: 28px; min-width: 0; }
+  .nc-nocturne-grid-filter__expander {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: 0 0 0 4px;
+    padding: 0;
+    border: 0;
+    background: var(--nc-text-secondary);
+    mask: var(--nc-glyph-chevron-right) center / 12px no-repeat;
+    cursor: pointer;
+    transition: transform var(--nc-slow) ease-out;
+  }
+  .nc-nocturne-grid-filter__expander:hover { background: var(--nc-text); }
+  .nc-nocturne-grid-filter__expander[aria-expanded="true"] { transform: rotate(90deg); }
+  .nc-nocturne-grid-filter__expander.is-leaf { visibility: hidden; }
+}

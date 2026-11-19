@@ -1,0 +1,59 @@
+@* Views/GridPage.xaml: NocturneGrid with 3,000 used cars in 21 columns *@
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">Data grid</h1>
+        <p class="demo-page-header__text" style="max-width:1000px">nc-nocturne-grid with 3,000 used cars in 21 columns. Every word of the search must be found somewhere in a row; the hits are drawn in the light accent in faintly lit cells. Click a header to sort; the funnel keeps only the rows with the values you tick or type, and a column of dates gets a tree of years, months and days. Tick "Pages from the server" to search, filter and sort on the server instead.</p>
+    </div>
+</header>
+
+<nc-card header="NocturneGrid" tag="nc:NocturneGrid · nc:NocturneGridColumn">
+    <div class="demo-grid-toolbar">
+        <nc-text-box id="CarSearch" text-box-style="Search" text="volvo automatic" placeholder="Search, e.g. volvo estate automatic" clear-button="true" aria-label="Search" style="width:280px" />
+        <span class="demo-row__key">Group by</span>
+        <select id="GroupBy" class="nc-combo-box" style="width:130px" aria-label="Group by">
+            <option value="">Nothing</option>
+            <option value="Make">Make</option>
+            <option value="Body">Body</option>
+            <option value="Fuel">Fuel</option>
+            <option value="Dealer">Dealer</option>
+        </select>
+        <span class="demo-row__key">Rows per page</span>
+        <select id="PageSize" class="nc-combo-box" style="width:90px" aria-label="Rows per page">
+            <option value="0">All</option>
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="500">500</option>
+        </select>
+        <nc-check-box id="ServerMode" content="Pages from the server" />
+        <nc-button id="ClearFilters" content="Clear filters" style="margin-left:auto" />
+    </div>
+
+    <nc-nocturne-grid id="Cars" items="CarData.Cars" search-box="CarSearch" page-size="100" frozen-column-count="2" height="560" aria-label="Cars">
+        <nc-nocturne-grid-column width="124" header="Stock no." binding="StockNo" />
+        <nc-nocturne-grid-column width="130" header="Make" binding="Make" />
+        <nc-nocturne-grid-column width="150" header="Model" binding="Model" />
+        <nc-nocturne-grid-column width="100" header="Trim" binding="Trim" />
+        <nc-nocturne-grid-column width="110" header="Body" binding="Body" filter-text="estate suv" />
+        <nc-nocturne-grid-column width="76" header="Year" binding="Year" text-alignment="Right" />
+        <nc-nocturne-grid-column width="150" header="Mileage (km)" binding="Mileage" string-format="N0" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="92" header="Fuel" binding="Fuel" />
+        <nc-nocturne-grid-column width="116" header="Gearbox" binding="Gearbox" />
+        <nc-nocturne-grid-column width="80" header="Drive" binding="Drive" />
+        <nc-nocturne-grid-column width="100" header="Power" binding="Power" string-format="{0} hp" text-alignment="Right" />
+        <nc-nocturne-grid-column width="96" header="CO₂" binding="Co2" string-format="{0} g/km" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="100" header="Colour" binding="Colour" />
+        <nc-nocturne-grid-column width="92" header="Doors" binding="Doors" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="92" header="Seats" binding="Seats" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="100" header="Owners" binding="Owners" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="136" header="Registered" binding="Registered" string-format="d" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="136" header="Price (EUR)" binding="Price" string-format="N0" is-searchable="false" text-alignment="Right" />
+        <nc-nocturne-grid-column width="110" header="Dealer" binding="Dealer" />
+        <nc-nocturne-grid-column width="100" header="Status" binding="Status" />
+        <nc-nocturne-grid-check-box-column width="88" header="Sold" binding="IsSold" />
+    </nc-nocturne-grid>
+
+    <div class="demo-grid-status">
+        <span class="nc-text-block--caption" id="CarStatus"></span>
+        <span class="nc-text-block--caption" id="CarSelection">Nothing selected</span>
+    </div>
+</nc-card>

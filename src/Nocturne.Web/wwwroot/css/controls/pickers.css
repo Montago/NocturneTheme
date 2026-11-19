@@ -1,0 +1,93 @@
+/* Nocturne for the web · TimePicker, ColorPicker, AutoSuggestBox, SearchComboBox (Controls.Pickers.xaml) */
+@layer components {
+
+  /* TimePicker, AutoSuggestBox and SearchComboBox are the field (text.css) with a button at the end
+     (lists.css) and the list drop-down (.nc-popup); the rules here are what they add. */
+  .nc-auto-suggest-box > .nc-text-box { padding-left: 38px; }
+  .nc-auto-suggest-box::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    background: var(--nc-text-hint);
+    mask: var(--nc-glyph-search) center / 16px no-repeat;
+    pointer-events: none;
+  }
+  /* the matching part of a suggestion, in the light accent */
+  .nc-popup mark { background: none; color: var(--nc-accent-text); font-weight: 600; }
+
+  /*
+  ColorPicker: <button class="nc-color-picker"><span class="nc-color-picker__swatch"></span><span class="nc-color-picker__text"></span><span class="nc-color-picker__chevron"></span></button>
+  The colour and its hex code in a ComboBox field; a grid of rounded swatches drops down.
+  */
+  .nc-color-picker {
+    --nc-field-line: inset 0 -1px 0 var(--nc-field-border-bottom);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    min-width: 140px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 12px 0 10px;
+    border: 1px solid var(--nc-field-border);
+    border-radius: var(--nc-radius);
+    background: var(--nc-field);
+    box-shadow: var(--nc-field-line);
+    color: var(--nc-text);
+    cursor: pointer;
+    outline: none;
+  }
+  .nc-color-picker:hover { background: var(--nc-field-hover); }
+  .nc-color-picker:focus-visible, .nc-color-picker[aria-expanded="true"] {
+    --nc-field-line: inset 0 -2px 0 var(--nc-accent-light);
+    background: var(--nc-field-focus);
+  }
+  .nc-color-picker:disabled { opacity: 0.42; cursor: default; }
+  .nc-color-picker__swatch {
+    flex: none;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 5px;
+  }
+  .nc-color-picker__text { flex: 1; font-family: var(--nc-font-family-mono); font-size: var(--nc-font-size-caption); text-align: left; }
+  .nc-color-picker__chevron {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    background: currentColor;
+    mask: var(--nc-glyph-chevron-down) center / 16px no-repeat;
+  }
+  .nc-color-picker[aria-expanded="true"] .nc-color-picker__chevron { transform: rotate(180deg); }
+  /* The palette: 26px swatches with 6px corners in rows of eight; a ring around the one under the
+     mouse and a white one around the chosen colour */
+  .nc-popup--palette { padding: 7px; }
+  .nc-color-picker__palette { display: grid; grid-template-columns: repeat(8, 26px); gap: 6px; padding: 3px; }
+  .nc-color-picker__palette > button {
+    position: relative;
+    box-sizing: border-box;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.15);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .nc-color-picker__palette > button::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid transparent;
+    border-radius: 9px;
+  }
+  .nc-color-picker__palette > button:hover::after { border-color: var(--nc-toggle-border); }
+  .nc-color-picker__palette > button[aria-selected="true"]::after { border-color: var(--nc-focus); }
+  .nc-color-picker__palette > button:focus-visible { outline: none; }
+  .nc-color-picker__palette > button:focus-visible::after { border-color: var(--nc-focus); }
+}

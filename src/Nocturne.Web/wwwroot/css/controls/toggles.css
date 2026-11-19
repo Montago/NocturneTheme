@@ -1,0 +1,115 @@
+/* Nocturne for the web · CheckBox (three-state), RadioButton, ToggleSwitch (Controls.Toggles.xaml) */
+@layer components {
+
+  /*
+  <label class="nc-check-box"><input type="checkbox"> Text</label>, the same with nc-radio-button and
+  type=radio, and nc-toggle-switch (role="switch"). The box and the dot are the input itself.
+  */
+  .nc-check-box, .nc-radio-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 32px;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+  }
+  .nc-check-box > input, .nc-radio-button > input {
+    appearance: none;
+    flex: none;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 1px solid var(--nc-toggle-border);
+    border-radius: 5px;
+    background: var(--nc-toggle-fill);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .nc-check-box:hover > input, .nc-radio-button:hover > input { border-color: var(--nc-toggle-border-hover); }
+  .nc-check-box > input:checked, .nc-check-box > input:indeterminate {
+    border-color: var(--nc-accent);
+    background: var(--nc-accent);
+  }
+  .nc-check-box > input::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: var(--nc-text-on-accent);
+    mask: var(--nc-glyph-check) center / 14px no-repeat;
+    visibility: hidden;
+  }
+  .nc-check-box > input:checked::after { visibility: visible; }
+  .nc-check-box > input:indeterminate::after {
+    visibility: visible;
+    width: 10px;
+    height: 2px;
+    border-radius: 1px;
+    mask: none;
+  }
+  .nc-check-box > input:active, .nc-radio-button > input:active { opacity: 0.8; }
+  /* RadioButton checked: a 6px accent ring around a centre in the text-on-accent colour */
+  .nc-radio-button > input { border-radius: 50%; }
+  .nc-radio-button > input:checked {
+    border: 6px solid var(--nc-accent);
+    background: var(--nc-text-on-accent);
+  }
+  .nc-radio-button > input.is-indeterminate { border-color: var(--nc-toggle-border); background: var(--nc-toggle-fill); }
+  :is(.nc-check-box, .nc-radio-button, .nc-toggle-switch):has(> input:disabled) { opacity: 0.45; cursor: default; }
+  :is(.nc-check-box, .nc-radio-button) > input:disabled { cursor: default; }
+  :is(.nc-check-box, .nc-radio-button) > input:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: 2px; }
+  :is(.nc-check-box, .nc-radio-button)[aria-invalid="true"] > input { border-color: var(--nc-error); }
+
+  /* ------------------------------------------------------------- switch */
+  /* Nocturne.Styles.ToggleSwitch: the content on the left, the 40 × 20 switch on the right; the
+     knob slides in 150 ms */
+  .nc-toggle-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 40px;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    cursor: pointer;
+    user-select: none;
+  }
+  .nc-toggle-switch > input {
+    appearance: none;
+    order: 2;
+    position: relative;
+    flex: none;
+    box-sizing: border-box;
+    width: 40px;
+    height: 20px;
+    margin: 0;
+    border: 1px solid var(--nc-switch-border);
+    border-radius: 10px;
+    background: var(--nc-toggle-fill);
+    cursor: pointer;
+  }
+  .nc-toggle-switch > input::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: var(--nc-switch-knob);
+    transition: transform var(--nc-slow) cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .nc-toggle-switch:hover > input { border-color: var(--nc-toggle-border-hover); }
+  .nc-toggle-switch > input:checked { border-color: var(--nc-accent); background: var(--nc-accent); }
+  .nc-toggle-switch > input:checked::after { background: var(--nc-text-on-accent); transform: translateX(20px); }
+  .nc-toggle-switch > input:active::after { opacity: 0.85; }
+  .nc-toggle-switch > input:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: 2px; }
+  /* A second line under the label (the On / Off of the demo): <span class="nc-toggle-switch__text"><span>…</span><small>…</small></span> */
+  .nc-toggle-switch__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .nc-toggle-switch__text > small { color: var(--nc-text-secondary); font-size: var(--nc-font-size-small); }
+}

@@ -4,6 +4,13 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Web/">
+    <Project Path="src/Nocturne.Web.Demo/Nocturne.Web.Demo.csproj" />
+    <Project Path="src/Nocturne.Web/Nocturne.Web.csproj" />
+  </Folder>
+  <Folder Name="/Web/Samples/">
+    <Project Path="samples/Nocturne.Web.Samples.Mvc/Nocturne.Web.Samples.Mvc.csproj" />
+  </Folder>
   <Folder Name="/WPF/">
     <Project Path="src/Nocturne.Wpf.Demo/Nocturne.Wpf.Demo.csproj" />
     <Project Path="src/Nocturne.Wpf/Nocturne.Wpf.csproj" />

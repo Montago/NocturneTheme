@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- The WPF demo (src/Nocturne.Wpf.Demo) as a web page: the same pages, the same controls, the same data. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nocturne.Web\Nocturne.Web.csproj" />
+    <!-- The 3,000 cars of the NocturneGrid page (plain C#, no WPF types) -->
+    <Compile Include="..\Nocturne.Wpf.Demo\CarData.cs" Link="CarData.cs" />
+  </ItemGroup>
+
+</Project>

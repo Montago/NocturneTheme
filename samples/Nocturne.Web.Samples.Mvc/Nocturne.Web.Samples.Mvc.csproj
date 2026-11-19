@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nocturne.Web\Nocturne.Web.csproj" />
+    <!-- The same fixed content as the WPF admin sample -->
+    <Compile Include="..\Nocturne.Wpf.Samples.Admin\SampleData.cs" Link="SampleData.cs" />
+  </ItemGroup>
+
+</Project>

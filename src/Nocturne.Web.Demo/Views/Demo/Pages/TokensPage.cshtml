@@ -1,0 +1,121 @@
+@* Views/TokensPage.xaml: layers, colours, type, shape and states *@
+@{
+    var swatches = new (string Name, string Token)[]
+    {
+        ("Accent", "--nc-accent"),
+        ("Primary button", "--nc-button-primary"),
+        ("Accent light", "--nc-accent-light"),
+        ("Text", "--nc-text"),
+        ("Text secondary", "--nc-text-secondary"),
+        ("Focus ring", "--nc-focus"),
+        ("Surface 1 · card", "--nc-surface1"),
+        ("Surface 2 · selected", "--nc-surface2"),
+        ("Stroke", "--nc-stroke"),
+        ("Input field", "--nc-field"),
+        ("Popup (solid)", "--nc-popup"),
+        ("Error", "--nc-error"),
+        ("Warning", "--nc-warning"),
+        ("Success", "--nc-success"),
+        ("Window ground", "--nc-window-ground"),
+        ("Fallback ground", "--nc-window-fallback"),
+        ("Hover", "--nc-item-hover"),
+        ("Close hover", "--nc-close-hover"),
+    };
+}
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">Layers, colours and states</h1>
+        <p class="demo-page-header__text">On the web nothing is see-through to the desktop: the page paints an opaque ground, and the surfaces keep their light alpha over it. Custom properties are --nc-*, generated from Nocturne.Brushes.*.</p>
+    </div>
+</header>
+
+<nc-card header="Layers — from the bottom up" class="demo-stack-item">
+    <div class="demo-columns demo-columns--4 demo-columns--tight">
+        <div>
+            <div class="demo-layer" style="background:var(--nc-window-fallback)"></div>
+            <b>1 · Fallback ground</b>
+            <p class="nc-text-block--mono">--nc-window-fallback: Window.Fallback (#1E2633 for blue), what WPF paints without a backdrop</p>
+        </div>
+        <div>
+            <div class="demo-layer" style="background:var(--nc-window-ground)"></div>
+            <b>2 · Tint</b>
+            <p class="nc-text-block--mono">--nc-window-ground: the fallback with Window.Tint over it at 0.5 — the solid page</p>
+        </div>
+        <div>
+            <div class="demo-layer" style="background:var(--nc-window-light), var(--nc-window-ground)"></div>
+            <b>3 · Light</b>
+            <p class="nc-text-block--mono">8 % white from the top-left corner, dithered on a canvas (LightTexture) so it shows no bands</p>
+        </div>
+        <div>
+            <div class="demo-layer" style="background:var(--nc-window-ground);display:grid;place-items:stretch;padding:22px 14px;box-sizing:border-box">
+                <div style="display:grid;align-items:center;padding:0 10px;border:1px solid var(--nc-surface1-border);border-radius:10px;background:var(--nc-surface1)">
+                    <div style="height:28px;border-radius:7px;background:var(--nc-surface2)"></div>
+                </div>
+            </div>
+            <b>4 · Surfaces</b>
+            <p class="nc-text-block--mono">Surface1 (cards) · Surface2 (selected), white with alpha over the ground</p>
+        </div>
+    </div>
+</nc-card>
+
+<nc-card header="Colours — custom property · value" class="demo-stack-item">
+    <div class="demo-swatches" id="Swatches">
+        @foreach (var (name, token) in swatches)
+        {
+            <div class="demo-swatch-card">
+                <div class="demo-swatch-card__colour" style="background:var(@token)"></div>
+                <b>@name</b>
+                <span class="nc-text-block--mono">@token</span>
+                <span class="nc-text-block--mono" data-token="@token"></span>
+            </div>
+        }
+    </div>
+</nc-card>
+
+<div class="demo-columns demo-columns--2">
+    <nc-card header="Typography — Segoe UI">
+        <div class="demo-spec"><span class="nc-text-block--title">Page title</span><span class="nc-text-block--mono">text-block--title · 30 / 600</span></div>
+        <div class="demo-spec"><span class="nc-text-block--subtitle">Subtitle</span><span class="nc-text-block--mono">text-block--subtitle · 20 / 600</span></div>
+        <div class="demo-spec"><span class="nc-text-block--eyebrow">SECTION LABEL</span><span class="nc-text-block--mono">text-block--eyebrow · 12 / 700</span></div>
+        <div class="demo-spec"><span class="nc-text-block--list-title">List title</span><span class="nc-text-block--mono">text-block--list-title · 16 / 500</span></div>
+        <div class="demo-spec"><span class="nc-text-block--body">Body text and controls</span><span class="nc-text-block--mono">text-block--body · 14 / 400, buttons 600</span></div>
+        <div class="demo-spec"><span class="nc-text-block--caption">Captions and labels</span><span class="nc-text-block--mono">text-block--caption · 13 / 400</span></div>
+        <div class="demo-spec"><span class="nc-text-block--hint" style="margin:0">Hints and tool tips</span><span class="nc-text-block--mono">text-block--hint · 12 / 400</span></div>
+    </nc-card>
+
+    <nc-card header="Shape and size">
+        <div class="demo-shapes">
+            <div><div class="demo-shape" style="border-radius:8px"></div>Window · 8</div>
+            <div><div class="demo-shape" style="border-radius:14px"></div>Card · 14</div>
+            <div><div class="demo-shape" style="border-radius:12px"></div>List item · 12</div>
+            <div><div class="demo-shape" style="border-radius:10px"></div>Icon tile, popup · 10</div>
+            <div><div class="demo-shape" style="border-radius:8px"></div>Button, field · 8</div>
+            <div><div class="demo-shape" style="border-radius:5px"></div>CheckBox · 5</div>
+        </div>
+        <div class="demo-spec"><span>Control height</span><span class="nc-text-block--mono">36 px (fields, buttons, tabs, menu items)</span></div>
+        <div class="demo-spec"><span>Icon tile</span><span class="nc-text-block--mono">42 × 42 · icon 20 px, stroke 1.6</span></div>
+        <div class="demo-spec"><span>Spacing</span><span class="nc-text-block--mono">4 · 8 · 10 · 14 · 16 · 20 · 32</span></div>
+        <div class="demo-spec"><span>Title bar</span><span class="nc-text-block--mono">44 px</span></div>
+    </nc-card>
+</div>
+
+<nc-card header="States" class="demo-stack-item">
+    <div class="demo-states">
+        <span class="demo-row__key">Rest</span>
+        <nc-button content="Button" />
+        <nc-text-box placeholder="Text box" />
+        <nc-check-box content="Check box" />
+        <span class="demo-row__key">Primary</span>
+        <nc-button button-style="Primary" content="Primary" />
+        <nc-text-box text="Text" />
+        <nc-check-box content="Checked" is-checked="true" />
+        <span class="demo-row__key">Error</span>
+        <nc-button button-style="Danger" content="Danger" />
+        <nc-text-box text="Wrong" validation-error="Something is wrong here." />
+        <nc-radio-button content="Radio" is-checked="true" group-name="States" />
+        <span class="demo-row__key">Disabled</span>
+        <nc-button content="Disabled" is-enabled="false" />
+        <nc-text-box text="Disabled" is-enabled="false" />
+        <nc-check-box content="Disabled" is-checked="true" is-enabled="false" />
+    </div>
+</nc-card>
