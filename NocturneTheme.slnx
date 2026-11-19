@@ -12,6 +12,10 @@
     <Project Path="samples/Nocturne.Avalonia.Samples.Admin/Nocturne.Avalonia.Samples.Admin.csproj" />
     <Project Path="samples/Nocturne.Avalonia.Samples.Portal/Nocturne.Avalonia.Samples.Portal.csproj" />
   </Folder>
+  <Folder Name="/Plans/">
+    <File Path="plans/avalonia-port.md" />
+    <File Path="plans/web-version.md" />
+  </Folder>
   <Folder Name="/Web/">
     <Project Path="src/Nocturne.Web.Demo/Nocturne.Web.Demo.csproj" />
     <Project Path="src/Nocturne.Web/Nocturne.Web.csproj" />

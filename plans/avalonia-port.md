@@ -2,10 +2,10 @@
 
 Status: phases 0-6 are done and merged into master (2026-11-19, PR #4): tokens, NocturneWindow, the
 standard controls, StatusBar, the own controls, Avalonia's pickers, a plain DataGrid theme, the demo
-pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs and release) is done on
-master (2026-11-19): docs, the package README, `avalonia-v*` release tags and frozen animations in the
-pictures, and the nuget.org policy allows the new package; left is the first tag. What is built, how
-it works and its gotchas are in CLAUDE.md ("Avalonia port"). Left after that: NocturneGrid (phase 7).
+pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs, package README, `avalonia-v*`
+release tags, frozen animations in the pictures) is done, and Nocturne.Avalonia 0.1.0 is released
+(2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). What is built, how it works and its gotchas are in
+CLAUDE.md ("Avalonia port"). Left: NocturneGrid (phase 7).
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
 Decided by the user (2026-11-19): cross-platform (`net10.0`, Windows-only parts behind
@@ -38,7 +38,6 @@ Done:
   in en-US (month and day names in the pictures were Danish).
 
 Left:
-- Tag and push `avalonia-v0.1.0` when the user asks.
 - A few page pictures (the accent title bar, a popup) can still differ by a shade between runs: the
   scroll bars fade on real-time DispatcherTimers, which the virtual clock does not drive.
 
