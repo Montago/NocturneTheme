@@ -9,11 +9,12 @@ and the font.
 License 2.0. See `icons/LICENSE` (Pictogrammers Free License) and `icons/LICENSE-2.0.txt`. The icons
 are used unchanged.
 
-**Font.** The font files in `src/Nocturne.Web/wwwroot/fonts/` (`InterVariable.woff2`,
-`InterVariable-Italic.woff2`) are **Inter** 4.1 by The Inter Project Authors
+**Font.** The font files in `fonts/inter/` (`Inter-Regular.ttf`, `-Medium`, `-SemiBold`, `-Bold`,
+embedded in Nocturne.Wpf and Nocturne.Avalonia) and in `src/Nocturne.Web/wwwroot/fonts/`
+(`InterVariable.woff2`, `InterVariable-Italic.woff2`) are **Inter** 4.1 by The Inter Project Authors
 (https://github.com/rsms/inter), licensed under the SIL Open Font License 1.1. See
-`src/Nocturne.Web/wwwroot/fonts/LICENSE.txt`. The files are used unchanged, from the release's `web/`
-folder.
+`fonts/inter/LICENSE.txt`. The files are used unchanged, from the release's `extras/ttf/` and `web/`
+folders.
 
 The theme's own line icons (`Styles/Icons.xaml`, `Nocturne.Icons.*`) are drawn for Nocturne and are
 MIT like the rest.

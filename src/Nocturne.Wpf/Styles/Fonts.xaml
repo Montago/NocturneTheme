@@ -1,9 +1,12 @@
-<!-- Type: Segoe UI (the design's Figtree can be swapped in by overriding Nocturne.Fonts.Family) -->
+<!-- Type: Inter, embedded in the library (fonts/inter, SIL OFL 1.1), with Segoe UI behind it for
+     characters Inter lacks. Apps can override Nocturne.Fonts.Family (the design used Figtree). -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <FontFamily x:Key="Nocturne.Fonts.Family">Segoe UI</FontFamily>
+    <!-- Resolved against this file's address (no pack://application:,,, here: a doubled comma in a
+         family list is a comma inside a name) -->
+    <FontFamily x:Key="Nocturne.Fonts.Family">/Nocturne.Wpf;component/Fonts/#Inter, Segoe UI</FontFamily>
     <FontFamily x:Key="Nocturne.Fonts.Family.Mono">Cascadia Mono, Consolas</FontFamily>
 
     <sys:Double x:Key="Nocturne.Font.Size.Title">30</sys:Double>
