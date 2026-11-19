@@ -1,0 +1,173 @@
+@* Views/CustomControlsPage.xaml: controls WPF does not have, in the Nocturne style *@
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">Custom controls</h1>
+        <p class="demo-page-header__text">Controls WPF does not have, in the Nocturne style: menu buttons, number and time fields, pickers, message bars, dialogs, flyouts and navigation.</p>
+    </div>
+</header>
+
+<div class="demo-columns demo-columns--3">
+    @* Column 1 *@
+    <div class="demo-stack">
+        <nc-card header="Menu buttons" tag="nc:DropDownButton · nc:SplitButton">
+            <nc-label content="Drop-down: the whole button opens the menu" />
+            <div class="demo-wrap">
+                <nc-drop-down-button content="Export" id="ExportButton">
+                    <nc-menu-item header="PDF document" />
+                    <nc-menu-item header="CSV for Excel" />
+                    <nc-menu-item header="PNG image" />
+                </nc-drop-down-button>
+                <nc-drop-down-button content="New" stroke-icon="Plus" button-style="Primary">
+                    <nc-menu-item header="Folder" stroke-icon="Folder" />
+                    <nc-menu-item header="Document" stroke-icon="File" />
+                </nc-drop-down-button>
+            </div>
+            <nc-label content="Split: the chevron opens the other choices" style="margin-top:6px" />
+            <div class="demo-wrap">
+                <nc-split-button content="Save">
+                    <nc-menu-item header="Save as…" input-gesture-text="Ctrl+Shift+S" />
+                    <nc-menu-item header="Save all" />
+                </nc-split-button>
+                <nc-split-button content="Synchronise" button-style="Primary">
+                    <nc-menu-item header="Synchronise this folder" />
+                    <nc-menu-item header="Pause for an hour" />
+                </nc-split-button>
+                <nc-drop-down-button content="Disabled" is-enabled="false" />
+            </div>
+        </nc-card>
+
+        <nc-card header="NumericUpDown" tag="nc:NumericUpDown">
+            <nc-label content="Port" />
+            <nc-numeric-up-down value="8080" minimum="1" maximum="65535" aria-label="Port" />
+            <nc-label content="Timeout (steps of 5)" style="margin-top:14px" />
+            <nc-numeric-up-down value="30" minimum="0" maximum="300" interval="5" aria-label="Timeout" />
+            <nc-label content="Retries (out of range)" style="margin-top:14px" />
+            <nc-numeric-up-down value="12" maximum="10" validation-error="At most 10 retries." aria-label="Retries" />
+            <p class="nc-text-block--error">At most 10 retries.</p>
+        </nc-card>
+    </div>
+
+    @* Column 2 *@
+    <div class="demo-stack">
+        <nc-card header="TextBox · Clear button" tag="ControlHelper.ClearButton">
+            <nc-label content="Server name" />
+            <nc-text-box text="intranet.local" clear-button="true" />
+            <nc-label content="Search" style="margin-top:14px" />
+            <nc-text-box text-box-style="Search" text="nocturne" clear-button="true" placeholder="Search files" />
+            <p class="nc-text-block--hint">The × shows while there is text and empties the box.</p>
+        </nc-card>
+
+        <nc-card header="ProgressRing" tag="nc:ProgressRing">
+            <div class="demo-inline" style="gap:20px">
+                <nc-progress-ring width="20" />
+                <nc-progress-ring />
+                <nc-progress-ring width="48" />
+            </div>
+            <nc-label content="Inside a button" style="margin-top:16px" />
+            <button type="button" class="nc-button nc-button--primary demo-saving" tabindex="-1">
+                <span class="nc-progress-ring" style="--nc-ring-size:16px"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="nc-progress-ring__track" cx="16" cy="16" r="12.5"/><path class="nc-progress-ring__arc" d="M16,3.5 A12.5,12.5 0 0 1 28.5,16"/></svg></span>
+                Saving…
+            </button>
+        </nc-card>
+    </div>
+
+    @* Column 3 *@
+    <div class="demo-stack">
+        <nc-card header="Dialog · Flyout" tag="nc:NocturneDialog · nc:Flyout">
+            <p class="demo-body">A dialog dims the page and waits for an answer (Nocturne.showDialog). A flyout slides in from the edge of the window.</p>
+            <div class="demo-wrap" style="margin-top:16px">
+                <nc-button button-style="Primary" content="Show dialog" id="ShowDialogButton" />
+                <nc-button content="Open flyout" data-nc-open="SettingsFlyout" />
+            </div>
+            <p class="nc-text-block--hint" id="DialogResultText">No answer yet.</p>
+        </nc-card>
+    </div>
+</div>
+
+<nc-card header="InfoBar" tag="nc:InfoBar · Severity" class="demo-stack-item">
+    <div class="demo-stack demo-stack--10">
+        <nc-info-bar title="Update available." message="Nocturne can be updated when you restart the app." is-closable="false">
+            <nc-button content="Restart" />
+        </nc-info-bar>
+        <nc-info-bar severity="Success" title="Synchronised." message="128 files were uploaded at 07:12." />
+        <nc-info-bar severity="Warning" title="Almost full." message="The shared drive has 2.1 GB free." />
+        <nc-info-bar severity="Error" title="Could not connect." message="intranet.local did not answer within 30 s.">
+            <nc-button content="Try again" />
+        </nc-info-bar>
+    </div>
+</nc-card>
+
+<div class="demo-columns demo-columns--3">
+    <nc-card header="Pickers" tag="nc:TimePicker · ColorPicker · …">
+        <nc-label content="Meeting time" />
+        <nc-time-picker selected-time="new TimeSpan(9, 30, 0)" minute-step="30" aria-label="Meeting time" />
+        <nc-label content="Label colour" style="margin-top:14px" />
+        <nc-color-picker selected-color="#1F78D1" style="width:200px" aria-label="Label colour" />
+        <nc-label content="City (AutoSuggestBox)" style="margin-top:14px" />
+        <nc-auto-suggest-box items="DemoData.Cities" placeholder="Start typing a city" aria-label="City" />
+        <nc-label content="Owner (SearchComboBox)" style="margin-top:14px" />
+        <nc-search-combo-box items="DemoData.People" display-member-path="Name" selected-value-path="Name" selected-value="DemoData.People[2].Name" placeholder="Choose or type a name" />
+    </nc-card>
+
+    <div class="demo-stack">
+        <nc-card header="RangeSlider · Rating" tag="nc:RangeSlider · nc:Rating">
+            <div class="demo-label-row"><nc-label content="Distance" /><span class="demo-value" id="DistanceValue">20 – 65 km</span></div>
+            <nc-range-slider id="DistanceRange" minimum="0" maximum="100" lower-value="20" upper-value="65" small-change="5" />
+            <nc-label content="Your rating" style="margin-top:18px" />
+            <nc-rating value="4" aria-label="Rating" />
+            <nc-label content="Average (read-only)" style="margin-top:14px" />
+            <nc-rating value="3" is-read-only="true" />
+        </nc-card>
+
+        <nc-card header="Badged" tag="nc:Badged">
+            <div class="demo-inline" style="gap:24px">
+                <nc-badged badge="3"><nc-button button-style="Icon" stroke-icon="Sync" tool-tip="Messages" aria-label="Messages" /></nc-badged>
+                <nc-badged badge="12" badge-background="var(--nc-error)" badge-foreground="#2A0E0B"><nc-button content="Conflicts" /></nc-badged>
+                <nc-badged badge="New" badge-background="var(--nc-warning)" badge-foreground="#2A2108"><nc-button content="Reports" /></nc-badged>
+            </div>
+        </nc-card>
+    </div>
+
+    <div class="demo-stack">
+        <nc-card header="Tile" tag="nc:Tile">
+            <div class="demo-wrap demo-wrap--12">
+                <nc-tile title="Files" count="1,284" stroke-icon="Folder" style="width:150px" />
+                <nc-tile title="Synchronise" count="3" stroke-icon="Sync" tile-style="Accent" style="width:150px" />
+            </div>
+        </nc-card>
+
+        <nc-card header="BusyIndicator" tag="nc:BusyIndicator">
+            <nc-toggle-switch id="BusySwitch" is-checked="true">IsBusy</nc-toggle-switch>
+            <nc-busy-indicator id="BusyIndicator" is-busy="true" busy-content="Uploading 128 files…" style="margin-top:10px">
+                <nc-label content="Folder" />
+                <nc-text-box text="Projects\Nocturne" />
+                <nc-label content="Destination" style="margin-top:12px" />
+                <nc-text-box text="intranet.local/shared" />
+            </nc-busy-indicator>
+        </nc-card>
+    </div>
+</div>
+
+<div class="demo-columns demo-columns--2-1">
+    <nc-card header="HamburgerMenu" tag="nc:HamburgerMenu · nc:HamburgerMenuItem">
+        <div class="demo-hamburger-frame">
+            <nc-hamburger-menu selected-index="0" aria-label="Sections">
+                <nc-hamburger-menu-item content="Dashboard" stroke-icon="Grid"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Dashboard</h2><p class="nc-text-block--caption">The page of the selected item goes here. The ☰ button folds the pane to its icons.</p></div></nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Files" stroke-icon="Folder" is-expanded="true">
+                    <nc-hamburger-menu-item content="Recent"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Recent</h2><p class="nc-text-block--caption">The page of the selected item goes here. The ☰ button folds the pane to its icons.</p></div></nc-hamburger-menu-item>
+                    <nc-hamburger-menu-item content="Shared with me"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Shared with me</h2><p class="nc-text-block--caption">The page of the selected item goes here. The ☰ button folds the pane to its icons.</p></div></nc-hamburger-menu-item>
+                </nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Security" stroke-icon="Shield"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Security</h2><p class="nc-text-block--caption">The page of the selected item goes here. The ☰ button folds the pane to its icons.</p></div></nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Network" stroke-icon="Globe"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Network</h2><p class="nc-text-block--caption">The page of the selected item goes here. The ☰ button folds the pane to its icons.</p></div></nc-hamburger-menu-item>
+            </nc-hamburger-menu>
+        </div>
+    </nc-card>
+
+    <nc-card header="Accordion" tag="nc:Accordion">
+        <nc-accordion style="height:330px">
+            <nc-expander header="Account" is-expanded="true"><p class="demo-body">Opening one section closes the others; the open one takes the height that is left.</p></nc-expander>
+            <nc-expander header="Notifications"><p class="demo-body">E-mail, sounds and badges.</p></nc-expander>
+            <nc-expander header="Privacy"><p class="demo-body">Who can see your files.</p></nc-expander>
+        </nc-accordion>
+    </nc-card>
+</div>

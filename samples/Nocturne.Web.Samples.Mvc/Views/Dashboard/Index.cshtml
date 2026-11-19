@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    var waiting = SampleData.Timesheet.Count(r => r.Status == "Submitted");
+    var hours = SampleData.Timesheet.Sum(r => r.Total);
+}
+
+<h1 class="nc-text-block--title">Dashboard</h1>
+<p class="nc-text-block--caption mt-1 mb-5">Wednesday 18 November · week 47</p>
+
+<nc-info-bar severity="Warning" title="@($"{waiting} timesheets")" message="for week 47 are waiting for your approval." class="mb-4.5">
+    <a class="nc-button" asp-controller="Timesheets" asp-action="Index" asp-route-status="Submitted">Review</a>
+</nc-info-bar>
+
+@* Key figures; each tile opens the page behind it *@
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4.5">
+    <a class="nc-tile nc-tile--accent w-auto" href="@Url.Action("Index", "Employees")">
+        <span class="nc-tile__content"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-people" /></svg></span>
+        <span class="nc-tile__count">@SampleData.Employees.Count(e => e.IsActive)</span>
+        <span class="nc-tile__title">Active employees</span>
+    </a>
+    <a class="nc-tile w-auto" href="@Url.Action("Index", "Projects")">
+        <span class="nc-tile__content"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-briefcase" /></svg></span>
+        <span class="nc-tile__count">@SampleData.Projects.Count</span>
+        <span class="nc-tile__title">Running projects</span>
+    </a>
+    <nc-tile title="Hours this week" count="@hours.ToString("N0")" stroke-icon="Clock" href="@Url.Action("Index", "Timesheets")" class="w-auto" />
+    <a class="nc-tile w-auto" href="@Url.Action("Index", "Timesheets", new { status = "Submitted" })">
+        <span class="nc-tile__content"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-bell" /></svg></span>
+        <span class="nc-tile__count">@waiting</span>
+        <span class="nc-tile__title">Awaiting approval</span>
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-4 items-start">
+    <nc-card header="Project budgets" tag="Hours">
+        @foreach (var p in SampleData.Projects)
+        {
+            <div class="mb-4">
+                <div class="flex justify-between gap-3">
+                    <span>
+                        <a class="font-semibold text-nc-text no-underline hover:underline" asp-controller="Projects" asp-action="Index" asp-route-project="@Slug.Of(p.Name)">@p.Name</a>
+                        <span class="nc-text-block--caption ml-2">@p.Customer</span>
+                    </span>
+                    <span class="nc-text-block--caption">@p.UsedHours of @p.BudgetHours</span>
+                </div>
+                <progress class="nc-progress-bar mt-2" max="100" value="@p.Progress.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)">@p.Progress.ToString("F0")%</progress>
+            </div>
+        }
+    </nc-card>
+
+    <nc-card header="Recent activity">
+        @foreach (var a in SampleData.RecentActivity)
+        {
+            <div class="mb-3">
+                <div>@a.Text</div>
+                <div class="nc-text-block--hint mt-0.5">@a.Time</div>
+            </div>
+        }
+    </nc-card>
+</div>

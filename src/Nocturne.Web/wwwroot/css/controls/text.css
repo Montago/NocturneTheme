@@ -1,0 +1,198 @@
+/* Nocturne for the web · TextBox, PasswordBox, Label, NumericUpDown, the field buttons and the validation callout (Controls.Text.xaml) */
+@layer components {
+
+  /* ------------------------------------------------------------ text box */
+  /*
+  A field is a dark, slightly sunken glass strip with a lighter bottom edge; keyboard focus draws a
+  2px light-accent line along the bottom, an error a red one (and a red frame). The bottom lines
+  are inset shadows, so they follow the 8px corners as the WPF borders do.
+  <input class="nc-text-box">, <textarea class="nc-text-box">; the pickers put one inside them.
+  */
+  .nc-text-box {
+    --nc-field-line: inset 0 -1px 0 var(--nc-field-border-bottom);
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--nc-field-border);
+    border-radius: var(--nc-radius);
+    background: var(--nc-field);
+    box-shadow: var(--nc-field-line);
+    color: var(--nc-text);
+    caret-color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    line-height: 20px;
+    outline: none;
+  }
+  textarea.nc-text-box {
+    min-height: 80px;
+    padding: 8px 12px;
+    resize: vertical;
+    line-height: 1.45;
+  }
+  .nc-text-box::placeholder { color: var(--nc-text-placeholder); opacity: 1; }
+  .nc-text-box:hover { background: var(--nc-field-hover); }
+  .nc-text-box:focus, :is(.nc-text-box-host, .nc-numeric-up-down, .nc-combo-box--editable, .nc-date-picker, .nc-time-picker, .nc-search-combo-box, .nc-auto-suggest-box):focus-within > .nc-text-box {
+    --nc-field-line: inset 0 -2px 0 var(--nc-accent-light);
+    border-color: var(--nc-field-border-focus);
+    background: var(--nc-field-focus);
+  }
+  .nc-text-box:disabled { opacity: 0.42; }
+  .nc-text-box:read-only:not(:disabled) { cursor: default; }
+  /* Validation: aria-invalid, or the class ASP.NET Core puts on an invalid field */
+  .nc-text-box:is([aria-invalid="true"], .input-validation-error) {
+    --nc-field-line: inset 0 -2px 0 var(--nc-error);
+    border-color: var(--nc-error);
+  }
+  .nc-text-box::-webkit-search-cancel-button { display: none; }
+  .nc-text-box::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+  .nc-text-box::-ms-reveal { display: none; }
+
+  /*
+  ControlHelper.Icon, .ClearButton and PasswordBoxHelper.CanReveal: the field with an icon on the
+  left (nc-text-box-host--search: the magnifier) and small subtle buttons inside its right end.
+  <div class="nc-text-box-host"><input class="nc-text-box"><button class="nc-text-box-host__button nc-text-box-host__clear" data-nc-clear></button></div>
+  */
+  .nc-text-box-host { position: relative; display: block; }
+  .nc-text-box-host:has(> .nc-text-box-host__button) > .nc-text-box { padding-right: 38px; }
+  .nc-text-box-host:has(> .nc-text-box-host__button ~ .nc-text-box-host__button) > .nc-text-box { padding-right: 70px; }
+  :is(.nc-text-box-host--search, .nc-text-box-host--filter) > .nc-text-box { padding-left: 38px; }
+  .nc-text-box-host--filter { --nc-field-icon: var(--nc-glyph-filter); }
+  :is(.nc-text-box-host--search, .nc-text-box-host--filter)::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    background: var(--nc-text-hint);
+    mask: var(--nc-field-icon, var(--nc-glyph-search)) center / 16px no-repeat;
+    pointer-events: none;
+  }
+  /* Nocturne.Styles.Button.Field: 28 × 28, no fill until hovered */
+  .nc-text-box-host__button, .nc-numeric-up-down__spin > button {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--nc-text-secondary);
+    cursor: pointer;
+  }
+  .nc-text-box-host__button:hover, .nc-numeric-up-down__spin > button:hover { background: var(--nc-button-subtle-hover); color: var(--nc-text); }
+  .nc-text-box-host__button:active, .nc-numeric-up-down__spin > button:active { background: var(--nc-item-selected); }
+  .nc-text-box-host__button {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    margin-top: -14px;
+  }
+  .nc-text-box-host__clear:has(+ .nc-text-box-host__reveal) { right: 36px; }
+  .nc-text-box-host__button::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    mask: var(--nc-glyph-close) center / 14px no-repeat;
+  }
+  /* The × shows while there is text; the box always has a placeholder (a blank one if none) to tell */
+  .nc-text-box-host > .nc-text-box:placeholder-shown ~ .nc-text-box-host__clear,
+  .nc-text-box-host > .nc-text-box:disabled ~ .nc-text-box-host__button { display: none; }
+  /* The eye: 32 × 32 in the text colour, lit while the password shows */
+  .nc-text-box-host__reveal { width: 32px; height: 32px; margin-top: -16px; right: 2px; color: var(--nc-text); }
+  .nc-text-box-host__reveal::before { width: 18px; height: 18px; mask: var(--nc-glyph-eye) center / 18px no-repeat; }
+  .nc-text-box-host__reveal[aria-pressed="true"] { background: var(--nc-item-selected); }
+  .nc-text-box-host:has(> .nc-text-box-host__reveal) > .nc-text-box { padding-right: 42px; }
+  .nc-text-box-host:has(> .nc-text-box:disabled) { opacity: 1; }
+
+  /* RichTextBox: <div class="nc-text-box nc-rich-text-box" contenteditable>…</div>, the multi-line field
+     with the theme font and paragraphs 8px apart */
+  .nc-rich-text-box {
+    min-height: 80px;
+    padding: 8px 12px;
+    overflow: auto;
+    line-height: 1.45;
+    cursor: text;
+  }
+  .nc-rich-text-box > p { margin: 0 0 8px; }
+  .nc-rich-text-box:focus { outline: none; }
+
+  /* ------------------------------------------------------- numeric up/down */
+  /* The field with the down and up buttons at its end */
+  .nc-numeric-up-down { position: relative; display: block; }
+  .nc-numeric-up-down > .nc-text-box {
+    padding-right: 66px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .nc-numeric-up-down > .nc-text-box::-webkit-inner-spin-button,
+  .nc-numeric-up-down > .nc-text-box::-webkit-outer-spin-button { appearance: none; margin: 0; }
+  .nc-numeric-up-down__spin {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    display: flex;
+    margin-top: -14px;
+  }
+  .nc-numeric-up-down__spin .nc-stroke-icon { width: 14px; height: 14px; stroke-width: 2; }
+  .nc-numeric-up-down:has(> .nc-text-box:disabled) .nc-numeric-up-down__spin { opacity: 0.42; pointer-events: none; }
+
+  /* ----------------------------------------------------- validation callout */
+  /* Nocturne.Templates.ValidationError: the first error under the field, on the popup surface with
+     the error icon, while the field has the focus or the mouse (nocturne.js) */
+  .nc-validation-tip {
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    gap: 8px;
+    box-sizing: border-box;
+    max-width: 324px;
+    padding: 8px 12px 8px 10px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 10px;
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+    color: var(--nc-error-text);
+    font-size: var(--nc-font-size-caption);
+    line-height: 1.35;
+    pointer-events: none;
+    animation: nc-fade-in var(--nc-slow) ease-out;
+  }
+  .nc-validation-tip::before {
+    content: "";
+    flex: none;
+    width: 16px;
+    height: 16px;
+    background: var(--nc-error);
+    mask: var(--nc-glyph-error) center / 16px no-repeat;
+  }
+  /* The message under a field from ASP.NET Core validation (asp-validation-for): Nocturne.Styles.TextBlock.Error */
+  .nc-validation-message:empty, .nc-validation-message.field-validation-valid { display: none; }
+  .nc-validation-message {
+    display: block;
+    margin-top: 6px;
+    color: var(--nc-error-text);
+    font-size: var(--nc-font-size-small);
+  }
+  .nc-validation-summary {
+    padding: 10px 14px;
+    border: 1px solid var(--nc-stroke);
+    border-radius: 10px;
+    background: var(--nc-error-background);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-caption);
+  }
+  .nc-validation-summary.validation-summary-valid { display: none; }
+  .nc-validation-summary ul { margin: 0; padding-left: 18px; }
+
+  @keyframes nc-fade-in { from { opacity: 0; } }
+}

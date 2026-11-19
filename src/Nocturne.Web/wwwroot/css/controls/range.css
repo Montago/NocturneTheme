@@ -1,0 +1,210 @@
+/* Nocturne for the web · ScrollViewer bars, Slider, RangeSlider, ProgressBar, ProgressRing, Rating (Controls.Range.xaml) */
+/* The scroll bar thumb's colour: registered, so the bars can fade (ScrollViewerHelper.AutoHide) */
+@property --nc-scroll-thumb { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@layer components {
+
+  /* ---------------------------------------------------------- scroll bars */
+  /*
+  Thin rounded bars without arrows, 6px drawn in an 18px lane, that show while the mouse is over the
+  scroll viewer or it scrolls (nocturne.js keeps them 1.5 s) and fade out otherwise. The page itself
+  and every Nocturne element that scrolls get them.
+  */
+  :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+    .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list) {
+    --nc-scroll-thumb: transparent;
+    scrollbar-width: thin;
+    scrollbar-color: var(--nc-scroll-thumb) transparent;
+    transition: --nc-scroll-thumb 0.25s ease-in-out;
+  }
+  :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+    .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list):is(:hover, .is-active) {
+    --nc-scroll-thumb: var(--nc-scroll-bar-thumb);
+  }
+  @supports selector(::-webkit-scrollbar) {
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list) {
+      scrollbar-width: auto;
+      scrollbar-color: auto;
+    }
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list)::-webkit-scrollbar {
+      width: 18px;
+      height: 18px;
+      background: transparent;
+    }
+    :where(.nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-nocturne-grid-filter__list)::-webkit-scrollbar { width: 12px; height: 12px; }
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list)::-webkit-scrollbar-corner { background: transparent; }
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list)::-webkit-scrollbar-button { display: none; }
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-hamburger-menu, .nc-window__content, .nc-flyout__content, .nc-nocturne-grid-filter__list)::-webkit-scrollbar-thumb {
+      min-height: 24px;
+      border: 6px solid transparent;
+      border-radius: 9px;
+      background: var(--nc-scroll-thumb) padding-box;
+    }
+    :where(.nc-popup, .nc-context-menu, textarea.nc-text-box, .nc-nocturne-grid-filter__list)::-webkit-scrollbar-thumb { border-width: 3px; border-radius: 6px; }
+    /* Over the bar it widens from 6 to 10px and lightens */
+    :where(html, .nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, .nc-nocturne-grid__viewport,
+      .nc-hamburger-menu, .nc-window__content, .nc-flyout__content)::-webkit-scrollbar-thumb:hover {
+      border-width: 4px;
+      background-color: var(--nc-scroll-bar-thumb-hover);
+    }
+  }
+  .nc-scroll-viewer { overflow: auto; }
+
+  /* --------------------------------------------------------------- slider */
+  /*
+  <div class="nc-slider" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4">
+    <div class="nc-slider__track"></div><div class="nc-slider__fill"></div><div class="nc-slider__thumb"></div>
+  </div>
+  A 4px track, the filled part in the light accent, a 20px thumb in the accent with a pale 4px ring.
+  nocturne.js keeps --nc-slider-at (0–100%) in step and handles mouse, touch and keys.
+  */
+  .nc-slider, .nc-range-slider {
+    --nc-slider-at: 0%;
+    --nc-slider-from: 0%;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 22px;
+    touch-action: none;
+    cursor: pointer;
+    user-select: none;
+  }
+  :is(.nc-slider, .nc-range-slider).has-ticks:not(.nc-slider--vertical) { height: 30px; }
+  /* the thumb's centre travels from 10px to the width less 10px, as a WPF Track with a 20px thumb */
+  .nc-slider__track, .nc-slider__fill {
+    position: absolute;
+    top: 9px;
+    height: 4px;
+    border-radius: 2px;
+  }
+  .nc-slider__track { left: 0; right: 0; background: var(--nc-slider-track); }
+  .nc-slider__fill { background: var(--nc-accent-light); }
+  .nc-slider .nc-slider__fill { left: 0; width: calc(10px + (100% - 20px) * var(--nc-at)); }
+  .nc-range-slider .nc-slider__fill {
+    left: calc(10px + (100% - 20px) * var(--nc-from));
+    width: calc((100% - 20px) * (var(--nc-at) - var(--nc-from)));
+  }
+  .nc-slider__thumb {
+    position: absolute;
+    top: 1px;
+    left: calc((100% - 20px) * var(--nc-at));
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border: 4px solid var(--nc-slider-thumb-border);
+    border-radius: 50%;
+    background: var(--nc-accent);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
+  }
+  .nc-slider__thumb.is-lower { left: calc((100% - 20px) * var(--nc-from)); }
+  .nc-slider__thumb:hover { background: var(--nc-accent-light); }
+  .nc-slider__thumb.is-dragging { background: var(--nc-accent-light); border-width: 5px; }
+  /* --nc-at / --nc-from: the value and the lower value as fractions (0–1), written by nocturne.js */
+  :is(.nc-slider, .nc-range-slider) { --nc-at: 0; --nc-from: 0; }
+  .nc-slider__ticks {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 24px;
+    height: 4px;
+    background: linear-gradient(to right, var(--nc-text-hint) 1px, transparent 1px) 0 0 / calc((100% - 1px) / var(--nc-ticks, 10)) 100% repeat-x;
+    opacity: 0.6;
+  }
+  :is(.nc-slider, .nc-range-slider):focus-visible { outline: none; }
+  :is(.nc-slider, .nc-range-slider):focus-visible .nc-slider__thumb { outline: 2px solid var(--nc-focus); outline-offset: 2px; }
+  .nc-slider__thumb:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: 2px; }
+  :is(.nc-slider, .nc-range-slider)[aria-disabled="true"] { opacity: 0.42; cursor: default; pointer-events: none; }
+
+  /* Orientation="Vertical": value 0 at the bottom */
+  .nc-slider--vertical { width: 22px; height: 120px; }
+  .nc-slider--vertical .nc-slider__track { left: 9px; right: auto; top: 0; bottom: 0; width: 4px; height: auto; }
+  .nc-slider--vertical .nc-slider__fill { left: 9px; top: auto; bottom: 0; width: 4px; height: calc(10px + (100% - 20px) * var(--nc-at)); }
+  .nc-slider--vertical .nc-slider__thumb { left: 1px; top: auto; bottom: calc((100% - 20px) * var(--nc-at)); }
+  .nc-slider--vertical .nc-slider__ticks {
+    left: 24px; right: auto; top: 10px; bottom: 10px; width: 4px; height: auto;
+    background: linear-gradient(to bottom, var(--nc-text-hint) 1px, transparent 1px) 0 0 / 100% calc((100% - 1px) / var(--nc-ticks, 10)) repeat-y;
+  }
+
+  /* --------------------------------------------------------- progress bar */
+  /* A 6px rounded track; without a value (IsIndeterminate) a bar runs across in 1.6 s */
+  .nc-progress-bar {
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 6px;
+    border: 0;
+    border-radius: 3px;
+    background: var(--nc-progress-track);
+    color: var(--nc-accent-light);
+    overflow: hidden;
+  }
+  .nc-progress-bar::-webkit-progress-bar { background: transparent; }
+  .nc-progress-bar::-webkit-progress-value { border-radius: 3px; background: var(--nc-accent-light); transition: width var(--nc-slow) ease-out; }
+  .nc-progress-bar::-moz-progress-bar { border-radius: 3px; background: var(--nc-accent-light); }
+  .nc-progress-bar:indeterminate {
+    background:
+      linear-gradient(var(--nc-accent-light), var(--nc-accent-light)) 0 0 / 35% 100% no-repeat,
+      var(--nc-progress-track);
+    animation: nc-progress-run 1.6s ease-in-out infinite;
+  }
+  .nc-progress-bar:indeterminate::-webkit-progress-bar { background: transparent; }
+  .nc-progress-bar:indeterminate::-moz-progress-bar { background: transparent; }
+  @keyframes nc-progress-run {
+    from { background-position: -54% 0, 0 0; }
+    to { background-position: 154% 0, 0 0; }
+  }
+  .nc-progress-bar:disabled { opacity: 0.42; }
+
+  /* -------------------------------------------------------- progress ring */
+  /* A quarter arc in the light accent running round a faint track once a second; 32 × 32 unless
+     --nc-ring-size says otherwise (the tag helper's width) */
+  .nc-progress-ring {
+    display: inline-block;
+    flex: none;
+    width: var(--nc-ring-size, 32px);
+    height: var(--nc-ring-size, 32px);
+    vertical-align: middle;
+  }
+  .nc-progress-ring > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .nc-progress-ring__track { fill: none; stroke: var(--nc-progress-track); stroke-width: 3; }
+  .nc-progress-ring__arc {
+    fill: none;
+    stroke: var(--nc-accent-light);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform-origin: 16px 16px;
+    animation: nc-spin 1s linear infinite;
+  }
+  .nc-progress-ring[data-active="false"] { display: none; }
+  @keyframes nc-spin { to { transform: rotate(360deg); } }
+
+  /* --------------------------------------------------------------- rating */
+  /* <span class="nc-rating" style="--value: 4; --max: 5">: 18px stars 4px apart, light accent when on,
+     a dark fill with a light outline when off */
+  .nc-rating {
+    --value: 0;
+    --max: 5;
+    position: relative;
+    display: inline-block;
+    width: calc(var(--max) * 22px - 4px);
+    height: 18px;
+    vertical-align: middle;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 18'%3E%3Cpath d='M9,1.5 L11.3,6.3 16.5,7 12.7,10.6 13.6,15.8 9,13.3 4.4,15.8 5.3,10.6 1.5,7 6.7,6.3 z' fill='%23000000' fill-opacity='0.18' stroke='%23FFFFFF' stroke-opacity='0.45' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 0 0 / 22px 18px repeat-x;
+  }
+  .nc-rating::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--value) * 22px);
+    background: var(--nc-accent-light);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 18'%3E%3Cpath d='M9,1.5 L11.3,6.3 16.5,7 12.7,10.6 13.6,15.8 9,13.3 4.4,15.8 5.3,10.6 1.5,7 6.7,6.3 z' stroke='%23000' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 0 0 / 22px 18px repeat-x;
+  }
+  .nc-rating[data-nc-input] { cursor: pointer; }
+  .nc-rating:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: 4px; border-radius: 4px; }
+  .nc-rating[aria-disabled="true"] { opacity: 0.42; }
+}

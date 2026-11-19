@@ -1,0 +1,253 @@
+/* Nocturne for the web · Button, RepeatButton, ToggleButton, DropDownButton, SplitButton, Tile (Controls.Buttons.xaml) */
+@layer components {
+
+  /* -------------------------------------------------------------- button */
+  /*
+  <button class="nc-button">, .nc-button--primary / --danger / --subtle / --icon.
+  As the WPF template: the fill (::before) fades out while the hover fill (::after) fades in, in
+  120 ms; pressed shows the pressed fill over it, drops the top highlight and dims the content.
+  The fills are variables, so the variants only set colours.
+  */
+  .nc-button {
+    --nc-b-bg: var(--nc-button-secondary);
+    --nc-b-hover: var(--nc-button-secondary-hover);
+    --nc-b-pressed: var(--nc-button-secondary-pressed);
+    --nc-b-border: var(--nc-button-secondary-border);
+    --nc-b-highlight: transparent;
+    --nc-b-shadow: none;
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 16px;
+    border: 1px solid var(--nc-b-border);
+    border-radius: var(--nc-radius);
+    background: transparent;
+    box-shadow: var(--nc-b-shadow), inset 0 1px 0 var(--nc-b-highlight);
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    font-weight: 600;
+    line-height: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nc-button::before, .nc-button::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    transition: opacity var(--nc-fast) linear;
+  }
+  .nc-button::before { background: var(--nc-b-bg); }
+  .nc-button::after { background: var(--nc-b-hover); opacity: 0; }
+  .nc-button:hover::before { opacity: 0; }
+  .nc-button:hover::after { opacity: 1; }
+  .nc-button:active::after {
+    background: linear-gradient(var(--nc-b-pressed), var(--nc-b-pressed)), var(--nc-b-hover);
+    opacity: 1;
+    transition: none;
+  }
+  .nc-button:active { box-shadow: var(--nc-b-shadow); color: color-mix(in srgb, currentColor 85%, transparent); }
+  .nc-button:active > * { opacity: 0.85; }
+  .nc-button:hover { color: var(--nc-text); }
+  .nc-button:disabled, .nc-button[aria-disabled="true"] { opacity: 0.42; cursor: default; pointer-events: none; }
+  .nc-button > .nc-stroke-icon { width: 18px; height: 18px; stroke-width: 1.8; }
+  .nc-button > .nc-icon { width: 18px; height: 18px; }
+
+  /* Primary: the accent fill with a hairline highlight and a soft shadow; a checked ToggleButton too */
+  .nc-button--primary, .nc-button[aria-pressed="true"] {
+    --nc-b-bg: var(--nc-button-primary);
+    --nc-b-hover: var(--nc-button-primary-hover);
+    --nc-b-pressed: var(--nc-button-primary-pressed);
+    --nc-b-border: var(--nc-button-primary-border);
+    --nc-b-highlight: var(--nc-button-primary-highlight);
+    color: var(--nc-text-on-accent);
+  }
+  .nc-button--primary { --nc-b-shadow: var(--nc-shadow-button); }
+  .nc-button--primary:hover, .nc-button[aria-pressed="true"]:hover { color: var(--nc-text-on-accent); }
+  /* Danger: shaped like Primary, deep red whatever the accent */
+  .nc-button--danger {
+    --nc-b-bg: var(--nc-button-danger);
+    --nc-b-hover: var(--nc-button-danger-hover);
+    --nc-b-pressed: var(--nc-button-danger-pressed);
+    --nc-b-border: var(--nc-button-primary-border);
+    --nc-b-highlight: var(--nc-button-primary-highlight);
+    --nc-b-shadow: var(--nc-shadow-button);
+    color: #fff;
+  }
+  .nc-button--danger:hover { color: #fff; }
+  /* Subtle: no fill until hovered */
+  .nc-button--subtle {
+    --nc-b-bg: transparent;
+    --nc-b-hover: var(--nc-button-subtle-hover);
+    --nc-b-pressed: var(--nc-surface-pressed);
+    --nc-b-border: transparent;
+  }
+  /* Icon, Icon.Subtle: 36 × 36 for an icon alone */
+  .nc-button--icon { width: 36px; height: 36px; min-height: 0; padding: 0; }
+
+  /* The chevron of a DropDownButton or SplitButton (Nocturne.Icons.ChevronDown) */
+  .nc-caret {
+    display: inline-block;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin: 0 -2px 0 0;
+    background: currentColor;
+    mask: var(--nc-glyph-chevron-down) center / 14px no-repeat;
+  }
+
+  /* -------------------------------------------------- drop-down and split */
+  .nc-drop-down-button { display: inline-flex; }
+  .nc-drop-down-button > .nc-button { padding: 0 12px 0 16px; }
+  .nc-drop-down-button > .nc-button > .nc-caret { margin-left: 0; }
+
+  /*
+  SplitButton: <div class="nc-split-button"><button class="nc-split-button__main">…</button><button
+  class="nc-split-button__arrow" popovertarget>…</button></div>. The two parts light up on their own,
+  with a hairline between them; .nc-split-button--primary for the accent.
+  */
+  .nc-split-button {
+    --nc-b-bg: var(--nc-button-secondary);
+    --nc-b-hover: var(--nc-button-secondary-hover);
+    --nc-b-pressed: var(--nc-button-secondary-pressed);
+    --nc-b-border: var(--nc-button-secondary-border);
+    --nc-b-highlight: transparent;
+    --nc-b-shadow: none;
+    position: relative;
+    display: inline-flex;
+    box-sizing: border-box;
+    min-height: 36px;
+    border-radius: var(--nc-radius);
+    box-shadow: var(--nc-b-shadow);
+    color: var(--nc-text);
+    vertical-align: middle;
+  }
+  .nc-split-button--primary {
+    --nc-b-bg: var(--nc-button-primary);
+    --nc-b-hover: var(--nc-button-primary-hover);
+    --nc-b-pressed: var(--nc-button-primary-pressed);
+    --nc-b-border: var(--nc-button-primary-border);
+    --nc-b-highlight: var(--nc-button-primary-highlight);
+    --nc-b-shadow: var(--nc-shadow-button);
+    color: var(--nc-text-on-accent);
+  }
+  /* the frame and the highlight are drawn over both parts */
+  .nc-split-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--nc-b-border);
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 var(--nc-b-highlight);
+    pointer-events: none;
+  }
+  .nc-split-button > button {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .nc-split-button > button::before, .nc-split-button > button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    transition: opacity var(--nc-fast) linear;
+  }
+  .nc-split-button__main { padding: 0 16px; border-radius: var(--nc-radius) 0 0 var(--nc-radius); }
+  .nc-split-button__main::before { background: var(--nc-b-bg); }
+  .nc-split-button__main::after { background: var(--nc-b-hover); opacity: 0; }
+  .nc-split-button__main:hover::before { opacity: 0; }
+  .nc-split-button__main:hover::after { opacity: 1; }
+  .nc-split-button__main:active::after { background: linear-gradient(var(--nc-b-pressed), var(--nc-b-pressed)), var(--nc-b-hover); transition: none; }
+  .nc-split-button__main:active > * { opacity: 0.85; }
+  /* The chevron part: the fill, the subtle hover over it (at once, as in WPF), and the hairline
+     between the parts, 8px short of the top and bottom */
+  .nc-split-button__arrow { width: 34px; padding: 0; border-radius: 0 var(--nc-radius) var(--nc-radius) 0; }
+  .nc-split-button__arrow::before { background: var(--nc-b-bg); transition: none; }
+  .nc-split-button__arrow:hover::before { background: linear-gradient(var(--nc-button-subtle-hover), var(--nc-button-subtle-hover)), var(--nc-b-bg); }
+  .nc-split-button__arrow[aria-expanded="true"]::before { background: linear-gradient(var(--nc-item-selected), var(--nc-item-selected)), var(--nc-b-bg); }
+  .nc-split-button__arrow::after { inset: 8px auto 8px 0; z-index: 0; width: 1px; border-radius: 0; background: var(--nc-b-border); transition: none; }
+  .nc-split-button__arrow > .nc-caret { margin: 0; }
+  .nc-split-button[aria-disabled="true"], .nc-split-button:has(> button:disabled) { opacity: 0.42; pointer-events: none; }
+  .nc-split-button > button > .nc-stroke-icon { width: 18px; height: 18px; stroke-width: 1.8; }
+  .nc-split-button > button > .nc-icon { width: 18px; height: 18px; }
+
+  /* ---------------------------------------------------------------- tile */
+  /* Tile: the icon or content top left, the count top right, the title at the bottom */
+  .nc-tile {
+    --nc-b-bg: var(--nc-surface1);
+    --nc-b-hover: var(--nc-button-secondary-hover);
+    --nc-b-pressed: var(--nc-button-secondary-pressed);
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template: "content count" 1fr "title title" auto / 1fr auto;
+    box-sizing: border-box;
+    width: 160px;
+    height: 120px;
+    margin: 0;
+    padding: 14px 16px;
+    border: 1px solid var(--nc-surface1-border);
+    border-radius: 14px;
+    background: var(--nc-b-bg);
+    box-shadow: inset 0 1px 0 var(--nc-surface1-highlight);
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nc-tile::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--nc-b-hover);
+    opacity: 0;
+    transition: opacity var(--nc-fast) linear;
+  }
+  .nc-tile:hover::after { opacity: 1; }
+  .nc-tile:active::after { background: var(--nc-b-pressed); }
+  .nc-tile:active > * { opacity: 0.85; }
+  .nc-tile:hover { color: var(--nc-text); }
+  .nc-tile:disabled { opacity: 0.42; cursor: default; }
+  .nc-tile__content { grid-area: content; align-self: start; justify-self: start; }
+  .nc-tile__content > .nc-stroke-icon, .nc-tile__content > .nc-icon { width: 24px; height: 24px; }
+  .nc-tile__count { grid-area: count; align-self: start; font-size: 26px; font-weight: 600; line-height: 1.1; }
+  .nc-tile__title { grid-area: title; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nc-tile--accent {
+    --nc-b-bg: var(--nc-button-primary);
+    --nc-b-hover: var(--nc-button-primary-hover);
+    --nc-b-pressed: var(--nc-button-primary-pressed);
+    border-color: var(--nc-button-primary-border);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.3), inset 0 1px 0 var(--nc-button-primary-highlight);
+    color: var(--nc-text-on-accent);
+  }
+  .nc-tile--accent:hover { color: var(--nc-text-on-accent); }
+}

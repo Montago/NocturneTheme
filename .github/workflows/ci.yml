@@ -18,6 +18,12 @@ jobs:
       - name: Icons up to date
         run: python tools/generate_icons.py --check
 
+      # Nocturne.Web: the tokens follow Styles/*.xaml and the accent palettes, the bundle its sources
+      - name: Web tokens and bundle up to date
+        run: |
+          python tools/generate_web_tokens.py --check
+          python tools/bundle_web_css.py --check
+
       # Nocturne.Avalonia: brushes, line icons and accent palettes are generated from the WPF library
       - name: Avalonia tokens up to date
         run: python tools/generate_avalonia_tokens.py --check
@@ -28,6 +34,7 @@ jobs:
       - name: Pack
         run: |
           dotnet pack src/Nocturne.Wpf/Nocturne.Wpf.csproj -c Release --no-build -o artifacts
+          dotnet pack src/Nocturne.Web/Nocturne.Web.csproj -c Release --no-build -o artifacts
           dotnet pack src/Nocturne.Avalonia/Nocturne.Avalonia.csproj -c Release --no-build -o artifacts
 
       - uses: actions/upload-artifact@v4

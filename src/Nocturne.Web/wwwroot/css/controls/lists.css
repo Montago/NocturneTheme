@@ -1,0 +1,411 @@
+/* Nocturne for the web · ListBox, ComboBox, ListView, TreeView, HamburgerMenu (Controls.Lists.xaml) */
+@layer components {
+
+  /* ------------------------------------------------------------- list box */
+  /*
+  <div class="nc-list-box" role="listbox" tabindex="0"><div class="nc-list-box-item" role="option" aria-selected="true">…</div></div>
+  Rounded rows that light up on hover (120 ms) and selection. An item with an icon tile and a
+  description: <span class="nc-icon-tile">…</span><span class="nc-list-box-item__text"><span class="nc-list-box-item__title">…</span>
+  <span class="nc-list-box-item__description">…</span></span>. nocturne.js moves the selection.
+  */
+  .nc-list-box {
+    box-sizing: border-box;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    overflow: auto;
+    outline: none;
+  }
+  .nc-list-box:focus-visible .nc-list-box-item[aria-selected="true"] { outline: 2px solid var(--nc-focus); outline-offset: -2px; }
+  .nc-list-box-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 4px;
+    padding: 10px;
+    border-radius: 12px;
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-list-box-item:hover { background: var(--nc-item-hover); color: inherit; }
+  .nc-list-box-item[aria-selected="true"], .nc-list-box-item[aria-current="page"] { background: var(--nc-item-selected); transition: none; }
+  .nc-list-box-item[aria-disabled="true"] { opacity: 0.42; background: transparent; }
+  .nc-list-box-item__text { display: flex; flex-direction: column; min-width: 0; }
+  .nc-list-box-item__title { font-size: var(--nc-font-size-list-title); font-weight: var(--nc-font-weight-medium); line-height: 1.3; }
+  .nc-list-box-item__description { color: var(--nc-text-secondary); font-size: var(--nc-font-size-caption); line-height: 1.35; }
+  /* Nocturne.Styles.ListBox.Navigation: a side menu, an icon tile and a label per item */
+  .nc-list-box--navigation .nc-list-box-item { gap: 12px; padding: 8px; border-radius: 10px; font-weight: 600; }
+  .nc-list-box--navigation .nc-list-box-item__title { font-size: var(--nc-font-size-default); font-weight: 600; }
+  a.nc-list-box-item { cursor: pointer; }
+
+  /* ------------------------------------------------------------ combo box */
+  /*
+  <select class="nc-combo-box">: the field with a chevron that turns while the list is open.
+  nocturne.js opens the Nocturne list instead of the browser's; without script the select still works.
+  nc-combo-box--editable (IsEditable): <div class="nc-combo-box nc-combo-box--editable"><input class="nc-text-box"><button class="nc-text-box-button nc-text-box-button--drop-down"></button></div>
+  */
+  select.nc-combo-box {
+    --nc-field-line: inset 0 -1px 0 var(--nc-field-border-bottom);
+    appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 40px 0 12px;
+    border: 1px solid var(--nc-field-border);
+    border-radius: var(--nc-radius);
+    background: var(--nc-field);
+    box-shadow: var(--nc-field-line);
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    line-height: 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    outline: none;
+    /* A select has no ::after, so the chevron is an SVG background in the text colour */
+    background-color: var(--nc-field);
+    background-image: var(--nc-combo-chevron);
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+  }
+  select.nc-combo-box:hover { background-color: var(--nc-field-hover); }
+  select.nc-combo-box:focus-visible, select.nc-combo-box[aria-expanded="true"] {
+    --nc-field-line: inset 0 -2px 0 var(--nc-accent-light);
+    border-color: var(--nc-field-border-focus);
+    background-color: var(--nc-field-focus);
+    outline: none;
+  }
+  select.nc-combo-box:disabled { opacity: 0.42; cursor: default; }
+  select.nc-combo-box[aria-invalid="true"] { --nc-field-line: inset 0 -2px 0 var(--nc-error); border-color: var(--nc-error); }
+  /* ControlHelper.Placeholder: shown while nothing is chosen */
+  select.nc-combo-box.is-placeholder { color: var(--nc-text-placeholder); }
+  select.nc-combo-box option { background: var(--nc-popup); color: var(--nc-text); }
+  :root {
+    --nc-combo-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F6F3' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6,9 L12,15 L18,9'/%3E%3C/svg%3E");
+    --nc-combo-chevron-open: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F6F3' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6,15 L12,9 L18,15'/%3E%3C/svg%3E");
+  }
+  select.nc-combo-box[aria-expanded="true"] { background-image: var(--nc-combo-chevron-open); }
+
+  .nc-combo-box--editable,
+  .nc-date-picker,
+  .nc-time-picker,
+  .nc-search-combo-box,
+  .nc-auto-suggest-box {
+    position: relative;
+    display: block;
+  }
+  :is(.nc-combo-box--editable, .nc-date-picker, .nc-time-picker, .nc-search-combo-box) > .nc-text-box { padding-right: 40px; }
+  :is(.nc-combo-box--editable, .nc-search-combo-box) > .nc-text-box::-webkit-calendar-picker-indicator { display: none !important; }
+
+  /* The small button at the end of a field: the drop-down chevron, the calendar, the clock (Nocturne.Styles.ToggleButton.Field) */
+  .nc-text-box-button {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-top: -14px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--nc-text);
+    cursor: pointer;
+  }
+  .nc-text-box-button:hover { background: var(--nc-button-subtle-hover); }
+  .nc-text-box-button:active, .nc-text-box-button[aria-expanded="true"] { background: var(--nc-item-selected); }
+  .nc-text-box-button::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    mask: var(--nc-text-box-button-glyph, var(--nc-glyph-chevron-down)) center / 16px no-repeat;
+    transition: transform var(--nc-slow) ease-out;
+  }
+  .nc-text-box-button--drop-down[aria-expanded="true"]::after { transform: rotate(180deg); }
+  .nc-text-box-button--calendar { --nc-text-box-button-glyph: var(--nc-glyph-calendar); }
+  .nc-text-box-button--clock { --nc-text-box-button-glyph: var(--nc-glyph-clock); }
+  .nc-text-box:disabled ~ .nc-text-box-button { pointer-events: none; opacity: 0.42; }
+
+  /* ---------------------------------------------------------------- popup */
+  /* The drop-down of ComboBox, the pickers, AutoSuggestBox and SearchComboBox: the solid popup
+     surface (10px corners, a soft shadow) with ComboBoxItem rows, placed by nocturne.js 2px under the field */
+  .nc-popup {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 4px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 10px;
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .nc-popup:popover-open { animation: nc-fade-in var(--nc-slow) ease-out; }
+  .nc-popup.nc-popup--calendar { padding: 0; overflow: visible; }
+  /* ComboBoxItem: 36px rows with 6px corners, the check mark on the right of the selected one */
+  .nc-popup .nc-list-box-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 36px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: none;
+    cursor: default;
+  }
+  .nc-popup .nc-list-box-item:hover, .nc-popup .nc-list-box-item.is-highlighted { background: var(--nc-option-hover); }
+  /* the current value (IsSelected): the selected fill over the hover fill, and the check mark */
+  .nc-popup .nc-list-box-item.is-checked { background: linear-gradient(var(--nc-option-selected), var(--nc-option-selected)); }
+  .nc-popup .nc-list-box-item.is-checked:is(:hover, .is-highlighted) { background: linear-gradient(var(--nc-option-selected), var(--nc-option-selected)), var(--nc-option-hover); }
+  .nc-popup .nc-list-box-item.is-checked::after {
+    content: "";
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    background: var(--nc-accent-light);
+    mask: var(--nc-glyph-check) center / 16px no-repeat;
+  }
+  .nc-popup .nc-list-box-item[aria-disabled="true"] { opacity: 0.42; background: transparent; }
+
+  /* ------------------------------------------------------------ list view */
+  /* ListView with a GridView: rows of cells under column headers that stay on top: <div class="nc-list-view"><table>… */
+  .nc-list-view {
+    box-sizing: border-box;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    overflow: auto;
+    outline: none;
+  }
+  .nc-list-view table { border-collapse: separate; border-spacing: 0 2px; width: max-content; min-width: 100%; table-layout: fixed; margin-top: -2px; }
+  .nc-list-view th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 38px;
+    padding: 0 6px 0 12px;
+    border-bottom: 1px solid var(--nc-stroke);
+    background: var(--nc-local-ground);
+    color: var(--nc-text-label);
+    font-size: var(--nc-font-size-small);
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .nc-list-view th:hover { color: var(--nc-text); }
+  .nc-list-view :is(th, td) { box-sizing: border-box; }
+  .nc-list-view td {
+    height: 38px;
+    padding: 0 6px 0 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-list-view td:first-child { border-radius: 8px 0 0 8px; }
+  .nc-list-view td:last-child { border-radius: 0 8px 8px 0; }
+  .nc-list-view tbody tr:hover td { background: var(--nc-item-hover); }
+  .nc-list-view tbody tr[aria-selected="true"] td { background: var(--nc-item-selected); transition: none; }
+  .nc-list-view td .nc-stroke-icon { width: 16px; height: 16px; margin: -2px 10px 0 0; color: var(--nc-text-secondary); }
+
+  /* ------------------------------------------------------------- tree view */
+  /*
+  <ul class="nc-tree-view"><li><details open><summary><span class="nc-tree-view__item">…</span></summary><ul>…</ul></details></li></ul>
+  Rows span the whole tree and step in 18px per level; the chevron turns in 150 ms; the selected
+  row has a light fill and a short accent bar.
+  */
+  .nc-tree-view, .nc-tree-view ul { list-style: none; margin: 0; padding: 0; }
+  .nc-tree-view {
+    --nc-tree-indent: 0px;
+    box-sizing: border-box;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    overflow: auto;
+  }
+  .nc-tree-view ul li { --nc-tree-indent: 18px; }
+  .nc-tree-view ul ul li { --nc-tree-indent: 36px; }
+  .nc-tree-view ul ul ul li { --nc-tree-indent: 54px; }
+  .nc-tree-view ul ul ul ul li { --nc-tree-indent: 72px; }
+  .nc-tree-view ul ul ul ul ul li { --nc-tree-indent: 90px; }
+  .nc-tree-view summary { display: block; list-style: none; }
+  .nc-tree-view summary::-webkit-details-marker { display: none; }
+  .nc-tree-view__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 34px;
+    margin-bottom: 2px;
+    padding: 0 10px 0 calc(var(--nc-tree-indent, 0px) + 32px);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: default;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-tree-view__item:hover { background: var(--nc-item-hover); }
+  /* the chevron of an item with children: points right, turns down when open */
+  .nc-tree-view summary > .nc-tree-view__item::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--nc-tree-indent, 0px) + 10px);
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    background: var(--nc-text-secondary);
+    mask: var(--nc-glyph-chevron-right) center / 12px no-repeat;
+    transition: transform var(--nc-slow) ease-out;
+  }
+  .nc-tree-view summary:hover > .nc-tree-view__item::before { background: var(--nc-text); }
+  .nc-tree-view details[open] > summary > .nc-tree-view__item::before { transform: rotate(90deg); }
+  .nc-tree-view__item[aria-current="page"], .nc-tree-view__item[aria-selected="true"] { background: var(--nc-item-selected); transition: none; }
+  .nc-tree-view__item[aria-current="page"]::after, .nc-tree-view__item[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    margin-top: -8px;
+    border-radius: 1.5px;
+    background: var(--nc-accent-light);
+  }
+  .nc-tree-view__item .nc-stroke-icon { width: 16px; height: 16px; margin-right: 10px; color: var(--nc-text-secondary); }
+  .nc-tree-view:focus-visible { outline: none; }
+  .nc-tree-view:focus-visible .nc-tree-view__item.is-current { box-shadow: inset 0 0 0 2px var(--nc-focus); }
+
+  /* -------------------------------------------------------- hamburger menu */
+  /*
+  The navigation pane: Surface1 with a hairline on its right, 220px open and 56px folded; a toggle
+  with three lines, then rows of an icon in a 40px column and a label. Selected: a light fill and
+  the short accent bar. Groups open and close their sub-items (no icons, the text lines up).
+  */
+  .nc-hamburger-menu {
+    --pane-width: 220px;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: var(--pane-width);
+    padding: 8px;
+    border-right: 1px solid var(--nc-divider);
+    background: var(--nc-surface1);
+    overflow: hidden auto;
+    transition: width var(--nc-slow) ease-out;
+  }
+  .nc-hamburger-menu.is-collapsed { width: 56px; }
+  .nc-hamburger-menu__toggle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nc-text);
+    cursor: pointer;
+  }
+  .nc-hamburger-menu__toggle .nc-stroke-icon { width: 20px; height: 20px; stroke-width: 1.8; }
+  .nc-hamburger-menu__toggle:hover { background: var(--nc-button-subtle-hover); }
+  .nc-hamburger-menu__toggle:active { background: var(--nc-surface-pressed); }
+  .nc-hamburger-menu__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin: 0 0 2px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nc-text-label);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .nc-hamburger-menu__icon { flex: none; display: grid; place-items: center; width: 40px; }
+  .nc-hamburger-menu__icon > .nc-stroke-icon, .nc-hamburger-menu__icon > .nc-icon { width: 20px; height: 20px; }
+  .nc-hamburger-menu__label { flex: 1; min-width: 0; margin-left: 4px; overflow: hidden; text-overflow: ellipsis; }
+  .nc-hamburger-menu__item:hover { background: var(--nc-item-hover); color: var(--nc-text); }
+  .nc-hamburger-menu__item:is([aria-current="page"], [aria-selected="true"]) { background: var(--nc-item-selected); color: var(--nc-text); }
+  .nc-hamburger-menu__item:is([aria-current="page"], [aria-selected="true"])::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    margin-top: -8px;
+    border-radius: 1.5px;
+    background: var(--nc-accent-light);
+  }
+  .nc-hamburger-menu.is-collapsed .nc-hamburger-menu__label { visibility: hidden; }
+  .nc-hamburger-menu__group, .nc-hamburger-menu__sub-items { display: flex; flex-direction: column; flex: none; }
+  .nc-hamburger-menu__sub-items[hidden], .nc-hamburger-menu.is-collapsed .nc-hamburger-menu__sub-items { display: none; }
+  .nc-hamburger-menu__item--sub { height: 34px; }
+  .nc-hamburger-menu__item--sub > .nc-hamburger-menu__label { margin-left: 44px; }
+  .nc-hamburger-menu__arrow {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    margin: 0 12px 0 8px;
+    stroke-width: 2.4;
+    transform: rotate(-90deg);
+    transition: transform var(--nc-slow) ease-out;
+  }
+  .nc-hamburger-menu__group-header[aria-expanded="true"] .nc-hamburger-menu__arrow { transform: none; }
+  .nc-hamburger-menu.is-collapsed .nc-hamburger-menu__arrow { visibility: hidden; }
+  /* A closed group, or any group while the pane is folded, stands in for its selected sub-item */
+  .nc-hamburger-menu__group:has(> .nc-hamburger-menu__sub-items :is([aria-current="page"], [aria-selected="true"]))
+    > .nc-hamburger-menu__group-header:is([aria-expanded="false"], .nc-hamburger-menu.is-collapsed *) {
+    background: var(--nc-item-selected);
+    color: var(--nc-text);
+  }
+  .nc-hamburger-menu__group:has(> .nc-hamburger-menu__sub-items :is([aria-current="page"], [aria-selected="true"]))
+    > .nc-hamburger-menu__group-header:is([aria-expanded="false"], .nc-hamburger-menu.is-collapsed *)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    margin-top: -8px;
+    border-radius: 1.5px;
+    background: var(--nc-accent-light);
+  }
+  /* A HamburgerMenu with its own content: the items switch the panels */
+  .nc-hamburger-menu-host { display: flex; min-height: 0; overflow: hidden; }
+  .nc-hamburger-menu__content { flex: 1; min-width: 0; overflow: auto; }
+  .nc-hamburger-menu__content > [hidden] { display: none; }
+}

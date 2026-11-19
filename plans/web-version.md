@@ -1,6 +1,6 @@
 # Plan: Nocturne.Web
 
-Status: planned, nothing built yet (2026-11-18).
+Status: built (2026-11-19): package, demo, gallery, MVC sample, tools, CI and web-v* releases; not released yet. Alpha is kept on hover, card and selection surfaces; the ground and popups are opaque. CLAUDE.md ("Nocturne.Web") has the working rules.
 
 A web version of the Nocturne theme, built the way JetPack.Web is built in
 `D:\Develop\JetpackTheme` (Razor class library with generated CSS, tag helpers and one

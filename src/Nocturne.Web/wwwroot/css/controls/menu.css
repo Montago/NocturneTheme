@@ -1,0 +1,146 @@
+/* Nocturne for the web · ContextMenu, Menu, MenuItem, ToolTip, ToolBar (Controls.Menu.xaml) */
+@layer components {
+
+  /* ---------------------------------------------------------------- menus */
+  /*
+  A context menu (and every drop-down menu: DropDownButton, SplitButton, a Menu header) is a popover
+  on the solid popup surface: <div class="nc-context-menu" popover role="menu"><button class="nc-menu-item">…
+  A menu item: the icon column (an icon, or the check mark), the header, the shortcut, the arrow of a submenu.
+  */
+  .nc-context-menu {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    min-width: 200px;
+    max-height: calc(100vh - 16px);
+    margin: 0;
+    padding: 4px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 10px;
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    overflow: auto;
+  }
+  .nc-context-menu:popover-open { display: flex; flex-direction: column; animation: nc-fade-in var(--nc-slow) ease-out; }
+  .nc-menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .nc-context-menu .nc-menu-item:is(:hover, :focus-visible, [aria-expanded="true"]) { background: var(--nc-option-hover); outline: none; }
+  .nc-context-menu .nc-menu-item:focus-visible { box-shadow: inset 0 0 0 2px var(--nc-focus); }
+  .nc-menu-item:disabled, .nc-menu-item[aria-disabled="true"] { opacity: 0.42; }
+  .nc-menu-item__icon { flex: none; display: grid; place-items: center; width: 16px; height: 16px; margin-right: 10px; }
+  .nc-menu-item__icon:empty { display: none; }
+  /* items line up: in a menu with any icon, every item keeps the icon column */
+  .nc-context-menu:has(.nc-menu-item__icon:not(:empty)) .nc-menu-item__icon:empty { display: grid; }
+  .nc-menu-item__icon > .nc-stroke-icon, .nc-menu-item__icon > .nc-icon { width: 16px; height: 16px; }
+  .nc-menu-item__check { display: none; color: var(--nc-accent-light); stroke-width: 2.2; }
+  .nc-menu-item[aria-checked="true"] .nc-menu-item__check { display: block; }
+  .nc-menu-item[aria-checked="true"] .nc-menu-item__icon > :not(.nc-menu-item__check) { display: none; }
+  .nc-menu-item__header { flex: 1; }
+  .nc-menu-item__gesture { margin-left: 28px; color: var(--nc-shortcut); font-size: var(--nc-font-size-small); }
+  .nc-menu-item__arrow { width: 14px; height: 14px; margin-left: 10px; stroke-width: 2; }
+  .nc-menu-separator, .nc-context-menu > hr {
+    flex: none;
+    height: 1px;
+    margin: 4px 6px;
+    border: 0;
+    background: var(--nc-divider);
+  }
+
+  /* The menu bar: transparent, its headers 32px with the hover fill */
+  .nc-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+  }
+  .nc-menu > .nc-menu-item { width: auto; min-height: 32px; }
+  .nc-menu > .nc-menu-item:is(:hover, .is-open) { background: var(--nc-option-hover); }
+
+  /* -------------------------------------------------------------- tool tip */
+  /* The popup surface with 12 × 8 padding and caption-sized text, under the pointer after half a second */
+  .nc-tool-tip {
+    position: fixed;
+    z-index: 1000;
+    box-sizing: border-box;
+    max-width: 320px;
+    padding: 8px 12px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 10px;
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-caption);
+    font-weight: 400;
+    line-height: 1.35;
+    pointer-events: none;
+    animation: nc-fade-in var(--nc-slow) ease-out;
+  }
+
+  /* --------------------------------------------------------------- tool bar */
+  /* A glass strip with 10px corners, a dotted grip, subtle buttons and hairline separators */
+  .nc-tool-bar-tray { display: flex; flex-wrap: wrap; gap: 4px; }
+  .nc-tool-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    box-sizing: border-box;
+    padding: 4px;
+    border: 1px solid var(--nc-surface1-border);
+    border-radius: 10px;
+    background: var(--nc-surface1);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+  }
+  .nc-tool-bar__thumb {
+    flex: none;
+    width: 14px;
+    height: 12px;
+    margin-right: 2px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 12'%3E%3Cpath d='M0,0h2v2h-2z M4,0h2v2h-2z M0,5h2v2h-2z M4,5h2v2h-2z M0,10h2v2h-2z M4,10h2v2h-2z' fill='%23EBF2ED' fill-opacity='0.52'/%3E%3C/svg%3E") center / 6px 12px no-repeat;
+    cursor: move;
+  }
+  .nc-tool-bar__separator { flex: none; align-self: stretch; width: 1px; margin: 6px; background: var(--nc-divider); }
+  /* The styles ToolBar gives its children */
+  .nc-tool-bar > .nc-button {
+    --nc-b-bg: transparent;
+    --nc-b-hover: var(--nc-button-subtle-hover);
+    --nc-b-pressed: var(--nc-surface-pressed);
+    --nc-b-border: transparent;
+    min-width: 32px;
+    min-height: 32px;
+    margin: 0 1px;
+    padding: 0 8px;
+    font-weight: 400;
+  }
+  .nc-tool-bar > .nc-button[aria-pressed="true"] {
+    --nc-b-bg: var(--nc-button-primary);
+    --nc-b-hover: var(--nc-button-primary-hover);
+    --nc-b-pressed: var(--nc-button-primary-pressed);
+    --nc-b-border: var(--nc-button-primary-border);
+  }
+  .nc-tool-bar > :is(.nc-check-box, .nc-radio-button) { margin: 0 6px; }
+  .nc-tool-bar > :is(select.nc-combo-box, .nc-text-box, .nc-text-box-host, .nc-combo-box--editable) { width: auto; min-height: 32px; margin: 0 2px; }
+  .nc-tool-bar > .nc-text-box-host > .nc-text-box, .nc-tool-bar > .nc-combo-box--editable > .nc-text-box { min-height: 32px; }
+}

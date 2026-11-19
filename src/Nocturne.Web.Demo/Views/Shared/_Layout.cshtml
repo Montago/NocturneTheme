@@ -1,0 +1,88 @@
+@* MainWindow.xaml: the NocturneWindow with the back and navigation buttons, the library navigation, the window settings and the flyout *@
+<!DOCTYPE html>
+@* ?snapshot (tools/web_snapshots.py): endless animations stand still, so pictures only change with the look.
+   ?accent=green starts in that accent (a choice made in the page is remembered and wins).
+   Razor writes a data-* attribute even when its value is null, so the whole attribute is the expression. *@
+<html lang="en" @(Context.Request.Query.ContainsKey("snapshot") ? "data-snapshot" : null) @(Context.Request.Query.ContainsKey("accent") ? Html.Raw($"data-accent=\"{System.Net.WebUtility.HtmlEncode(Context.Request.Query["accent"].ToString())}\"") : null)>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nocturne — Control library</title>
+    <link rel="stylesheet" href="~/_content/Nocturne.Web/css/nocturne.css" asp-append-version="true" />
+    <script src="~/_content/Nocturne.Web/js/nocturne.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/demo.css" asp-append-version="true" />
+</head>
+<body class="nc-window" data-title-bar-style="@(Context.Request.Query["titlebar"].ToString() is { Length: > 0 } t ? t : "seamless")">
+    <canvas class="nc-window__light" aria-hidden="true"></canvas>
+
+    <header class="nc-title-bar">
+        @* Before the title: back to the previous page, and fold the navigation in or out *@
+        <div class="nc-window-commands">
+            <button type="button" id="BackButton" disabled aria-label="Back" title="Back"><nc-stroke-icon data="ChevronLeft" /></button>
+            <button type="button" id="NavigationToggle" aria-label="Show or hide the navigation" title="Show or hide the navigation"><nc-stroke-icon data="Menu" /></button>
+        </div>
+        <span class="nc-title-bar__icon"></span>
+        <span class="nc-title-bar__title">Nocturne — Control library</span>
+    </header>
+
+    <div class="nc-window__body">
+        @* Navigation and the window settings *@
+        <aside class="demo-navigation" id="NavigationPane">
+            <p class="nc-text-block--eyebrow demo-navigation__heading">LIBRARY</p>
+            <nc-list-box id="Navigation" list-box-style="Navigation" selected-index="0" aria-label="Library">
+                <nc-list-box-item content="Controls" stroke-icon="Grid" value="controls" />
+                <nc-list-box-item content="More controls" stroke-icon="Folder" value="more" />
+                <nc-list-box-item content="Custom controls" stroke-icon="Components" value="custom" />
+                <nc-list-box-item content="Data grid" stroke-icon="Database" value="grid" />
+                <nc-list-box-item content="Layers & colours" stroke-icon="Layers" value="tokens" />
+                <nc-list-box-item content="Icons" icon="Star" value="icons" />
+            </nc-list-box>
+
+            <div class="demo-navigation__window">
+                <p class="nc-text-block--eyebrow demo-navigation__heading">WINDOW</p>
+                <p class="nc-text-block--caption demo-navigation__note">No backdrop on the web: the page paints the opaque ground, with the light from the corner.</p>
+                <div class="demo-setting">
+                    <nc-label content="Title bar" target="TitleBarBox" />
+                    <select id="TitleBarBox" class="nc-combo-box" aria-label="Title bar">
+                        <option value="seamless">Seamless</option>
+                        <option value="separated">Separated</option>
+                        <option value="accent">Accent</option>
+                    </select>
+                </div>
+                <nc-label content="Accent" />
+                <div class="demo-accents" role="radiogroup" aria-label="Accent">
+                    <label class="demo-swatch" style="--swatch:#1F9D57" title="Green"><input type="radio" name="Accent" value="green" data-nc-accent aria-label="Green"></label>
+                    <label class="demo-swatch" style="--swatch:#D9661A" title="Orange"><input type="radio" name="Accent" value="orange" data-nc-accent aria-label="Orange"></label>
+                    <label class="demo-swatch" style="--swatch:#1F78D1" title="Blue"><input type="radio" name="Accent" value="blue" data-nc-accent aria-label="Blue" checked></label>
+                    <label class="demo-swatch" style="--swatch:#D1A112" title="Yellow"><input type="radio" name="Accent" value="yellow" data-nc-accent aria-label="Yellow"></label>
+                    <label class="demo-swatch" style="--swatch:#17A398" title="Teal"><input type="radio" name="Accent" value="teal" data-nc-accent aria-label="Teal"></label>
+                    @* The colour the browser reports as AccentColor (Windows' in Firefox; blue where there is none) *@
+                    <label class="demo-swatch demo-swatch--system" title="The system accent colour"><input type="radio" name="Accent" value="system" data-nc-accent aria-label="System accent colour"></label>
+                </div>
+            </div>
+        </aside>
+
+        <main class="nc-window__content demo-pages" id="PageScroller">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* Slides in from the right (Custom controls page: Open flyout) *@
+    <nc-flyout id="SettingsFlyout" header="Display settings" width="360">
+        <p class="nc-text-block--caption" style="margin:0 0 16px">A flyout floats over the page; Escape or the × closes it.</p>
+        <nc-toggle-switch is-checked="true">Show hidden files</nc-toggle-switch>
+        <nc-toggle-switch>Compact rows</nc-toggle-switch>
+        <nc-label content="Sort by" target="FlyoutSort" style="margin-top:14px" />
+        <nc-combo-box id="FlyoutSort" selected-index="0">
+            <nc-combo-box-item content="Name" />
+            <nc-combo-box-item content="Date modified" />
+            <nc-combo-box-item content="Size" />
+        </nc-combo-box>
+        <nc-label content="Thumbnail size" style="margin-top:14px" />
+        <nc-numeric-up-down value="96" minimum="16" maximum="256" interval="16" />
+    </nc-flyout>
+
+    <script src="~/js/demo.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

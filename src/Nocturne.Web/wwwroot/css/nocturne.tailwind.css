@@ -1,0 +1,36 @@
+/*
+Nocturne values as Tailwind v4 theme variables, so utilities such as text-nc-secondary, bg-nc-surface,
+border-nc-stroke, rounded-nc or font-nc follow the Nocturne tokens (and the accent).
+
+With the Tailwind CLI, import Nocturne first; its @layer statement puts the Nocturne layers in the
+right place between Tailwind's:
+    @import "<path>/nocturne.css";
+    @import "tailwindcss";
+    @import "<path>/nocturne.tailwind.css";
+The browser build of Tailwind cannot import files; copy the @theme block into a
+<style type="text/tailwindcss"> element instead.
+*/
+@theme inline {
+  --color-nc-text: var(--nc-text);
+  --color-nc-secondary: var(--nc-text-secondary);
+  --color-nc-label: var(--nc-text-label);
+  --color-nc-hint: var(--nc-text-hint);
+  --color-nc-ground: var(--nc-window-ground);
+  --color-nc-surface: var(--nc-surface1);
+  --color-nc-surface-2: var(--nc-surface2);
+  --color-nc-sunken: var(--nc-surface-sunken);
+  --color-nc-stroke: var(--nc-stroke);
+  --color-nc-divider: var(--nc-divider);
+  --color-nc-popup: var(--nc-popup);
+  --color-nc-accent: var(--nc-accent);
+  --color-nc-accent-light: var(--nc-accent-light);
+  --color-nc-accent-text: var(--nc-accent-text);
+  --color-nc-success: var(--nc-success);
+  --color-nc-warning: var(--nc-warning);
+  --color-nc-error: var(--nc-error);
+  --font-nc: var(--nc-font-family);
+  --font-nc-mono: var(--nc-font-family-mono);
+  --radius-nc: var(--nc-radius);
+  --radius-nc-card: 14px;
+  --shadow-nc-popup: var(--nc-shadow-popup);
+}
