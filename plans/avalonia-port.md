@@ -4,8 +4,8 @@ Status: phases 0-6 are done and merged into master (2026-11-19, PR #4): tokens, 
 standard controls, StatusBar, the own controls, Avalonia's pickers, a plain DataGrid theme, the demo
 pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs, package README, `avalonia-v*`
 release tags, frozen animations in the pictures) is done, and Nocturne.Avalonia 0.1.0 is released
-(2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). Phase 7 (NocturneGrid) is built on branch
-`feature/avalonia-grid` (2026-11-19), not released yet. What is built, how it works and its gotchas are in
+(2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). Phase 7 (NocturneGrid) is merged into master
+(2026-11-19, PR #5), not released yet. What is built, how it works and its gotchas are in
 CLAUDE.md ("Avalonia port").
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
@@ -16,7 +16,7 @@ theme stay in Nocturne.Avalonia (no package of their own).
 
 ## 7. NocturneGrid
 
-Done (branch `feature/avalonia-grid`):
+Done (PR #5):
 - `NocturneGrid` on Avalonia's DataGrid, through a `DataGridCollectionView`: the word search with the hits
   marked in `NocturneGridColumn` cells, a filter in every column header (values to tick with their counts, the
   date tree, typed values, wildcards and ranges; the rules ported from WPF), three-state sorting,
