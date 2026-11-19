@@ -145,12 +145,16 @@ src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmln
   Styles/                      Brushes, Icons (generated), Fonts, Controls.*.axaml (ControlThemes keyed {x:Type …});
                                Controls.Base.axaml holds the hosts every standalone theme needs (PopupRoot,
                                OverlayPopupHost, AdornerLayer with the focus ring, FlyoutPresenter, ItemsControl, …)
-  Controls/                    NocturneWindow, LightTexture, NativeMethods (Windows only), NocturneIcon (+ Icon/IconGeometry
-                               extensions; NocturneIconKind.g.cs generated), StrokeIcon, TabSelectionIndicator,
-                               TabPanelBorder, NocturneAccent.g.cs (generated)
+  Controls/                    NocturneWindow (hosts Flyouts and dialogs), LightTexture, NativeMethods (Windows only),
+                               NocturneIcon (+ Icon/IconGeometry extensions; NocturneIconKind.g.cs generated), StrokeIcon,
+                               TabSelectionIndicator, TabPanelBorder, NocturneAccent.g.cs (generated); own controls:
+                               Tile, Badged, BusyIndicator, Accordion, StatusBar (ContentControls.cs), ProgressRing, InfoBar
+                               (StatusControls.cs), Rating, RangeSlider (RangeControls.cs), HamburgerMenu, SearchComboBox,
+                               ColorPicker, NocturneDialog, Flyout (Overlays.cs)
   Helpers/                     ControlHelper (attached properties), TabHelper (document tabs: close, badge, "+"),
                                ScrollViewerHelper (bars fade in on hover and while scrolling), NocturneConverters
-src/Nocturne.Avalonia.Demo/    demo (Views/ControlsPage, TokensPage); Headless.cs, Snapshot.cs (--snapshot), RenderCommand.cs (--render)
+src/Nocturne.Avalonia.Demo/    demo (Views/ControlsPage, CustomControlsPage, TokensPage); Headless.cs, Snapshot.cs (--snapshot),
+                               RenderCommand.cs (--render)
 tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
                                Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
 ```
@@ -165,8 +169,9 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
   (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
   (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
-  `--snapshot` ends with `checks.txt` (behaviour driven with the headless mouse: scroll bars hide and
-  appear, a document tab closes, "+" adds one) and exits with 1 when a check fails, so CI catches it.
+  `--snapshot` ends with `checks.txt` (behaviour driven with the headless mouse and keyboard: scroll bars
+  hide and appear, document tabs close and add, the custom page's SearchComboBox, ColorPicker, TimePicker,
+  dialog and flyout) and exits with 1 when a check fails, so CI catches it.
 - NocturneWindow extends the client area and marks its title bar and caption buttons with Avalonia 12's
   `WindowDecorationProperties.ElementRole` (TitleBar, MinimizeButton, MaximizeButton, CloseButton; User for
   commands inside the bar): Windows drags, snaps and shows the snap layouts itself. macOS keeps its traffic
@@ -200,6 +205,24 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   `Dispatcher.UIThread.MainLoop(token)` for the time to wait (`Snapshot.Wait`).
 - Avalonia has no WPF `RoutedCommand`: TabHelper offers `CloseTabCommand` / `AddTabCommand` (ICommand),
   the `TabClosing` and `AddTabRequested` routed events and an `AddCommand` attached property.
+- `TextBox.TextChanged` is posted to the dispatcher, so it arrives after the change: a flag set around
+  a change from code has gone by then. SearchComboBox remembers the text it set (`ownText`) instead.
+- Popup content lives in the overlay layer, not under its control: find a part in an open popup among
+  the window's visual descendants (`Snapshot.PopupPart`), not the control's.
+- A ListBox scrolls its selected item into view when selected from code, and the request bubbles up to
+  the page's ScrollViewer: HamburgerMenu turns `AutoScrollToSelectedItem` off.
+- `VirtualizingStackPanel` sets `IsVisible` on its containers itself; a panel whose items hide
+  (HamburgerMenu's sub-items in the folded pane) uses a StackPanel.
+- `Animation.RunAsync` needs a Visual; Flyout slides its TranslateTransform frame by frame
+  (`TopLevel.RequestAnimationFrame`).
+- DatePicker and TimePicker place their popup themselves (centred under the field, moved up by
+  half the presenter's `MaxHeight`): the presenter themes set `MaxHeight` to their real height so
+  the chosen row sits on the field; their part names come from `StringDatePicker*Text` /
+  `StringTimePicker*Text` resources, which a standalone theme has to supply.
+- Giving focus back (dialog, flyout) uses no `NavigationMethod`: with Tab, SearchComboBox takes it
+  for the user moving in and opens its list.
+- Elements that draw outside their bounds (Badged's badge, a swatch ring) need room inside the
+  bounds or `ClipToBounds="False"`; negative margins are clipped.
 
 ## Releases
 

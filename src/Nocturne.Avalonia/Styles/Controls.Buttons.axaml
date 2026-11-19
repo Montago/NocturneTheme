@@ -291,4 +291,68 @@
             <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
         </Style>
     </ControlTheme>
+
+    <!-- Tile: icon (Content) top left, Count top right, Title at the bottom -->
+    <ControlTheme x:Key="Nocturne.Styles.Tile" TargetType="c:Tile">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface1}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Highlight}" />
+        <Setter Property="Width" Value="160" />
+        <Setter Property="Height" Value="120" />
+        <Setter Property="Padding" Value="16,14" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 2 6 0 #4D000000"
+                            IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" />
+                    <Border Name="HoverBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding h:ControlHelper.HoverBackground}" Opacity="0">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="PressedBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding h:ControlHelper.PressedBackground}" IsVisible="False" />
+                    <Border Margin="1" CornerRadius="13" BorderThickness="0,1,0,0" BorderBrush="{TemplateBinding h:ControlHelper.HighlightBrush}" />
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                    <Panel Name="ContentArea" Margin="{TemplateBinding Padding}">
+                        <ContentPresenter Name="PART_ContentPresenter" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <ContentPresenter HorizontalAlignment="Right" VerticalAlignment="Top" Content="{TemplateBinding Count}"
+                                          FontSize="26" FontWeight="SemiBold"
+                                          IsVisible="{TemplateBinding Count, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="{TemplateBinding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                    </Panel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PressedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pressed /template/ Panel#ContentArea">
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="{x:Type c:Tile}" TargetType="c:Tile" BasedOn="{StaticResource Nocturne.Styles.Tile}" />
+    <ControlTheme x:Key="Nocturne.Styles.Tile.Accent" TargetType="c:Tile" BasedOn="{StaticResource Nocturne.Styles.Tile}">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Border}" />
+        <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Hover}" />
+        <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Pressed}" />
+        <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Button.Primary.Highlight}" />
+        <Setter Property="h:ControlHelper.HasShadow" Value="True" />
+    </ControlTheme>
 </ResourceDictionary>

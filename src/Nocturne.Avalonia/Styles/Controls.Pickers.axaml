@@ -1,0 +1,792 @@
+<!--
+    Fields with a drop-down: SearchComboBox and ColorPicker (ours) and Avalonia's AutoCompleteBox,
+    DatePicker and TimePicker. Each is the TextBox / ComboBox field (dark glass, light bottom edge,
+    accent line in focus, red with an error) over a popup surface with a plain list
+    (Nocturne.Styles.ListBox.Popup).
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:Nocturne.Avalonia.Controls"
+                    xmlns:h="using:Nocturne.Avalonia.Helpers">
+
+    <!-- The list in a drop-down: rows as in the ComboBox's -->
+    <ControlTheme x:Key="Nocturne.Styles.ListBoxItem.Popup" TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Hover}" IsVisible="False" />
+                    <Border Name="SelectedBg" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Selected}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Nocturne.Styles.ListBox.Popup" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="ItemContainerTheme" Value="{StaticResource Nocturne.Styles.ListBoxItem.Popup}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer Name="PART_ScrollViewer" Background="{TemplateBinding Background}"
+                              HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" IsScrollChainingEnabled="False">
+                    <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- The small toggle at the end of a field (TimePicker clock) -->
+    <ControlTheme x:Key="Nocturne.Styles.ToggleButton.Field" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Margin" Value="0,0,1,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ClickMode" Value="Press" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="Transparent" CornerRadius="6">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        </Style>
+        <Style Selector="^:checked /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- SearchComboBox: the editable ComboBox; the drop-down is a virtualized list filtered by what you type -->
+    <ControlTheme x:Key="{x:Type c:SearchComboBox}" TargetType="c:SearchComboBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <c:StrokeIcon Name="Chevron" Width="16" Height="16" Margin="0,0,12,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                      StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}"
+                                      IsHitTestVisible="False" RenderTransform="rotate(0deg)">
+                            <c:StrokeIcon.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                                </Transitions>
+                            </c:StrokeIcon.Transitions>
+                        </c:StrokeIcon>
+                        <!-- The chevron's end of the field opens and closes the list -->
+                        <ToggleButton Name="Toggle" Width="36" HorizontalAlignment="Right" Focusable="False" ClickMode="Press"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ToggleButton.Template>
+                                <ControlTemplate>
+                                    <Border Background="Transparent" />
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <TextBlock Name="Placeholder" Margin="12,0,36,0" IsHitTestVisible="False" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                   Text="{TemplateBinding PlaceholderText}" Foreground="{DynamicResource Nocturne.Brushes.Text.Placeholder}" IsVisible="False" />
+                        <TextBox Name="PART_TextBox" Margin="10,1,36,1" Theme="{StaticResource Nocturne.Styles.TextBox.Inner}" Foreground="{TemplateBinding Foreground}"
+                                 AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" />
+                        <Popup Name="PART_Popup" Placement="BottomEdgeAlignedLeft" PlacementTarget="{Binding ElementName=Root}" HorizontalOffset="-14" VerticalOffset="2"
+                               IsLightDismissEnabled="True" OverlayDismissEventPassThrough="True"
+                               IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4">
+                                <Panel MinWidth="{Binding Bounds.Width, ElementName=Root, Converter={x:Static h:NocturneConverters.Add}, ConverterParameter=-10}"
+                                       MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ListBox Name="PART_List" Theme="{StaticResource Nocturne.Styles.ListBox.Popup}" Focusable="False"
+                                             ItemTemplate="{TemplateBinding ItemTemplate}" />
+                                    <TextBlock Name="NoMatches" Margin="10,8" Text="{TemplateBinding NoMatchesText}" IsVisible="False"
+                                               Foreground="{DynamicResource Nocturne.Brushes.Text.Hint}" />
+                                </Panel>
+                            </ContentControl>
+                        </Popup>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:empty /template/ TextBlock#Placeholder">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:nomatches /template/ TextBlock#NoMatches">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        AutoCompleteBox: the TextBox itself (ControlHelper.Icon, ClearButton and HasError pass through)
+        with the matches in a drop-down while you type.
+    -->
+    <ControlTheme x:Key="{x:Type AutoCompleteBox}" TargetType="AutoCompleteBox">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        <Setter Property="MaxDropDownHeight" Value="264" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <TextBox Name="PART_TextBox"
+                             CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                             ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
+                             DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                             PlaceholderText="{TemplateBinding PlaceholderText}" PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                             MaxLength="{TemplateBinding MaxLength}"
+                             InnerLeftContent="{TemplateBinding InnerLeftContent}" InnerRightContent="{TemplateBinding InnerRightContent}"
+                             h:ControlHelper.Icon="{TemplateBinding h:ControlHelper.Icon}"
+                             h:ControlHelper.ClearButton="{TemplateBinding h:ControlHelper.ClearButton}"
+                             h:ControlHelper.HasError="{TemplateBinding h:ControlHelper.HasError}"
+                             AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" />
+                    <Popup Name="PART_Popup" Placement="BottomEdgeAlignedLeft" PlacementTarget="{Binding ElementName=Root}" HorizontalOffset="-14" VerticalOffset="2"
+                           IsLightDismissEnabled="True">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="4">
+                            <ListBox Name="PART_SelectingItemsControl" Theme="{StaticResource Nocturne.Styles.ListBox.Popup}"
+                                     MinWidth="{Binding Bounds.Width, ElementName=Root, Converter={x:Static h:NocturneConverters.Add}, ConverterParameter=-10}"
+                                     MaxHeight="{TemplateBinding MaxDropDownHeight}" ItemTemplate="{TemplateBinding ItemTemplate}" />
+                        </ContentControl>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        DatePicker and TimePicker (Avalonia's looping pickers): the field shows the parts of the value
+        with a hairline between them and a calendar or clock icon at the end; the drop-down is a popup
+        surface with a column per part, the chosen row in a rounded highlight, and accept / dismiss
+        buttons under them. Avalonia's pickers read their part names from these strings.
+    -->
+    <x:String x:Key="StringDatePickerDayText">day</x:String>
+    <x:String x:Key="StringDatePickerMonthText">month</x:String>
+    <x:String x:Key="StringDatePickerYearText">year</x:String>
+    <x:String x:Key="StringTimePickerHourText">hour</x:String>
+    <x:String x:Key="StringTimePickerMinuteText">minute</x:String>
+    <x:String x:Key="StringTimePickerSecondText">second</x:String>
+
+    <!-- A row in a picker column; the chosen one sits in the highlight and is drawn brighter -->
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.Item" TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Name="HoverBg" Margin="4,2" CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Hover}" IsVisible="False" />
+                    <ContentPresenter Name="PART_ContentPresenter" Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^.MonthItem">
+            <Setter Property="Padding" Value="14,0,0,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The accept and dismiss buttons under the columns -->
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.Button" TargetType="Button">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Option.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Selected}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The up and down steps at the ends of a column, shown while the pointer is over it -->
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.Step" TargetType="RepeatButton">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Secondary}" />
+        <Setter Property="Height" Value="26" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsVisible" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{DynamicResource Nocturne.Brushes.Popup}">
+                    <Border Name="Bd" Background="Transparent">
+                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Option.Hover}" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.UpButton" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.DateTimePicker.Step}">
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Content">
+            <Template>
+                <c:StrokeIcon Width="14" Height="14" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.ChevronUp}"
+                              Foreground="{Binding $parent[RepeatButton].Foreground}" />
+            </Template>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.DownButton" TargetType="RepeatButton" BasedOn="{StaticResource Nocturne.Styles.DateTimePicker.Step}">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Content">
+            <Template>
+                <c:StrokeIcon Width="14" Height="14" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.ChevronDown}"
+                              Foreground="{Binding $parent[RepeatButton].Foreground}" />
+            </Template>
+        </Setter>
+    </ControlTheme>
+
+    <!-- The field of a DatePicker or TimePicker: the whole field is the button that opens the drop-down -->
+    <ControlTheme x:Key="Nocturne.Styles.DateTimePicker.FieldButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter" Background="Transparent" Content="{TemplateBinding Content}"
+                                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TimePicker}" TargetType="TimePicker">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinWidth" Value="160" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <Button Name="PART_FlyoutButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.FieldButton}"
+                                Foreground="{TemplateBinding Foreground}" IsEnabled="{TemplateBinding IsEnabled}"
+                                TemplatedControl.IsTemplateFocusTarget="True">
+                            <DockPanel>
+                                <c:StrokeIcon DockPanel.Dock="Right" Width="18" Height="18" Margin="0,0,10,0" VerticalAlignment="Center"
+                                              Data="{DynamicResource Nocturne.Icons.Clock}" Foreground="{TemplateBinding Foreground}" />
+                                <!-- Column definitions come from the TimePicker's code -->
+                                <Grid Name="PART_FlyoutButtonContentGrid" Margin="2,0">
+                                    <Border Name="PART_FirstPickerHost" Grid.Column="0">
+                                        <TextBlock Name="PART_HourTextBlock" Text="{DynamicResource StringTimePickerHourText}" HorizontalAlignment="Center" />
+                                    </Border>
+                                    <Rectangle Name="PART_FirstColumnDivider" Grid.Column="1" />
+                                    <Border Name="PART_SecondPickerHost" Grid.Column="2">
+                                        <TextBlock Name="PART_MinuteTextBlock" Text="{DynamicResource StringTimePickerMinuteText}" HorizontalAlignment="Center" />
+                                    </Border>
+                                    <Rectangle Name="PART_SecondColumnDivider" Grid.Column="3" />
+                                    <Border Name="PART_ThirdPickerHost" Grid.Column="4">
+                                        <TextBlock Name="PART_SecondTextBlock" Text="{DynamicResource StringTimePickerSecondText}" HorizontalAlignment="Center" />
+                                    </Border>
+                                    <Rectangle Name="PART_ThirdColumnDivider" Grid.Column="5" />
+                                    <Border Name="PART_FourthPickerHost" Grid.Column="6">
+                                        <TextBlock Name="PART_PeriodTextBlock" HorizontalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </DockPanel>
+                        </Button>
+                        <!-- The picker places the popup itself: centred on the field, the chosen row over it -->
+                        <Popup Name="PART_Popup" PlacementTarget="{Binding ElementName=Root}"
+                               IsLightDismissEnabled="True" WindowManagerAddShadowHint="False">
+                            <TimePickerPresenter Name="PART_PickerPresenter"
+                                                 Width="{Binding Bounds.Width, ElementName=Root, Converter={x:Static h:NocturneConverters.Add}, ConverterParameter=28}" />
+                        </Popup>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Grid#PART_FlyoutButtonContentGrid TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="^ /template/ Grid#PART_FlyoutButtonContentGrid Rectangle">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="0,9" />
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        </Style>
+        <Style Selector="^:hasnotime /template/ Grid#PART_FlyoutButtonContentGrid TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TimePickerPresenter}" TargetType="TimePickerPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="MinWidth" Value="188" />
+        <!--
+            The TimePicker moves its popup up by (MaxHeight - accept button height) / 2 + ItemHeight / 2 - 5,
+            meant to put the chosen row over the field. 366 is the presenter's real height with the 30px room
+            above the surface, and gives exactly that with these sizes (rows 36, buttons 34, field 36).
+        -->
+        <Setter Property="MaxHeight" Value="366" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Margin="14,30,14,28">
+                    <Border Margin="1" CornerRadius="10" Background="Black" BoxShadow="0 10 28 0 #73000000" />
+                    <Border CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Popup}" BorderBrush="{DynamicResource Nocturne.Brushes.Popup.Border}"
+                            BorderThickness="1" Padding="4" ClipToBounds="True">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <!-- Seven rows, the chosen one in the middle; column definitions come from the presenter's code -->
+                            <Grid Name="PART_PickerContainer" Height="252">
+                                <Grid.Styles>
+                                    <Style Selector="DateTimePickerPanel > ListBoxItem">
+                                        <Setter Property="Theme" Value="{StaticResource Nocturne.Styles.DateTimePicker.Item}" />
+                                    </Style>
+                                </Grid.Styles>
+                                <Border Name="HighlightRect" Grid.Column="0" Grid.ColumnSpan="7" Height="36" VerticalAlignment="Center" ZIndex="-1"
+                                        CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Selected}" IsHitTestVisible="False" />
+                                <Panel Name="PART_HourHost" Grid.Column="0">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_HourSelector" ItemHeight="36" PanelType="Hour" ShouldLoop="True" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_HourUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_HourDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Panel Name="PART_MinuteHost" Grid.Column="2">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_MinuteSelector" ItemHeight="36" PanelType="Minute" ShouldLoop="True" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_MinuteUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_MinuteDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Panel Name="PART_SecondHost" Grid.Column="4">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_SecondSelector" ItemHeight="36" PanelType="Second" ShouldLoop="True" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_SecondUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_SecondDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Panel Name="PART_PeriodHost" Grid.Column="6">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_PeriodSelector" ItemHeight="36" PanelType="TimePeriod" ShouldLoop="False" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_PeriodUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_PeriodDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Rectangle Name="PART_FirstSpacer" Grid.Column="1" />
+                                <Rectangle Name="PART_SecondSpacer" Grid.Column="3" />
+                                <Rectangle Name="PART_ThirdSpacer" Grid.Column="5" />
+                            </Grid>
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,4,0,0">
+                                <Rectangle Grid.ColumnSpan="2" Height="1" Margin="-4,0" VerticalAlignment="Top" Fill="{DynamicResource Nocturne.Brushes.Divider}" />
+                                <Button Name="PART_AcceptButton" Grid.Column="0" Margin="2,6,2,2" Theme="{StaticResource Nocturne.Styles.DateTimePicker.Button}"
+                                        AutomationProperties.Name="Accept">
+                                    <c:StrokeIcon Width="16" Height="16" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Check}"
+                                                  Foreground="{Binding $parent[Button].Foreground}" />
+                                </Button>
+                                <Button Name="PART_DismissButton" Grid.Column="1" Margin="2,6,2,2" Theme="{StaticResource Nocturne.Styles.DateTimePicker.Button}"
+                                        AutomationProperties.Name="Dismiss">
+                                    <c:StrokeIcon Width="16" Height="16" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Close}"
+                                                  Foreground="{Binding $parent[Button].Foreground}" />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Grid#PART_PickerContainer > Rectangle">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        </Style>
+        <Style Selector="^ /template/ Panel:pointerover > RepeatButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DatePicker}" TargetType="DatePicker">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinWidth" Value="260" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel Name="Root">
+                        <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                        <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                        <Button Name="PART_FlyoutButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.FieldButton}"
+                                Foreground="{TemplateBinding Foreground}" IsEnabled="{TemplateBinding IsEnabled}"
+                                TemplatedControl.IsTemplateFocusTarget="True">
+                            <DockPanel>
+                                <c:StrokeIcon DockPanel.Dock="Right" Width="16" Height="16" Margin="0,0,11,0" VerticalAlignment="Center" StrokeThickness="1.8"
+                                              Data="{DynamicResource Nocturne.Icons.Calendar}" Foreground="{TemplateBinding Foreground}" />
+                                <!-- Column definitions come from the DatePicker's code (day, month and year in the culture's order) -->
+                                <Grid Name="PART_ButtonContentGrid" Margin="2,0">
+                                    <TextBlock Name="PART_DayTextBlock" Text="{DynamicResource StringDatePickerDayText}" HorizontalAlignment="Center" />
+                                    <TextBlock Name="PART_MonthTextBlock" Text="{DynamicResource StringDatePickerMonthText}" Padding="12,0,0,0" TextAlignment="Left" />
+                                    <TextBlock Name="PART_YearTextBlock" Text="{DynamicResource StringDatePickerYearText}" HorizontalAlignment="Center" />
+                                    <Rectangle Name="PART_FirstSpacer" Grid.Column="1" />
+                                    <Rectangle Name="PART_SecondSpacer" Grid.Column="3" />
+                                </Grid>
+                            </DockPanel>
+                        </Button>
+                        <!-- The picker places the popup itself: centred on the field, the chosen row over it -->
+                        <Popup Name="PART_Popup" PlacementTarget="{Binding ElementName=Root}"
+                               IsLightDismissEnabled="True" WindowManagerAddShadowHint="False">
+                            <DatePickerPresenter Name="PART_PickerPresenter"
+                                                 Width="{Binding Bounds.Width, ElementName=Root, Converter={x:Static h:NocturneConverters.Add}, ConverterParameter=28}" />
+                        </Popup>
+                    </Panel>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Grid#PART_ButtonContentGrid TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="^ /template/ Grid#PART_ButtonContentGrid Rectangle">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="0,9" />
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        </Style>
+        <Style Selector="^:hasnodate /template/ Grid#PART_ButtonContentGrid TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:error /template/ Border#Bd, ^.hasError /template/ Border#Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:error /template/ Border#BottomLine, ^.hasError /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ Border#FocusLine, ^.hasError /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Error}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type DatePickerPresenter}" TargetType="DatePickerPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="MinWidth" Value="288" />
+        <!-- As TimePickerPresenter: the height the DatePicker uses to put the chosen row over the field -->
+        <Setter Property="MaxHeight" Value="366" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Margin="14,30,14,28">
+                    <Border Margin="1" CornerRadius="10" Background="Black" BoxShadow="0 10 28 0 #73000000" />
+                    <Border CornerRadius="10" Background="{DynamicResource Nocturne.Brushes.Popup}" BorderBrush="{DynamicResource Nocturne.Brushes.Popup.Border}"
+                            BorderThickness="1" Padding="4" ClipToBounds="True">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <!-- Seven rows, the chosen one in the middle; column definitions come from the presenter's code -->
+                            <Grid Name="PART_PickerContainer" Height="252">
+                                <Grid.Styles>
+                                    <Style Selector="DateTimePickerPanel > ListBoxItem">
+                                        <Setter Property="Theme" Value="{StaticResource Nocturne.Styles.DateTimePicker.Item}" />
+                                    </Style>
+                                </Grid.Styles>
+                                <Border Name="HighlightRect" Grid.Column="0" Grid.ColumnSpan="5" Height="36" VerticalAlignment="Center" ZIndex="-1"
+                                        CornerRadius="6" Background="{DynamicResource Nocturne.Brushes.Option.Selected}" IsHitTestVisible="False" />
+                                <Panel Name="PART_MonthHost">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_MonthSelector" ItemHeight="36" PanelType="Month" ShouldLoop="True" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_MonthUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_MonthDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Panel Name="PART_DayHost">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_DaySelector" ItemHeight="36" PanelType="Day" ShouldLoop="True" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_DayUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_DayDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Panel Name="PART_YearHost">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                        <DateTimePickerPanel Name="PART_YearSelector" ItemHeight="36" PanelType="Year" ShouldLoop="False" />
+                                    </ScrollViewer>
+                                    <RepeatButton Name="PART_YearUpButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.UpButton}" />
+                                    <RepeatButton Name="PART_YearDownButton" Theme="{StaticResource Nocturne.Styles.DateTimePicker.DownButton}" />
+                                </Panel>
+                                <Rectangle Name="PART_FirstSpacer" Grid.Column="1" />
+                                <Rectangle Name="PART_SecondSpacer" Grid.Column="3" />
+                            </Grid>
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,4,0,0">
+                                <Rectangle Grid.ColumnSpan="2" Height="1" Margin="-4,0" VerticalAlignment="Top" Fill="{DynamicResource Nocturne.Brushes.Divider}" />
+                                <Button Name="PART_AcceptButton" Grid.Column="0" Margin="2,6,2,2" Theme="{StaticResource Nocturne.Styles.DateTimePicker.Button}"
+                                        AutomationProperties.Name="Accept">
+                                    <c:StrokeIcon Width="16" Height="16" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Check}"
+                                                  Foreground="{Binding $parent[Button].Foreground}" />
+                                </Button>
+                                <Button Name="PART_DismissButton" Grid.Column="1" Margin="2,6,2,2" Theme="{StaticResource Nocturne.Styles.DateTimePicker.Button}"
+                                        AutomationProperties.Name="Dismiss">
+                                    <c:StrokeIcon Width="16" Height="16" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Close}"
+                                                  Foreground="{Binding $parent[Button].Foreground}" />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Grid#PART_PickerContainer > Rectangle">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="Fill" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        </Style>
+        <Style Selector="^ /template/ Panel:pointerover > RepeatButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ColorPicker (ours): the colour and its hex code in the ComboBox field; a grid of rounded swatches below -->
+    <ControlTheme x:Key="Nocturne.Styles.ColorPicker.Swatch" TargetType="ListBoxItem">
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!-- A 26px swatch with 3px around it for the ring (hover, chosen colour) -->
+                <Panel Width="32" Height="32" Background="Transparent" ToolTip.Tip="{TemplateBinding Content, Converter={x:Static h:NocturneConverters.ColorToHex}}">
+                    <Border Name="Ring" CornerRadius="9" BorderThickness="2" BorderBrush="Transparent" />
+                    <Border Margin="3" CornerRadius="6" BorderThickness="1" BorderBrush="#26FFFFFF"
+                            Background="{TemplateBinding Content, Converter={x:Static h:NocturneConverters.ColorToBrush}}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Ring">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Toggle.Border}" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#Ring">
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Focus}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type c:ColorPicker}" TargetType="c:ColorPicker">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,0,36,0" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinWidth" Value="140" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border Name="Bd" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+                    <Border Name="BottomLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,1"
+                            BorderBrush="{DynamicResource Nocturne.Brushes.Field.Border.Bottom}" />
+                    <Border Name="FocusLine" CornerRadius="{TemplateBinding CornerRadius}" BorderThickness="0,0,0,2"
+                            BorderBrush="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                    <c:StrokeIcon Name="Chevron" Width="16" Height="16" Margin="0,0,12,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                  StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.ChevronDown}" Foreground="{TemplateBinding Foreground}"
+                                  IsHitTestVisible="False" RenderTransform="rotate(0deg)">
+                        <c:StrokeIcon.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                            </Transitions>
+                        </c:StrokeIcon.Transitions>
+                    </c:StrokeIcon>
+                    <ToggleButton Name="Toggle" Focusable="False" ClickMode="Press" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                        <ToggleButton.Template>
+                            <ControlTemplate>
+                                <Border Background="Transparent" />
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                    <StackPanel Margin="{TemplateBinding Padding}" Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False">
+                        <Border Width="18" Height="18" CornerRadius="5" BorderThickness="1" BorderBrush="#33FFFFFF"
+                                Background="{TemplateBinding SelectedColor, Converter={x:Static h:NocturneConverters.ColorToBrush}}" />
+                        <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="{DynamicResource Nocturne.Fonts.Family.Mono}"
+                                   FontSize="{DynamicResource Nocturne.Font.Size.Caption}"
+                                   Text="{TemplateBinding SelectedColor, Converter={x:Static h:NocturneConverters.ColorToHex}}" />
+                    </StackPanel>
+                    <Popup Name="PART_Popup" Placement="BottomEdgeAlignedLeft" PlacementTarget="{Binding ElementName=Root}" HorizontalOffset="-14" VerticalOffset="2"
+                           IsLightDismissEnabled="True"
+                           IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.PopupSurface}" Padding="7">
+                            <ListBox Name="PART_Palette" Theme="{StaticResource Nocturne.Styles.ListBox.Popup}" ItemsSource="{TemplateBinding Palette}"
+                                     ItemContainerTheme="{StaticResource Nocturne.Styles.ColorPicker.Swatch}" AutomationProperties.Name="Colours">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Width="256" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
+                        </ContentControl>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Hover}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#Bd, ^:dropdownopen /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Field.Focus}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Field.Border.Focus}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#BottomLine, ^:dropdownopen /template/ Border#BottomLine">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#FocusLine, ^:dropdownopen /template/ Border#FocusLine">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <!-- While open, a click on the field closes the popup (light dismiss) instead of toggling it again -->
+        <Style Selector="^:dropdownopen /template/ ToggleButton#Toggle">
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ c|StrokeIcon#Chevron">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

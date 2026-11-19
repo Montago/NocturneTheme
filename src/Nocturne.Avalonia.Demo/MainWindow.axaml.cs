@@ -10,6 +10,7 @@ public partial class MainWindow : NocturneWindow
     private readonly Dictionary<string, Control> pages = new()
     {
         ["controls"] = new ControlsPage(),
+        ["custom"] = new CustomControlsPage(),
         ["tokens"] = new TokensPage(),
     };
 
@@ -48,7 +49,7 @@ public partial class MainWindow : NocturneWindow
         ShowPage("controls");
     }
 
-    /// <summary>Shows a page by its tag (controls, tokens).</summary>
+    /// <summary>Shows a page by its tag (controls, custom, tokens).</summary>
     public void ShowPage(string tag)
     {
         PageHost.Content = pages[tag];

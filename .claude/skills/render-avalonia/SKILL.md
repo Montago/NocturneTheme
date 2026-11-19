@@ -13,8 +13,15 @@ second; they work the same on Windows, macOS and Linux (CI runs `--snapshot` on 
   (`RenderCommand.cs`).
 - `--snapshot <folder>` (`Snapshot.cs`, a few seconds): `controls.png`, `controls-bottom.png`,
   `tokens.png`, `popup-combobox.png` and `popup-menu.png` (drawn open), `accent-<name>.png` and
-  `titlebar-separated.png` / `titlebar-accent.png`; then `checks.txt` (PASS/FAIL per behaviour check,
-  driven with the headless mouse; the command exits with 1 when one fails).
+  `titlebar-separated.png` / `titlebar-accent.png`, the custom controls page (`custom.png`,
+  `custom-bottom.png`, `popup-timepicker.png`, `popup-datepicker.png`, `popup-colorpicker.png`,
+  `popup-searchcombobox.png`, `dialog.png`, `flyout.png`, `hamburger-compact.png`); then `checks.txt`
+  (PASS/FAIL per behaviour check, driven with the headless mouse and keyboard; the command exits with 1
+  when one fails).
+
+A DatePicker or TimePicker has no open property: click its `PART_FlyoutButton` (as `Snapshot.cs`
+does), or draw the drop-down inline in a snippet with `<TimePickerPresenter Width="216" />` /
+`<DatePickerPresenter Width="316" />`.
 
 Popups are drawn into the window (`OverlayPopups`), so an open popup shows in the picture.
 

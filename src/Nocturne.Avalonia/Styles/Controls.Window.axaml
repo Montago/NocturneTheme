@@ -2,7 +2,8 @@
     Window (plain, for dialogs and tool windows) and NocturneWindow: backdrop (or the opaque
     fallback), tint and the light from the top-left corner, under a 44px title bar with 46 x 32
     caption buttons: LeftWindowCommands, icon and title, RightWindowCommands, caption buttons.
-    TitleBarStyle puts a strip behind it. Over the content: the Flyouts layer.
+    TitleBarStyle puts a strip behind it. Over the content: the Flyouts layer, then PART_DialogHost,
+    which dims the page while a NocturneDialog is open.
 
     The title bar carries Avalonia's window decoration roles (chrome:WindowDecorationProperties.ElementRole):
     TitleBar drags, maximises on a double click and snaps; the caption buttons map to the system's
@@ -148,6 +149,8 @@
                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <ContentPresenter Content="{TemplateBinding Flyouts}" ClipToBounds="True" />
+                            <!-- Dims the page while a NocturneDialog is open (ShowDialogAsync) -->
+                            <Panel Name="PART_DialogHost" Background="{DynamicResource Nocturne.Brushes.Overlay}" IsVisible="False" />
                         </Panel>
                     </Grid>
                     </VisualLayerManager>

@@ -13,6 +13,28 @@
         </Button>
     </nc:NocturneWindow.LeftWindowCommands>
 
+    <!-- Slides in from the right (Custom controls page: Open flyout) -->
+    <nc:NocturneWindow.Flyouts>
+        <Panel>
+            <nc:Flyout Name="SettingsFlyout" Header="Display settings" Width="360">
+                <StackPanel>
+                    <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Margin="0,0,0,16" TextWrapping="Wrap"
+                               Text="A flyout floats over the page; Escape or the × closes it." />
+                    <ToggleSwitch Content="Show hidden files" IsChecked="True" />
+                    <ToggleSwitch Content="Compact rows" />
+                    <Label Margin="0,14,0,0" Content="_Sort by" Target="FlyoutSort" />
+                    <ComboBox Name="FlyoutSort" SelectedIndex="0" HorizontalAlignment="Stretch">
+                        <ComboBoxItem Content="Name" />
+                        <ComboBoxItem Content="Date modified" />
+                        <ComboBoxItem Content="Size" />
+                    </ComboBox>
+                    <Label Margin="0,14,0,0" Content="_Thumbnail size" Target="FlyoutSize" />
+                    <NumericUpDown Name="FlyoutSize" Minimum="16" Maximum="256" Increment="16" Value="96" FormatString="0 px" />
+                </StackPanel>
+            </nc:Flyout>
+        </Panel>
+    </nc:NocturneWindow.Flyouts>
+
     <Grid Name="Layout" ColumnDefinitions="248,*">
         <!-- Navigation and the window settings -->
         <DockPanel Name="NavigationPane" Margin="16,12,16,20">
@@ -45,6 +67,14 @@
                             <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Components}" />
                         </ContentControl>
                         <TextBlock VerticalAlignment="Center" Text="Controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="custom">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Grid}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Custom controls" />
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Tag="tokens">

@@ -1,9 +1,8 @@
 # Plan: Nocturne for Avalonia
 
-Status: phases 0-3 done (2026-11-19, branch `feature/avalonia`, PR #4), including the document tabs
-and the scroll bars that fade in while the content scrolls; phase 4 next. Avalonia 12.1.6.
-Left for later phases: StatusBar (phase 4); Avalonia's DatePicker/TimePicker/ColorPicker/AutoCompleteBox
-(phase 5, with the own controls).
+Status: phases 0-5 done (2026-11-19, branch `feature/avalonia`, PR #4): the standard controls with the
+document tabs and fading scroll bars, StatusBar, the own controls and Avalonia's pickers; phase 6
+(gallery and sample apps) next. Avalonia 12.1.6.
 
 Decided by the user (2026-11-19): 1. cross-platform; 2. same repository; 3. Avalonia's own
 controls, styled by the theme, plus our own classes for what Avalonia lacks; 4. NocturneGrid waits
@@ -68,14 +67,23 @@ NocturneGrid alone is ~3,500 lines on top of WPF's DataGrid and is the heaviest 
   CalendarDatePicker, ToolTip.
 - 120/150 ms become `Transitions`; `DropShadowEffect` becomes `BoxShadow`.
 
-### 4. Gaps in Avalonia
-- StatusBar and GroupBox: styles on existing panels / `HeaderedContentControl`.
-- ToolBar, RichTextBox, ListView/GridView do not exist: leave them out of the first version
+### 4. Gaps in Avalonia (done)
+- StatusBar / StatusBarItem: our own (an ItemsControl on a DockPanel; a Separator gets the vertical
+  theme). GroupBox exists in Avalonia 12 and has its theme since phase 3.
+- ToolBar, RichTextBox, ListView/GridView do not exist: left out of the first version
   (DataGrid covers ListView/GridView).
 
-### 5. Custom controls
-- Port the logic, rewrite the templates. Flyout and NocturneDialog move to the window's
-  `OverlayLayer`.
+### 5. Custom controls (done)
+- Ported (logic from WPF, templates new): Tile, Badged, BusyIndicator, Accordion, ProgressRing,
+  InfoBar, Rating, RangeSlider, HamburgerMenu, SearchComboBox, NocturneDialog and Flyout (both in
+  NocturneWindow: `PART_DialogHost`, `Flyouts`), ColorPicker (the swatch grid: Avalonia's ColorPicker
+  lives in a separate package, `Avalonia.Controls.ColorPicker`, so the theme keeps its own).
+- Avalonia's DatePicker, TimePicker (looping columns, the chosen row over the field) and
+  AutoCompleteBox have themes; NumericUpDown, DropDownButton and SplitButton had them already.
+- The WPF AutoSuggestBox and TimePicker are not ported: AutoCompleteBox and TimePicker cover them.
+- Demo: the "Custom controls" page; `--snapshot` draws it (top, bottom, pickers open, dialog,
+  flyout, folded HamburgerMenu) and `checks.txt` drives it (SearchComboBox typing and Enter, a
+  ColorPicker swatch, the TimePicker accept button, a dialog answer, Escape on the flyout).
 
 ### 6. Demo and samples
 - The demo pages, the gallery (one sample per control) and the Admin and Portal sample apps.

@@ -2,7 +2,8 @@
     ListBox / ListBoxItem (rounded rows that light up on hover and selection),
     Nocturne.Styles.ListBox.Navigation (a side menu), ComboBox / ComboBoxItem and TreeView /
     TreeViewItem (full-width rows, a chevron that turns in 150 ms and a short accent bar on the
-    selected item).
+    selected item) and HamburgerMenu (a navigation pane that folds to its icons, with groups of
+    sub-items).
 -->
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -348,6 +349,147 @@
         </Setter>
         <Style Selector="^:disabled /template/ Border#Root">
             <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- HamburgerMenu: the pane's toggle, three lines -->
+    <ControlTheme x:Key="Nocturne.Styles.HamburgerMenu.Toggle" TargetType="ToggleButton">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="ToolTip.Tip" Value="Menu" />
+        <Setter Property="AutomationProperties.Name" Value="Menu" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" CornerRadius="8" Background="Transparent">
+                    <c:StrokeIcon Width="20" Height="20" StrokeThickness="1.8" Data="{DynamicResource Nocturne.Icons.Menu}" Foreground="{TemplateBinding Foreground}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Button.Subtle.Hover}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#Bd">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface.Pressed}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        A pane row: the icon in a 40px column (all that shows while the pane is folded), the label,
+        and on a group a chevron that turns down when it opens. Selected: a light fill and the short
+        accent bar; a closed group stands in for its selected sub-item.
+    -->
+    <ControlTheme x:Key="{x:Type c:HamburgerMenuItem}" TargetType="c:HamburgerMenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text.Label}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FocusAdorner">
+            <FocusAdornerTemplate>
+                <Border CornerRadius="8" BorderThickness="2" BorderBrush="{DynamicResource Nocturne.Brushes.Focus}" />
+            </FocusAdornerTemplate>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root" Background="Transparent">
+                    <Border Name="HoverBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Hover}" Opacity="0" />
+                    <Border Name="SelectedBg" CornerRadius="8" Background="{DynamicResource Nocturne.Brushes.Item.Selected}" IsVisible="False" />
+                    <Border Name="Bar" Width="3" Height="16" CornerRadius="1.5" HorizontalAlignment="Left"
+                            Background="{DynamicResource Nocturne.Brushes.Accent.Light}" IsVisible="False" />
+                    <DockPanel>
+                        <ContentPresenter Name="IconHost" DockPanel.Dock="Left" Width="40" VerticalAlignment="Center"
+                                          HorizontalContentAlignment="Center" Content="{TemplateBinding Icon}" />
+                        <c:StrokeIcon Name="Arrow" DockPanel.Dock="Right" Width="12" Height="12" Margin="8,0,12,0" StrokeThickness="2.4" IsVisible="False"
+                                      Data="{DynamicResource Nocturne.Icons.ChevronRight}" Foreground="{TemplateBinding Foreground}" RenderTransform="rotate(0deg)">
+                            <c:StrokeIcon.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                                </Transitions>
+                            </c:StrokeIcon.Transitions>
+                        </c:StrokeIcon>
+                        <ContentPresenter Name="PART_ContentPresenter" Margin="4,0,0,0" VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:group /template/ c|StrokeIcon#Arrow">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:expanded /template/ c|StrokeIcon#Arrow">
+            <Setter Property="RenderTransform" Value="rotate(90deg)" />
+        </Style>
+        <!-- Sub-items: no icon; the text lines up with the group's -->
+        <Style Selector="^:subitem">
+            <Setter Property="Height" Value="34" />
+        </Style>
+        <Style Selector="^:subitem /template/ ContentPresenter#IconHost">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:subitem /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Margin" Value="44,0,0,0" />
+        </Style>
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#HoverBg">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:selected, ^:showschild">
+            <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectedBg, ^:showschild /template/ Border#SelectedBg">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#Bar, ^:showschild /template/ Border#Bar">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#HoverBg, ^:showschild /template/ Border#HoverBg">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:disabled /template/ Panel#Root">
+            <Setter Property="Opacity" Value="0.42" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The pane on the left (Surface1 with a hairline on its right), the content beside it -->
+    <ControlTheme x:Key="{x:Type c:HamburgerMenu}" TargetType="c:HamburgerMenu">
+        <!-- Selecting from code (SelectedIndex="0") must not scroll the page that holds the menu -->
+        <Setter Property="AutoScrollToSelectedItem" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
+        <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Surface1}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Divider}" />
+        <Setter Property="BorderThickness" Value="0,0,1,0" />
+        <Setter Property="PaneWidth" Value="220" />
+        <Setter Property="CompactPaneWidth" Value="56" />
+        <!-- Not the ListBox's VirtualizingStackPanel: it sets IsVisible on the rows itself, which hides the folded sub-items -->
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel />
+            </ItemsPanelTemplate>
+        </Setter>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel>
+                    <Border Name="Pane" DockPanel.Dock="Left" Width="{TemplateBinding PaneWidth}" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ClipToBounds="True">
+                        <DockPanel Margin="8">
+                            <ToggleButton DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="0,0,0,8" Theme="{StaticResource Nocturne.Styles.HamburgerMenu.Toggle}"
+                                          IsChecked="{Binding IsPaneOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <ScrollViewer Name="PART_ScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                    <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:compact /template/ Border#Pane">
+            <Setter Property="Width" Value="{Binding CompactPaneWidth, RelativeSource={RelativeSource TemplatedParent}}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

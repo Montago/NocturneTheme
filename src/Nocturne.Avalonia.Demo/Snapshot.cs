@@ -6,14 +6,18 @@ using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input.Raw;
 using Nocturne.Avalonia.Controls;
+using Nocturne.Avalonia.Demo.Views;
 
 namespace Nocturne.Avalonia.Demo;
 
 /// <summary>
 /// <c>--snapshot &lt;folder&gt; [--scale 1]</c>: draws the demo to PNG files in the folder and exits:
-/// the pages (the controls page at the top and the bottom), a combo box and a menu drawn open,
-/// the controls page in every accent and the Separated and Accent title bars; then checks.txt
+/// the pages (the controls and custom controls pages at the top and the bottom), a combo box and a
+/// menu drawn open, the controls page in every accent and the Separated and Accent title bars, the
+/// pickers of the custom page drawn open, a dialog, the flyout and the folded HamburgerMenu; then checks.txt
 /// (<see cref="Checks"/>). The headless
 /// platform has no backdrop, so the pictures show the opaque fallback ground. Keep them out of the repo.
 /// </summary>
@@ -69,6 +73,8 @@ internal static class Snapshot
         window.ShowPage("tokens");
         Save(window, folder, "tokens.png");
 
+        SaveCustomPage(window, folder);
+
         window.Close();
         return Checks(folder) ? 0 : 1;
     }
@@ -112,6 +118,8 @@ internal static class Snapshot
         Click(window, tabs.GetVisualDescendants().OfType<Button>().First(b => b.Name == "AddButton"));
         Check("the + button adds a tab", tabs.ItemCount == 3 && (tabs.SelectedItem as TabItem)?.Header as string == "New 1");
 
+        CheckCustomPage(window, Check);
+
         window.Close();
         var path = Path.Combine(folder, "checks.txt");
         File.WriteAllLines(path, lines);
@@ -119,6 +127,158 @@ internal static class Snapshot
         foreach (var line in lines.Where(l => l.StartsWith("FAIL")))
             Console.Error.WriteLine(line);
         return lines.All(l => l.StartsWith("PASS"));
+    }
+
+    /// <summary>
+    /// The custom controls page at the top and the bottom, its pickers drawn open (time, date, colour,
+    /// SearchComboBox), an open dialog, the flyout and the folded HamburgerMenu.
+    /// </summary>
+    private static void SaveCustomPage(MainWindow window, string folder)
+    {
+        window.ShowPage("custom");
+        Save(window, folder, "custom.png");
+        ScrollToEnd(window);
+        Save(window, folder, "custom-bottom.png");
+        ScrollToStart(window);
+
+        var page = window.GetVisualDescendants().OfType<CustomControlsPage>().First();
+        Click(window, FlyoutButton(page.FindControl<TimePicker>("MeetingTime")!));
+        Save(window, folder, "popup-timepicker.png");
+        CloseOpenPopups(window);
+
+        Click(window, FlyoutButton(page.FindControl<DatePicker>("MeetingDay")!));
+        Save(window, folder, "popup-datepicker.png");
+        CloseOpenPopups(window);
+
+        var colour = page.FindControl<ColorPicker>("LabelColour")!;
+        colour.IsDropDownOpen = true;
+        Save(window, folder, "popup-colorpicker.png");
+        colour.IsDropDownOpen = false;
+
+        var owner = page.FindControl<SearchComboBox>("OwnerBox")!;
+        owner.IsDropDownOpen = true;
+        Save(window, folder, "popup-searchcombobox.png");
+        owner.IsDropDownOpen = false;
+
+        var dialog = new NocturneDialog
+        {
+            Title = "Discard changes?",
+            Content = "You have changed 3 files since they were last synchronised. Discarding puts back the versions on the server.",
+            AffirmativeText = "Discard",
+            NegativeText = "Keep editing",
+        };
+        _ = window.ShowDialogAsync(dialog);
+        Save(window, folder, "dialog.png");
+        dialog.Close(MessageDialogResult.Canceled);
+        Headless.Capture(window);
+
+        window.SettingsFlyout.IsOpen = true;
+        Save(window, folder, "flyout.png");
+        window.SettingsFlyout.IsOpen = false;
+        Headless.Capture(window);
+
+        var menu = page.FindControl<HamburgerMenu>("DemoMenu")!;
+        ScrollTo(window, menu);
+        menu.IsPaneOpen = false;
+        Save(window, folder, "hamburger-compact.png");
+        menu.IsPaneOpen = true;
+        ScrollToStart(window);
+    }
+
+    /// <summary>
+    /// The custom controls page, driven with the headless mouse and keyboard: typing filters the
+    /// SearchComboBox, a swatch click takes a colour, the TimePicker opens and accepts, a dialog returns
+    /// the answer of its button and Escape closes the flyout.
+    /// </summary>
+    private static void CheckCustomPage(MainWindow window, Action<string, bool> check)
+    {
+        window.ShowPage("custom");
+        Headless.Capture(window);
+        var page = window.GetVisualDescendants().OfType<CustomControlsPage>().First();
+
+        var owner = page.FindControl<SearchComboBox>("OwnerBox")!;
+        var text = owner.GetVisualDescendants().OfType<TextBox>().First(t => t.Name == "PART_TextBox");
+        ScrollTo(window, owner);
+        Click(window, text);
+        text.SelectAll();
+        window.KeyTextInput("mik");
+        Headless.Capture(window);
+        var list = PopupPart<ListBox>(window, "PART_List");
+        check("typing filters the SearchComboBox", owner.IsDropDownOpen && list?.ItemCount == 1);
+        window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+        Headless.Capture(window);
+        check("Enter takes the SearchComboBox match", (owner.SelectedItem as Person)?.Name == "Mikkel Dahl" && !owner.IsDropDownOpen);
+        CloseOpenPopups(window);
+
+        var colour = page.FindControl<ColorPicker>("LabelColour")!;
+        ScrollTo(window, colour);
+        Click(window, colour);
+        var palette = PopupPart<ListBox>(window, "PART_Palette");
+        var swatch = palette?.ContainerFromIndex(12);
+        check("a click opens the ColorPicker", colour.IsDropDownOpen && swatch != null);
+        if (swatch != null)
+        {
+            Click(window, swatch);
+        }
+        check("a swatch click takes the colour and closes", colour.SelectedColor == ColorPicker.DefaultPalette[12] && !colour.IsDropDownOpen);
+        CloseOpenPopups(window);
+
+        var time = page.FindControl<TimePicker>("MeetingTime")!;
+        ScrollTo(window, time);
+        Click(window, FlyoutButton(time));
+        var timePopup = time.GetVisualDescendants().OfType<Popup>().First();
+        check("a click opens the TimePicker", timePopup.IsOpen);
+        var accept = window.GetVisualDescendants().OfType<Button>().FirstOrDefault(b => b.Name == "PART_AcceptButton" && b.IsEffectivelyVisible);
+        if (accept != null)
+        {
+            Click(window, accept);
+        }
+        check("the TimePicker accept button closes it with the time", !timePopup.IsOpen && time.SelectedTime == new TimeSpan(9, 30, 0));
+
+        var showDialog = page.FindControl<Button>("ShowDialogButton")!;
+        ScrollTo(window, showDialog);
+        Click(window, showDialog);
+        var affirmative = window.GetVisualDescendants().OfType<Button>().FirstOrDefault(b => b.Name == "PART_Affirmative");
+        check("Show dialog opens a dialog", affirmative != null);
+        if (affirmative != null)
+        {
+            Click(window, affirmative);
+        }
+        Headless.Capture(window);
+        check("the dialog returns the answer of its button", page.FindControl<TextBlock>("DialogResultText")!.Text == "The answer was Affirmative.");
+
+        var openFlyout = page.FindControl<Button>("OpenFlyoutButton")!;
+        ScrollTo(window, openFlyout);
+        Click(window, openFlyout);
+        check("Open flyout opens the flyout", window.SettingsFlyout.IsOpen);
+        window.KeyPress(Key.Escape, RawInputModifiers.None, PhysicalKey.Escape, null);
+        Headless.Capture(window);
+        check("Escape closes the flyout", !window.SettingsFlyout.IsOpen);
+    }
+
+    /// <summary>The button that makes up the field of a DatePicker or TimePicker.</summary>
+    private static Button FlyoutButton(TemplatedControl picker) =>
+        picker.GetVisualDescendants().OfType<Button>().First(b => b.Name == "PART_FlyoutButton");
+
+    /// <summary>A named part inside an open popup (popups are drawn in the overlay layer, not under their control).</summary>
+    private static T? PopupPart<T>(Window window, string name) where T : Control =>
+        window.GetVisualDescendants().OfType<T>().FirstOrDefault(c => c.Name == name && c.IsEffectivelyVisible);
+
+    private static void CloseOpenPopups(Window window)
+    {
+        foreach (var popup in window.GetVisualDescendants().OfType<Popup>().Where(p => p.IsOpen).ToList())
+            popup.IsOpen = false;
+        Headless.Capture(window);
+    }
+
+    /// <summary>Scrolls the page so the top of the control sits 300px down the window.</summary>
+    private static void ScrollTo(MainWindow window, Control control)
+    {
+        var scroller = window.FindControl<ScrollViewer>("PageScroller")!;
+        Headless.Capture(window);
+        var top = control.TranslatePoint(default, window)!.Value.Y;
+        scroller.Offset = new Vector(0, Math.Max(0, scroller.Offset.Y + top - 300));
+        Headless.Capture(window);
     }
 
     /// <summary>Runs the dispatcher for a while of real time, so its timers fire.</summary>
@@ -146,8 +306,11 @@ internal static class Snapshot
         scroller.ScrollToEnd();
     }
 
-    private static void ScrollToStart(MainWindow window) =>
+    private static void ScrollToStart(MainWindow window)
+    {
         window.FindControl<ScrollViewer>("PageScroller")!.ScrollToHome();
+        Headless.Capture(window); // lay out again, so clicks find the controls where they are drawn
+    }
 
     private static void Save(MainWindow window, string folder, string name)
     {

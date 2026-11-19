@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -69,6 +70,7 @@ public enum WindowCornerStyle
 [TemplatePart(PartMinButton, typeof(Button))]
 [TemplatePart(PartMaxButton, typeof(Button))]
 [TemplatePart(PartCloseButton, typeof(Button))]
+[TemplatePart(PartDialogHost, typeof(Panel))]
 [PseudoClasses(":maximized", ":macos", ":leftcommands")]
 public class NocturneWindow : Window
 {
@@ -77,6 +79,7 @@ public class NocturneWindow : Window
     private const string PartMinButton = "PART_MinButton";
     private const string PartMaxButton = "PART_MaxButton";
     private const string PartCloseButton = "PART_CloseButton";
+    private const string PartDialogHost = "PART_DialogHost";
 
     public static readonly StyledProperty<WindowBackdrop> BackdropProperty =
         AvaloniaProperty.Register<NocturneWindow, WindowBackdrop>(nameof(Backdrop), WindowBackdrop.Acrylic);
@@ -126,6 +129,7 @@ public class NocturneWindow : Window
     private Control? root;
     private Image? light;
     private Button? minButton, maxButton, closeButton;
+    private Panel? dialogHost;
     private DispatcherTimer? lightTimer;
     private DispatcherTimer? sessionTimer;
     private bool isBackdropActive;
@@ -265,6 +269,45 @@ public class NocturneWindow : Window
         private set => SetAndRaise(IconImageProperty, ref iconImage, value);
     }
 
+    /// <summary>
+    /// Shows <paramref name="dialog"/> over the dimmed content and waits until it is closed.
+    /// Focus goes back to where it was afterwards.
+    /// </summary>
+    public async Task<MessageDialogResult> ShowDialogAsync(NocturneDialog dialog)
+    {
+        if (dialogHost == null)
+        {
+            ApplyTemplate();
+            if (dialogHost == null)
+                throw new InvalidOperationException($"The window template has no {PartDialogHost}.");
+        }
+
+        var focused = FocusManager?.GetFocusedElement();
+        dialogHost.Children.Add(dialog);
+        dialogHost.IsVisible = true;
+        try
+        {
+            return await dialog.WaitForResultAsync();
+        }
+        finally
+        {
+            dialogHost.Children.Remove(dialog);
+            if (dialogHost.Children.Count == 0)
+                dialogHost.IsVisible = false;
+            (focused as InputElement)?.Focus();
+        }
+    }
+
+    /// <summary>Shows a message with one button, or two when <paramref name="negativeText"/> is given.</summary>
+    public Task<MessageDialogResult> ShowMessageAsync(string title, string message, string affirmativeText = "OK", string? negativeText = null) =>
+        ShowDialogAsync(new NocturneDialog
+        {
+            Title = title,
+            Content = message,
+            AffirmativeText = affirmativeText,
+            NegativeText = negativeText,
+        });
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -272,6 +315,7 @@ public class NocturneWindow : Window
         if (root != null)
             root.SizeChanged -= OnRootSizeChanged;
         root = e.NameScope.Find<Control>(PartRoot);
+        dialogHost = e.NameScope.Find<Panel>(PartDialogHost);
         light = e.NameScope.Find<Image>(PartLight);
         if (root != null)
             root.SizeChanged += OnRootSizeChanged;
