@@ -4,7 +4,7 @@
 /* Neutral values (Brushes.xaml, Fonts.xaml) with the blue accent, the default */
 
 :root {
-  --nc-font-family: "Segoe UI", system-ui, sans-serif;
+  --nc-font-family: Inter, "Segoe UI", system-ui, sans-serif;
   --nc-font-family-mono: "Cascadia Mono", Consolas, monospace;
   --nc-font-size-title: 30px;
   --nc-font-size-subtitle: 20px;

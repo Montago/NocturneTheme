@@ -33,9 +33,15 @@ Nocturne.Web is the same look in HTML and CSS for ASP.NET Core, ported from the 
   pixel for pixel and redrawn 150 ms after a resize. As a plain gradient (8 % to 0) it has ~20
   steps that show as diagonal bands, worst over RDP. `--snapshot`
   writes `light.png` (gradient left, dithered right; stretch the contrast to compare).
-- Everything is MIT. No third-party images
-  or fonts in the repo. The font is Segoe UI (the design used Figtree; apps can override
-  `Nocturne.Fonts.Family`).
+- Everything is MIT. No third-party images in the repo, and no fonts besides Inter.
+- The font is **Inter** (chosen by the user 2026-11-19 over Noto Sans and Atkinson Hyperlegible Next,
+  so WPF, Web and Avalonia look alike). Second licence exception: Inter 4.1 (SIL OFL 1.1) kept
+  unchanged with its `LICENSE.txt` and a note in `NOTICE.md`; a package that ships it adds `OFL-1.1`
+  to its licence. Nocturne.Web ships it now (`wwwroot/fonts/InterVariable*.woff2`, the release's
+  `web/` files); WPF and Avalonia still draw Segoe UI and follow later. WPF cannot use a variable
+  font's axes: use the release's static TTFs, one per weight (Normal, Medium, SemiBold, Bold), and
+  check that Medium and SemiBold really render (WPF groups faces by name ID 1). Apps can override
+  `Nocturne.Fonts.Family` (the design used Figtree).
 - The licence exception (approved by the user, as in JetPack): `NocturneIcon` draws Material Design
   Icons (Apache 2.0), kept unchanged in `icons/mdi/` with their licence in `icons/` and a note in
   `NOTICE.md`; the package licence is `MIT AND Apache-2.0`. Add icons only from that set: the MDI
@@ -270,7 +276,9 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
 - Accents: `Nocturne.setAccent('green' | '#hex' | 'system')` (stored in localStorage `nocturne.accent`)
   computes the palette as `NocturneTheme.FromSystem` does; named ones are `:root[data-accent=…]` blocks
   in the tokens. The light is a dithered canvas (`canvas.nc-window__light`), redrawn 150 ms after a resize.
-- `--nc-font-weight-medium` is 400: Chromium draws Segoe UI at 500 as Semibold, WPF as Regular.
+- The font is Inter (`@font-face` in `nocturne.src.css`); `generate_web_tokens.py` puts `Inter` ahead
+  of the WPF families in `--nc-font-family` while Fonts.xaml still says Segoe UI.
+  `--nc-font-weight-medium` is 500 (Inter has the weight; it was 400 with Segoe UI).
 - The WPF gallery pictures draw on Fallback without tint, so the web gallery does too
   (`body.gallery`); compare a web gallery picture with `docs/screenshots/controls/<name>.png`.
 - Check visual changes with `python tools/web_snapshots.py --out <scratch>` (needs Pillow and Edge);

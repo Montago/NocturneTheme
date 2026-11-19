@@ -28,7 +28,7 @@ Load this file before Tailwind: the first @layer statement fixes the order of th
 /* Neutral values (Brushes.xaml, Fonts.xaml) with the blue accent, the default */
 
 :root {
-  --nc-font-family: "Segoe UI", system-ui, sans-serif;
+  --nc-font-family: Inter, "Segoe UI", system-ui, sans-serif;
   --nc-font-family-mono: "Cascadia Mono", Consolas, monospace;
   --nc-font-size-title: 30px;
   --nc-font-size-subtitle: 20px;
@@ -2879,9 +2879,27 @@ Load this file before Tailwind: the first @layer statement fixes the order of th
   /* The solid colour of the ground where an element sits: what sticky headers and frozen columns
      paint so the rows that scroll under them do not show through. A card is Surface1 over the ground. */
   --nc-local-ground: var(--nc-window-ground);
-  /* FontWeight Medium: Segoe UI has no 500. WPF draws Medium with the regular face, browsers with the
-     semibold one; 400 keeps labels as they look in WPF. Set it to 500 with a font that has the weight. */
-  --nc-font-weight-medium: 400;
+  /* FontWeight Medium: Inter has a real 500 (with Segoe UI, Chromium drew 500 as Semibold) */
+  --nc-font-weight-medium: 500;
+}
+
+/* The theme's font: Inter 4.1 by The Inter Project Authors (https://rsms.me/inter/), SIL Open Font
+   License 1.1 (../fonts/LICENSE.txt). The variable fonts of its release, unchanged: one file holds
+   every weight, and the optical size axis follows the font size. A browser fetches a file only when
+   text on the page needs it. */
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/InterVariable.woff2") format("woff2");
+}
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/InterVariable-Italic.woff2") format("woff2");
 }
 
 /* ------------------------------------------------------------------ base */
