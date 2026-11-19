@@ -1,116 +1,40 @@
 # Plan: Nocturne for Avalonia
 
-Status: phases 0-6 done (2026-11-19, branch `feature/avalonia`, PR #4): the standard controls with the
-document tabs and fading scroll bars, StatusBar, the own controls and Avalonia's pickers, a plain
-DataGrid theme, the demo pages, the gallery and the Admin and Portal sample apps; phase 7
-(NocturneGrid) next. Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
+Status: phases 0-6 are done and merged into master (2026-11-19, PR #4): tokens, NocturneWindow, the
+standard controls, StatusBar, the own controls, Avalonia's pickers, a plain DataGrid theme, the demo
+pages, the gallery and the Admin and Portal sample apps. What is built, how it works and its gotchas
+are in CLAUDE.md ("Avalonia port"). Left: NocturneGrid (phase 7), then docs and release (phase 8).
+Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
-Decided by the user (2026-11-19): 1. cross-platform; 2. same repository; 3. Avalonia's own
-controls, styled by the theme, plus our own classes for what Avalonia lacks; 4. NocturneGrid waits
-for a later version.
+Decided by the user (2026-11-19): cross-platform (`net10.0`, Windows-only parts behind
+`OperatingSystem.IsWindows()`); same repository; Avalonia's own controls styled by the theme, our own
+classes only for what Avalonia lacks; NocturneGrid in a later version.
 
-This is not a straight copy. The design values (colours, radii, sizes, 120/150 ms transitions),
-the icons, the resource keys and the logic of the custom controls carry over almost unchanged.
-Every template has to be rewritten: Avalonia uses `ControlTheme` and selectors with pseudo-classes
-(`:pointerover`, `:pressed`, `:checked`) instead of triggers, and its template parts have other
-names. The WPF library is about 15,500 lines (styles for ~60 control types, 25 custom controls);
-NocturneGrid alone is ~3,500 lines on top of WPF's DataGrid and is the heaviest part.
+## 7. NocturneGrid
 
-## Decisions before starting
+- On `Avalonia.Controls.DataGrid` and the theme's DataGrid styles: search with hits marked in the
+  cells, a filter in each column header, grouping through `DataGridCollectionView`, the pager, the
+  check-box column and the thumb-drag preview. The WPF version is ~3,500 lines on WPF's DataGrid and
+  the heaviest part of the port.
+- Then the WPF demo's Grid page and the gallery's NocturneGrid samples (`nocturnegrid`, `-filter`,
+  `-groups`, `-paging`), and the sample apps switch from DataGrid with their own search filter to it
+  (Admin: Employees and Timesheets; Portal: Orders).
+- Open: the DataGrid theme now sits in Nocturne.Avalonia, which references the DataGrid package.
+  It could move to a package of its own (as Avalonia ships it) together with NocturneGrid.
 
-1. **Windows only or cross-platform?**
-   Recommended: target `net10.0` and keep the Windows parts (backdrop, Remote Desktop detection,
-   the 7-shade `AccentPalette` from the registry) behind `OperatingSystem.IsWindows()`. macOS and
-   Linux get the opaque ground (or Acrylic on macOS). Segoe UI is missing there, so
-   `Nocturne.Fonts.Family` becomes a fallback list. Still no fonts in the repo.
-2. **Same repository?**
-   Recommended: yes. `src/Nocturne.Avalonia`, `src/Nocturne.Avalonia.Demo` and Avalonia samples in
-   the same solution, sharing `icons/`, `tools/` and `docs/`. Own tags (e.g. `avalonia-v0.1.0`) so
-   the two packages are versioned separately.
-3. **Avalonia's own controls or ours?**
-   Avalonia already has NumericUpDown, TimePicker, ColorPicker, DropDownButton, SplitButton,
-   AutoCompleteBox, ToggleSwitch and SplitView. Recommended: style those instead of porting ours,
-   and build only what Avalonia lacks: Tile, Badged, InfoBar, ProgressRing, BusyIndicator, Rating,
-   RangeSlider, Accordion, HamburgerMenu, SearchComboBox, NocturneDialog, Flyout. The cost: the
-   API is not 1:1 with the WPF package.
-4. **NocturneGrid in the first version?**
-   Recommended: no, a later version. It carries the most risk; the rest can ship without it.
+## 8. Docs and release
 
-## Phases
+- An Avalonia section in `docs/` with the gallery pictures; `release.yml` for own tags
+  (e.g. `avalonia-v0.1.0`) and the NuGet package `Nocturne.Avalonia`.
+- Freeze the endless animations in the gallery pictures (ProgressRing, the indeterminate ProgressBar),
+  as WPF does at 700 ms, so a picture only changes when the look does. Avalonia's animation clock
+  (`Animatable.Clock`) is internal in version 12, so it needs another way than in WPF.
 
-### 0. Skeleton and tools
-- Projects, CI build, XAML namespace `urn:nocturne-avalonia` with prefix `nc`.
-- `--snapshot` and `--render` on `Avalonia.Headless` (Skia, no window, also on Linux in CI), so
-  pictures can be checked from day one. Try whether popups can be captured headless.
-- An Avalonia variant of the `/render-control` skill.
+## Not in the first version
 
-### 1. Tokens and foundation
-- `Brushes`, `Fonts`, `Icons` with the same `Nocturne.` keys.
-- `tools/generate_icons.py` also writes an Avalonia `NocturneIconKind.g.cs` (`--check` covers both).
-- `NocturneIcon`, `StrokeIcon`, `{nc:Icon}` / `{nc:IconGeometry}`.
-- `NocturneTheme.SetAccent` with all palettes; `System` follows live through
-  `PlatformSettings.ColorValuesChanged` (plus the registry palette on Windows).
-- A CI check that compares the colour values with `src/Nocturne.Wpf/Styles/Brushes.xaml`, so the
-  two themes cannot drift apart.
+- ToolBar, RichTextBox and ListView/GridView do not exist in Avalonia (DataGrid covers ListView).
 
-### 2. NocturneWindow
-- `ExtendClientAreaToDecorationsHint`, `TransparencyLevelHint` (Acrylic default, Mica), tint 0.5.
-- Opaque ground over Remote Desktop unless `UseBackdropInRemoteSession`; following the session live
-  still needs a Win32 hook (WM_WTSSESSION_CHANGE) through the platform handle.
-- `CornerStyle`, `TitleBarStyle` (Seamless, Separated, Accent), `LeftWindowCommands`.
-- `LightTexture` on `WriteableBitmap`. Keep the dithering: Skia gradients band over RDP too.
+## Not checked yet
 
-### 3. Standard controls (one file per group, as now)
-- Buttons, Toggles, Text (validation through `DataValidationErrors`), ScrollViewer / ScrollBar
-  (Avalonia has `AllowAutoHide` and scroll chaining built in, so most of `ScrollViewerHelper`
-  goes away), Lists, Menu / ContextMenu (text field menus), Containers (TabControl with the gliding
-  indicator through Transitions instead of `CompositionTarget.Rendering`), Range, Calendar /
-  CalendarDatePicker, ToolTip.
-- 120/150 ms become `Transitions`; `DropShadowEffect` becomes `BoxShadow`.
-
-### 4. Gaps in Avalonia (done)
-- StatusBar / StatusBarItem: our own (an ItemsControl on a DockPanel; a Separator gets the vertical
-  theme). GroupBox exists in Avalonia 12 and has its theme since phase 3.
-- ToolBar, RichTextBox, ListView/GridView do not exist: left out of the first version
-  (DataGrid covers ListView/GridView).
-
-### 5. Custom controls (done)
-- Ported (logic from WPF, templates new): Tile, Badged, BusyIndicator, Accordion, ProgressRing,
-  InfoBar, Rating, RangeSlider, HamburgerMenu, SearchComboBox, NocturneDialog and Flyout (both in
-  NocturneWindow: `PART_DialogHost`, `Flyouts`), ColorPicker (the swatch grid: Avalonia's ColorPicker
-  lives in a separate package, `Avalonia.Controls.ColorPicker`, so the theme keeps its own).
-- Avalonia's DatePicker, TimePicker (looping columns, the chosen row over the field) and
-  AutoCompleteBox have themes; NumericUpDown, DropDownButton and SplitButton had them already.
-- The WPF AutoSuggestBox and TimePicker are not ported: AutoCompleteBox and TimePicker cover them.
-- Demo: the "Custom controls" page; `--snapshot` draws it (top, bottom, pickers open, dialog,
-  flyout, folded HamburgerMenu) and `checks.txt` drives it (SearchComboBox typing and Enter, a
-  ColorPicker swatch, the TimePicker accept button, a dialog answer, Escape on the flyout).
-
-### 6. Demo and samples (done)
-- Demo pages as in WPF: Controls, More controls (an app frame with TreeView, GridSplitter, DataGrid and
-  StatusBar; Calendar, CalendarDatePicker, DataGrid row headers), Custom controls, Icons, Tokens. The
-  WPF Grid page waits for NocturneGrid.
-- `Views/GalleryPage.axaml`: one sample per control (WPF's names where the control is the same;
-  ToolBar, RichTextBox, ListView and the NocturneGrid samples are left out, DataGrid groups and the
-  dialog are new). `--render-gallery <Tag,…|all> <folder>` draws chosen samples, `--snapshot` all of
-  them into `controls/`, cropped to the sample and its open popups.
-- A plain DataGrid theme (WPF's look: headers, 42px rows, selection, row headers, group headers) came
-  forward from phase 7: both sample apps list their data in DataGrids. The theme depends on the
-  `Avalonia.Controls.DataGrid` package for it.
-- `samples/Nocturne.Avalonia.Samples.Admin` and `.Portal`: the WPF samples' pages, with DataGrid and
-  `DataGridCollectionView` (search filter, groups) where WPF uses NocturneGrid. Shared files in
-  `samples/Shared/Avalonia`; `--snapshot <folder>` writes `admin-*.png` / `portal-*.png` (also in CI on Linux).
-
-### 7. NocturneGrid (later version)
-- On `Avalonia.Controls.DataGrid`: columns, filters, grouping through `DataGridCollectionView`,
-  the check-box column and the thumb-drag preview.
-
-### 8. Docs and release
-- An Avalonia section in `docs/`, `release.yml` for the new tags, NuGet package `Nocturne.Avalonia`.
-
-## Gotchas
-- WPF gotchas that go away: StaticResource / BasedOn across files, TabItem leaking its font,
-  Calendar styles not reaching the day buttons, the wheel helper.
-- New ones to watch: `ControlTheme` and `Style` are different things; template parts must have
-  the exact `PART_…` names Avalonia expects; popups are separate top-levels.
-- CLAUDE.md gets an Avalonia section once work starts.
+- On screen: the opaque ground over Remote Desktop, and the window on macOS and Linux (only the
+  headless runs on Linux in CI). Most phase 4-6 controls have only been checked headless.
