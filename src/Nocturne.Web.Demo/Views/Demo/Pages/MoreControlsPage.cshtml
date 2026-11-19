@@ -1,0 +1,94 @@
+@* Views/MoreControlsPage.xaml: trees, lists with columns, dates, tool bars, splitters, status bars and rich text *@
+@{
+    var meeting = DemoData.Meeting;
+}
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">More controls</h1>
+        <p class="demo-page-header__text">The rest of the standard set: trees, lists with columns, dates, tool bars, splitters, status bars and rich text.</p>
+    </div>
+</header>
+
+@* A small file manager: everything an app frame is built from *@
+<nc-card header="App frame" tag="ToolBar · TreeView · GridSplitter · ListView · StatusBar" class="demo-stack-item">
+    <div class="demo-app-frame">
+        <nc-tool-bar-tray>
+            <nc-tool-bar>
+                <nc-button stroke-icon="Plus" content="New" tool-tip="New folder" />
+                <nc-button stroke-icon="Refresh" tool-tip="Refresh" aria-label="Refresh" />
+                <nc-separator />
+                <nc-button stroke-icon="Cut" tool-tip="Cut" aria-label="Cut" />
+                <nc-button stroke-icon="Copy" tool-tip="Copy" aria-label="Copy" />
+                <nc-button stroke-icon="Paste" tool-tip="Paste" aria-label="Paste" />
+                <nc-button stroke-icon="Delete" tool-tip="Delete" aria-label="Delete" />
+                <nc-separator />
+                <nc-toggle-button content="Details" is-checked="true" />
+                <nc-toggle-button content="Preview" />
+                <nc-check-box content="Hidden files" />
+                <nc-separator />
+                <nc-combo-box selected-index="0" aria-label="Sort by" style="width:150px">
+                    <nc-combo-box-item content="Name" />
+                    <nc-combo-box-item content="Date modified" />
+                    <nc-combo-box-item content="Size" />
+                </nc-combo-box>
+                <nc-text-box placeholder="Filter" aria-label="Filter" style="width:180px" />
+            </nc-tool-bar>
+        </nc-tool-bar-tray>
+
+        <div class="demo-app-frame__panes">
+            <nc-tree-view aria-label="Folders" style="flex:0 0 250px;min-width:160px">
+                @foreach (var folder in DemoData.Folders)
+                {
+                    <partial name="Pages/_Folder" model="folder" />
+                }
+            </nc-tree-view>
+            <nc-grid-splitter aria-label="Resize the folder pane" />
+            <nc-list-view items="DemoData.Files" selected-index="1" aria-label="Files" style="flex:1;min-width:240px">
+                <nc-grid-view-column header="Name" binding="Name" width="250" />
+                <nc-grid-view-column header="Modified" binding="Modified" width="150" />
+                <nc-grid-view-column header="Kind" binding="Kind" width="140" />
+                <nc-grid-view-column header="Size" binding="Size" width="90" />
+            </nc-list-view>
+        </div>
+
+        <nc-status-bar>
+            <nc-status-bar-item>7 items</nc-status-bar-item>
+            <nc-status-bar-item>1 selected · 388 KB</nc-status-bar-item>
+            <nc-status-bar-item horizontal-alignment="Right"><span class="demo-dot"></span>Synchronised today 07:12</nc-status-bar-item>
+        </nc-status-bar>
+    </div>
+</nc-card>
+
+<div class="demo-columns demo-columns--3" data-nc-date-format="dddd, MMMM d, yyyy">
+    <nc-card header="Calendar" tag="Calendar">
+        <nc-calendar selected-date="meeting" aria-label="Meeting date" />
+    </nc-card>
+
+    <nc-card header="DatePicker" tag="DatePicker">
+        <nc-label content="Meeting" />
+        <nc-date-picker selected-date="meeting" />
+        <nc-label content="Due date (nothing chosen yet)" style="margin-top:14px" />
+        <nc-date-picker />
+        <nc-label content="End date" style="margin-top:14px" />
+        <nc-date-picker selected-date="new DateTime(2026, 11, 2)" validation-error="Must be after the start date." />
+        <p class="nc-text-block--error">Must be after the start date.</p>
+        <nc-label content="Created (disabled)" style="margin-top:14px" />
+        <nc-date-picker selected-date="new DateTime(2026, 10, 1)" is-enabled="false" />
+    </nc-card>
+
+    <div class="demo-stack">
+        <nc-card header="RichTextBox" tag="RichTextBox">
+            <div class="nc-text-box nc-rich-text-box" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Release notes" style="height:150px">
+                <p><b>This release</b> adds the rest of the standard controls.</p>
+                <p>Trees, lists with columns, calendars, tool bars and status bars now take the <i>Nocturne</i> look, and a GridSplitter divides the panes.</p>
+            </div>
+        </nc-card>
+
+        <nc-card header="DataGrid · Row headers" tag="DataGridRowHeader">
+            <nc-data-grid items="DemoData.People" selected-index="1" row-headers="true" height="196" aria-label="People with row headers">
+                <nc-data-grid-text-column header="Name" binding="Name" />
+                <nc-data-grid-text-column header="Role" binding="Role" />
+            </nc-data-grid>
+        </nc-card>
+    </div>
+</div>

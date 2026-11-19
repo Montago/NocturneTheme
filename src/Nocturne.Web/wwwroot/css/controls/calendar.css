@@ -1,0 +1,92 @@
+/* Nocturne for the web · Calendar and the DatePicker drop-down (Controls.Calendar.xaml) */
+@layer components {
+
+  /*
+  <div class="nc-calendar">: nocturne.js builds the header (the month to the left, previous and next
+  to the right) and the grid of days, months or years. A sunken panel with 12px corners; in the
+  DatePicker's drop-down the solid popup surface with a shadow.
+  */
+  .nc-calendar {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid var(--nc-stroke);
+    border-radius: 12px;
+    background: var(--nc-surface-sunken);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+    user-select: none;
+  }
+  .nc-calendar__header { display: flex; align-items: center; margin-bottom: 8px; }
+  .nc-calendar__header > button {
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    cursor: pointer;
+  }
+  .nc-calendar__header > button:hover { background: var(--nc-button-subtle-hover); }
+  .nc-calendar__header > button:active { background: var(--nc-surface-pressed); }
+  /* "November 2026": switches to the year and decade views */
+  .nc-calendar__title { order: 0; margin-right: auto; padding: 0 8px !important; font-size: var(--nc-font-size-default); font-weight: 600; }
+  .nc-calendar__previous, .nc-calendar__next { width: 32px; display: grid; place-items: center; }
+  .nc-calendar__previous { order: 1; }
+  .nc-calendar__next { order: 2; }
+  .nc-calendar__previous::after, .nc-calendar__next::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    mask: var(--nc-glyph-chevron-left) center / 16px no-repeat;
+  }
+  .nc-calendar__next::after { mask-image: var(--nc-glyph-chevron-right); }
+  .nc-calendar__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 36px);
+    gap: 2px;
+    justify-content: center;
+  }
+  .nc-calendar__grid:is([data-mode="year"], [data-mode="decade"]) { grid-template-columns: repeat(4, 64px); gap: 4px; }
+  .nc-calendar__day-name {
+    margin: 2px 0 6px;
+    color: var(--nc-text-hint);
+    font-size: var(--nc-font-size-small);
+    font-weight: 600;
+    text-align: center;
+  }
+  /* A day: 36 × 34 with 8px corners; today a ring in the light accent, the selected day filled with the accent */
+  .nc-calendar__cell {
+    box-sizing: border-box;
+    min-width: 36px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nc-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-caption);
+    cursor: pointer;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-calendar__grid:is([data-mode="year"], [data-mode="decade"]) .nc-calendar__cell { height: 56px; border-radius: 10px; }
+  .nc-calendar__cell:hover { background: var(--nc-item-hover); }
+  .nc-calendar__cell.is-other-month { color: var(--nc-text-placeholder); }
+  .nc-calendar__cell.is-today { box-shadow: inset 0 0 0 1.5px var(--nc-accent-light); color: var(--nc-accent-text); font-weight: 600; }
+  .nc-calendar--no-today .nc-calendar__cell.is-today { box-shadow: none; color: inherit; font-weight: inherit; }
+  .nc-calendar__cell.is-selected { background: var(--nc-accent); box-shadow: none; color: var(--nc-text-on-accent); font-weight: 600; transition: none; }
+  .nc-calendar__cell:disabled { color: var(--nc-text-placeholder); text-decoration: line-through; cursor: default; background: transparent; }
+  .nc-calendar__cell:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: -2px; }
+  .nc-calendar[aria-disabled="true"] { opacity: 0.42; pointer-events: none; }
+
+  /* Nocturne.Styles.Calendar.Popup */
+  .nc-popup--calendar { border: 0; background: transparent; box-shadow: none; }
+  .nc-popup--calendar .nc-calendar {
+    border-color: var(--nc-popup-border);
+    background: var(--nc-popup);
+    box-shadow: var(--nc-shadow-popup);
+  }
+}

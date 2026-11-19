@@ -1,0 +1,370 @@
+/* Nocturne for the web · GroupBox, Expander, Accordion, TabControl, GridSplitter, StatusBar, InfoBar, Badged, BusyIndicator (Controls.Containers.xaml) */
+@layer components {
+
+  /* ------------------------------------------------------------ group box */
+  /* A sunken frame with 10px corners and the header in a gap in its top edge: <fieldset class="nc-group-box"><legend>…</legend>… */
+  .nc-group-box {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    padding: 6px 16px 10px;
+    border: 1px solid var(--nc-stroke);
+    border-radius: 10px;
+    background: var(--nc-surface-sunken);
+    color: var(--nc-text);
+  }
+  .nc-group-box__header, .nc-group-box > legend {
+    padding: 0 6px;
+    margin-left: -6px;
+    font-size: var(--nc-font-size-caption);
+    font-weight: 600;
+  }
+
+  /* ------------------------------------------------------------- expander */
+  /* <details class="nc-expander"><summary>Header</summary><div class="nc-expander__content">…</div></details>:
+     a 48px glass header with 10px corners whose chevron turns in 150 ms; the content below it */
+  .nc-expander { color: var(--nc-text); }
+  .nc-expander > summary {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 0 44px 0 14px;
+    border-radius: 10px;
+    background: var(--nc-expander-header);
+    font-size: var(--nc-font-size-default);
+    font-weight: 600;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-expander > summary::-webkit-details-marker { display: none; }
+  .nc-expander > summary:hover { background: var(--nc-expander-header-hover); }
+  .nc-expander > summary::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    background: currentColor;
+    mask: var(--nc-glyph-chevron-down) center / 16px no-repeat;
+    transition: transform var(--nc-slow) ease-out;
+  }
+  .nc-expander[open] > summary::after { transform: rotate(180deg); }
+  .nc-expander__content { padding: 14px 14px 4px; }
+  .nc-expander[aria-disabled="true"] { opacity: 0.42; pointer-events: none; }
+
+  /* Accordion: Expanders 6px apart, one open at a time (details name="…") */
+  .nc-accordion { display: flex; flex-direction: column; gap: 6px; }
+
+  /* ---------------------------------------------------------- tab control */
+  /*
+  The segmented control: the tabs share a sunken strip with 10px corners; the selected one has a
+  light pill and a short accent stripe (.nc-tab-control__indicator), which glide to a new tab in
+  150 ms. The tabs share the strip's width equally (UniformGrid).
+  <div class="nc-tab-control"><div class="nc-tab-control__header"><div class="nc-tab-control__strip" role="tablist">
+    <span class="nc-tab-control__indicator"></span><button class="nc-tab-item" role="tab">…</button>…</div></div>
+    <div class="nc-tab-control__content" role="tabpanel">…</div>…</div>
+  */
+  .nc-tab-control { color: var(--nc-text); }
+  .nc-tab-control__header { display: flex; align-items: center; gap: 12px; }
+  .nc-tab-control__strip {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    gap: 4px;
+    padding: 4px 4px;
+    border: 1px solid var(--nc-tab-strip-border);
+    border-radius: 10px;
+    background: var(--nc-tab-strip);
+  }
+  .nc-tab-control__tag { flex: none; }
+  .nc-tab-item {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    height: 36px;
+    margin: 0;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nc-tab-text);
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-default);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--nc-fast) linear;
+  }
+  .nc-tab-item:hover { background: var(--nc-item-hover); color: var(--nc-text); }
+  .nc-tab-item[aria-selected="true"] { background: transparent; color: var(--nc-text-selected); }
+  .nc-tab-item:disabled { opacity: 0.42; cursor: default; }
+  .nc-tab-item:focus-visible { outline: 2px solid var(--nc-focus); outline-offset: 2px; }
+  /* TabSelectionIndicator: the pill and the 16 × 3 stripe 3px above its bottom; nocturne.js moves it */
+  .nc-tab-control__indicator {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--nc-item-selected);
+    pointer-events: none;
+  }
+  .nc-tab-control__indicator::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 16px;
+    height: 3px;
+    margin-left: -8px;
+    border-radius: 1.5px;
+    background: var(--nc-accent-light);
+  }
+  .nc-tab-control__indicator.is-placed { transition: transform var(--nc-slow) cubic-bezier(0.33, 1, 0.68, 1), width var(--nc-slow) cubic-bezier(0.33, 1, 0.68, 1); }
+  /* Without script the selected tab draws its own pill and stripe */
+  .nc-tab-control__strip:not(:has(> .nc-tab-control__indicator[style])) > .nc-tab-item[aria-selected="true"] { background: var(--nc-item-selected); }
+  .nc-tab-control__content { padding: 16px 4px 2px; }
+  .nc-tab-control__content[hidden] { display: none; }
+
+  /*
+  Nocturne.Styles.TabControl.Document: browser-like tabs with 8px top corners over a panel with 10px
+  corners; the selected tab is 40px high and opens into the panel. Close buttons (TabHelper.ShowCloseButton),
+  badges and a "+" (TabHelper.ShowAddButton).
+  */
+  .nc-tab-control--document .nc-tab-control__header { gap: 0; align-items: flex-end; }
+  .nc-tab-control--document .nc-tab-control__strip {
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .nc-tab-control--document .nc-tab-control__header::after {
+    content: "";
+    flex: 1;
+    align-self: stretch;
+    margin-right: 10px;
+    border-bottom: 1px solid var(--nc-stroke);
+  }
+  .nc-tab-control--document .nc-tab-item {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: inset 0 -1px 0 var(--nc-stroke);
+    color: var(--nc-text-label);
+    font-size: var(--nc-font-size-caption);
+  }
+  .nc-tab-control--document .nc-tab-item--closable { padding-right: 4px; }
+  /* a hairline before every tab that does not touch the selected one (TabHelper.ShowSeparator) */
+  .nc-tab-control--document .nc-tab-item + .nc-tab-item:not([aria-selected="true"]):not([aria-selected="true"] + *)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    background: var(--nc-stroke);
+  }
+  .nc-tab-control--document .nc-tab-item:hover { background: var(--nc-document-tab-hover); color: var(--nc-text); }
+  .nc-tab-control--document .nc-tab-item[aria-selected="true"] {
+    height: 40px;
+    border: 1px solid var(--nc-stroke);
+    border-bottom: 0;
+    background: var(--nc-document-tab-selected);
+    box-shadow: none;
+    color: var(--nc-text-selected);
+  }
+  .nc-tab-item__close {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-left: 4px;
+    border-radius: 6px;
+    color: inherit;
+  }
+  .nc-tab-item__close:hover { background: var(--nc-row-selected); }
+  .nc-tab-item__close:active { background: var(--nc-item-pressed); }
+  .nc-tab-item__close > .nc-stroke-icon { width: 14px; height: 14px; stroke-width: 2; }
+  .nc-tab-control__add {
+    flex: none;
+    align-self: center;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin: 0 0 0 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--nc-text);
+    cursor: pointer;
+    order: 1;
+  }
+  .nc-tab-control--document .nc-tab-control__header::after { order: 2; }
+  .nc-tab-control__add:hover { background: var(--nc-row-selected); }
+  .nc-tab-control__add > .nc-stroke-icon { width: 16px; height: 16px; stroke-width: 2; }
+  .nc-tab-control__panel {
+    border: 1px solid var(--nc-stroke);
+    border-top: 0;
+    border-radius: 0 10px 10px 10px;
+    background: var(--nc-document-tab-selected);
+    box-shadow: inset 0 1px 0 var(--nc-stroke);
+  }
+  .nc-tab-control__panel > .nc-tab-control__content { padding: 17px; }
+
+  /* --------------------------------------------------------- grid splitter */
+  /* A hairline with a small rounded grip in the middle; both light up under the mouse, the grip
+     turns accent while dragged */
+  .nc-grid-splitter {
+    position: relative;
+    flex: none;
+    width: 8px;
+    align-self: stretch;
+    cursor: col-resize;
+    touch-action: none;
+    background: linear-gradient(var(--nc-divider), var(--nc-divider)) center / 1px 100% no-repeat;
+  }
+  .nc-grid-splitter::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 32px;
+    margin: -16px 0 0 -2px;
+    border-radius: 2px;
+    background: var(--nc-scroll-bar-thumb);
+  }
+  .nc-grid-splitter:hover { background-image: linear-gradient(var(--nc-stroke), var(--nc-stroke)); }
+  .nc-grid-splitter:hover::after { background: var(--nc-scroll-bar-thumb-hover); }
+  .nc-grid-splitter:active::after { background: var(--nc-accent-light); }
+  .nc-grid-splitter--rows { width: auto; height: 8px; cursor: row-resize; background-size: 100% 1px; }
+  .nc-grid-splitter--rows::after { width: 32px; height: 4px; margin: -2px 0 0 -16px; }
+
+  /* ----------------------------------------------------------- status bar */
+  /* A sunken strip with a hairline on top and small secondary text; .nc-status-bar__item--right goes to the end */
+  .nc-status-bar {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 30px;
+    padding: 0 8px;
+    border-top: 1px solid var(--nc-divider);
+    background: var(--nc-surface-sunken);
+    color: var(--nc-text-secondary);
+    font-size: var(--nc-font-size-small);
+  }
+  .nc-status-bar > * { display: flex; align-items: center; gap: 6px; padding: 0 6px; }
+  .nc-status-bar > * + *:not(.nc-status-bar__item--right)::before {
+    content: "";
+    width: 1px;
+    height: 14px;
+    margin: 0 10px 0 -6px;
+    background: var(--nc-divider);
+  }
+  .nc-status-bar__item--right { margin-left: auto; }
+
+  /* -------------------------------------------------------------- info bar */
+  /* A rounded strip tinted by its severity with the matching icon, a bold title before the message,
+     actions and a close button */
+  .nc-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 6px 6px 6px 14px;
+    border: 1px solid var(--nc-stroke);
+    border-radius: 10px;
+    background: var(--nc-surface2);
+    color: var(--nc-text);
+    font-size: var(--nc-font-size-default);
+  }
+  .nc-info-bar[hidden] { display: none; }
+  .nc-info-bar__icon { width: 20px; height: 20px; color: var(--nc-accent-text); }
+  .nc-info-bar--success { background: var(--nc-success-background); }
+  .nc-info-bar--success .nc-info-bar__icon { color: var(--nc-success); }
+  .nc-info-bar--warning { background: var(--nc-warning-background); }
+  .nc-info-bar--warning .nc-info-bar__icon { color: var(--nc-warning); }
+  .nc-info-bar--error { background: var(--nc-error-background); }
+  .nc-info-bar--error .nc-info-bar__icon { color: var(--nc-error); }
+  .nc-info-bar__text { flex: 1; min-width: 0; padding: 8px 0; line-height: 20px; }
+  .nc-info-bar__title { font-weight: 600; }
+  .nc-info-bar__message { color: var(--nc-text-label); }
+  .nc-info-bar__actions { display: flex; gap: 8px; margin-left: 12px; }
+  .nc-info-bar__close { width: 32px; height: 32px; margin-left: 4px; }
+  .nc-info-bar__close > .nc-stroke-icon { width: 14px; height: 14px; stroke-width: 2; }
+
+  /* --------------------------------------------------------------- badged */
+  /* An accent count on the top-right corner of its content */
+  .nc-badged { position: relative; display: inline-flex; vertical-align: middle; }
+  .nc-badged__badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--nc-accent);
+    color: var(--nc-text-on-accent);
+    font-size: var(--nc-font-size-tag);
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  /* -------------------------------------------------------- busy indicator */
+  /* The content dimmed under a small card with a progress ring while data-busy="true" */
+  .nc-busy-indicator { position: relative; display: block; }
+  .nc-busy-indicator__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px 12px 16px;
+    border: 1px solid var(--nc-popup-border);
+    border-radius: 12px;
+    background: var(--nc-popup);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+    color: var(--nc-text);
+    font-weight: var(--nc-font-weight-medium);
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+  }
+  .nc-busy-indicator[data-busy="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 10px;
+    background: var(--nc-overlay);
+  }
+  .nc-busy-indicator[data-busy="true"] > .nc-busy-indicator__card { display: flex; }
+  /* the content is disabled under the card, as BusyIndicator sets IsEnabled="False" on it */
+  .nc-busy-indicator[data-busy="true"] > .nc-busy-indicator__content { opacity: 0.42; pointer-events: none; user-select: none; }
+}

@@ -5,6 +5,8 @@ Nocturne for WPF: a dark theme for .NET 10+, built from the user's design canvas
 glass look was dropped.
 Structured like the user's JetPack theme (`C:\Git\JetpackTheme`): one library, one merged
 dictionary, MahApps-style resource keys with a `Nocturne.` prefix.
+Nocturne.Web is the same look in HTML and CSS for ASP.NET Core, ported from the user's JetPack.Web
+(`D:\Develop\JetpackTheme`); see "Nocturne.Web" below and `plans/web-version.md`.
 
 ## Rules
 
@@ -87,7 +89,17 @@ tools/update_docs.py          builds the demo and the samples, runs --snapshot, 
 icons/                        icons.json (the MDI names in the set), mdi/*.svg, LICENSE (Apache 2.0)
 tools/generate_icons.py       icons.json + icons/mdi -> Controls/NocturneIconKind.g.cs; --fetch, --check
 tools/generate_icon.ps1       draws src/Nocturne.Wpf/icon.png, the package icon (System.Drawing)
-.github/workflows/            ci.yml (build and pack on every push and PR), release.yml (version tags)
+src/Nocturne.Web/              Razor class library (net10.0, NuGet package Nocturne.Web): TagHelpers/ (nc-* tag
+                              helpers, NocturneIconKind.g.cs generated), Grid/ (NocturneGridServer), wwwroot/css
+                              (nocturne.src.css + controls/*.css -> bundled nocturne.css; nocturne.tokens.css
+                              generated; nocturne.tailwind.css), wwwroot/js/nocturne.js, wwwroot/img/icons.svg
+src/Nocturne.Web.Demo/         web demo: the six pages as the WPF demo (Views/Demo/Pages), /Demo/Gallery (one
+                              sample per WPF gallery sample, same names; ?shot=<name> for pictures), /api/cars
+samples/Nocturne.Web.Samples.Mvc  the MVC sample (dashboard, employees, timesheets, projects)
+tools/generate_web_tokens.py  Styles/*.xaml + NocturneTheme palettes -> nocturne.tokens.css; --check
+tools/bundle_web_css.py       nocturne.src.css + controls/*.css -> nocturne.css; --check (run after every CSS edit)
+tools/web_snapshots.py        headless Edge pictures of the web demo, gallery and sample; --out, --only
+.github/workflows/            ci.yml (build and pack both packages on every push and PR), release.yml (version tags)
 ```
 
 XAML namespace `urn:nocturne-wpf`, prefix `nc`. Brushes are referenced with `DynamicResource`.
@@ -124,11 +136,34 @@ src/Nocturne.Wpf.Demo/bin/Debug/net10.0-windows/Nocturne.Wpf.Demo.exe --snapshot
 - A tag `v1.2.3` runs `release.yml`: it packs Nocturne.Wpf with that version (the tag overrides
   `<Version>` in the csproj) and creates a GitHub release with the `.nupkg` and `.snupkg` attached.
   Tag with `git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"` and push the tag; tag and push only when the
-  user asks.
+  user asks. A tag `web-v1.2.3` packs Nocturne.Web instead (release "Nocturne.Web 1.2.3", not marked
+  latest). The first nuget.org push of Nocturne.Web needs a policy that allows new packages.
 - nuget.org (Trusted Publishing) is on since 0.1.2: the release workflow pushes to nuget.org because
   the repository variable `NUGET_PUBLISH` is `true` and the secret `NUGET_USER` is set (the user set
   both, and the nuget.org policy "Nocturne Publishing" for Montago/NocturneTheme, release.yml). Never
   add API keys or secrets to the repo. A failed push can be retried by re-running the release run.
+
+## Nocturne.Web
+
+- Class names follow the WPF controls and style keys with an `nc-` prefix (`.nc-combo-box`,
+  `.nc-button--primary`); tag helper attributes are the WPF property names in kebab case. Custom
+  properties are `--nc-*`; rules sit in the layers `theme, base, nocturne-base, components, utilities`.
+- Colours come only from `nocturne.tokens.css`, generated from the XAML: change `Brushes.xaml` or the
+  palettes in `NocturneTheme.cs`, then run `generate_web_tokens.py`. Never edit the tokens or
+  `nocturne.css` by hand; edit `controls/*.css` and run `bundle_web_css.py` (CI checks both).
+- **No transparency to the desktop.** The page ground `--nc-window-ground` is Fallback mixed with Tint
+  at 0.5 (what the WPF window shows over a dark desktop), popups (`--nc-popup`) are flattened onto it.
+  Hover, card and selection surfaces keep their alpha (the user's decision: keep alpha if it performs,
+  and it does). Sticky headers and frozen cells paint `--nc-local-ground` (opaque; cards set it).
+- Accents: `Nocturne.setAccent('green' | '#hex' | 'system')` (stored in localStorage `nocturne.accent`)
+  computes the palette as `NocturneTheme.FromSystem` does; named ones are `:root[data-accent=…]` blocks
+  in the tokens. The light is a dithered canvas (`canvas.nc-window__light`), redrawn 150 ms after a resize.
+- `--nc-font-weight-medium` is 400: Chromium draws Segoe UI at 500 as Semibold, WPF as Regular.
+- The WPF gallery pictures draw on Fallback without tint, so the web gallery does too
+  (`body.gallery`); compare a web gallery picture with `docs/screenshots/controls/<name>.png`.
+- Check visual changes with `python tools/web_snapshots.py --out <scratch>` (needs Pillow and Edge);
+  it builds both sites to a scratch folder, so a running Visual Studio does not get in the way.
+- Web docs and pictures (`docs/screenshots/web/`) follow the same rule: only for a release.
 
 ## WPF gotchas (same as JetPack)
 

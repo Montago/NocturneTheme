@@ -1,0 +1,624 @@
+@* GalleryPage.xaml: one sample per control for the documentation pictures. /Demo/Gallery?shot=<name> shows
+   that sample alone on magenta and opens what is marked data-demo-open (wwwroot/js/gallery.js);
+   tools/web_snapshots.py cuts the picture out. Fixed values only, so a picture changes only when the look does. *@
+@{
+    Layout = null;
+    var meeting = new DateTime(2026, 11, 19);
+    var shot = Context.Request.Query["shot"].ToString();
+}
+<!DOCTYPE html>
+<html lang="en" data-snapshot>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nocturne for the web · gallery</title>
+    <link rel="stylesheet" href="~/_content/Nocturne.Web/css/nocturne.css" asp-append-version="true" />
+    <script src="~/_content/Nocturne.Web/js/nocturne.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/demo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/gallery.css" asp-append-version="true" />
+</head>
+<body class="gallery" data-shot="@shot">
+<div class="gallery-backdrop" id="GalleryBackdrop"></div>
+<div class="gallery-samples">
+
+    @* ======================================================== Buttons *@
+    <div class="gallery-sample" data-shot="button"><div class="nc-card">
+        <div class="demo-wrap">
+            <nc-button button-style="Primary" content="Save changes" />
+            <nc-button content="Cancel" />
+            <nc-button button-style="Subtle" content="More" />
+            <nc-button button-style="Icon" stroke-icon="Refresh" aria-label="Refresh" />
+            <nc-button button-style="Primary" content="Disabled" is-enabled="false" />
+            <nc-button content="Disabled" is-enabled="false" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="button-danger" style="width:560px"><div class="nc-card">
+        <div class="demo-wrap" style="margin:0">
+            <nc-button content="Cancel" />
+            <nc-button button-style="Danger" content="Delete" />
+            <nc-button button-style="Danger" icon="Delete" content="Delete employee" />
+            <nc-button button-style="Danger" content="Disabled" is-enabled="false" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="toggle-button"><div class="nc-card">
+        <div class="demo-inline" style="gap:10px">
+            <nc-toggle-button content="Off" />
+            <nc-toggle-button content="On" is-checked="true" />
+            <nc-repeat-button content="Repeat" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="hyperlink"><div class="nc-card">
+        <div class="demo-inline" style="gap:24px">
+            <nc-hyperlink href="#">Open the release notes</nc-hyperlink>
+            <nc-hyperlink is-enabled="false">Disabled link</nc-hyperlink>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="drop-down-button" style="width:380px"><div class="nc-card">
+        <div class="demo-inline" style="gap:16px;margin-bottom:110px">
+            <nc-drop-down-button content="Export" data-demo-open>
+                <nc-menu-item header="PDF document" />
+                <nc-menu-item header="CSV for Excel" />
+                <nc-menu-item header="PNG image" />
+            </nc-drop-down-button>
+            <nc-drop-down-button content="New" button-style="Primary" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="split-button" style="width:380px"><div class="nc-card">
+        <div class="demo-inline" style="gap:16px;margin-bottom:90px">
+            <nc-split-button content="Save" data-demo-open>
+                <nc-menu-item header="Save as…" input-gesture-text="Ctrl+Shift+S" />
+                <nc-menu-item header="Save all" />
+            </nc-split-button>
+            <nc-split-button content="Synchronise" button-style="Primary" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="tile"><div class="nc-card">
+        <div class="demo-inline">
+            <nc-tile title="Files" count="1,284" stroke-icon="Folder" style="width:150px" />
+            <nc-tile title="Synchronise" count="3" stroke-icon="Sync" tile-style="Accent" style="width:150px" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="badged"><div class="nc-card">
+        <div class="demo-inline" style="gap:28px;margin-top:8px">
+            <nc-badged badge="3"><nc-button button-style="Icon" stroke-icon="Sync" aria-label="Messages" /></nc-badged>
+            <nc-badged badge="12" badge-background="var(--nc-error)" badge-foreground="#2A0E0B"><nc-button content="Conflicts" /></nc-badged>
+            <nc-badged badge="New" badge-background="var(--nc-warning)" badge-foreground="#2A2108"><nc-button content="Reports" /></nc-badged>
+        </div>
+    </div></div>
+
+    @* ======================================================== Text and input *@
+    <div class="gallery-sample" data-shot="textbox"><div class="nc-card">
+        <nc-label content="Server name" />
+        <nc-text-box text="intranet.local" />
+        <nc-label content="User name" style="margin-top:14px" />
+        <nc-text-box placeholder="e.g. anna.holm" />
+        <nc-label content="Port" style="margin-top:14px" />
+        <nc-text-box text="99999" aria-invalid="true" />
+        <p class="nc-text-block--error">Must be a number from 1 to 65535.</p>
+    </div></div>
+
+    @* The field's red frame and, open here, the error callout *@
+    <div class="gallery-sample" data-shot="validation"><div class="nc-card">
+        <div style="margin-bottom:44px">
+            <nc-label content="Port" />
+            <nc-text-box text="99999" validation-error="Must be a number from 1 to 65535." data-demo-open />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="textbox-search"><div class="nc-card">
+        <nc-text-box text-box-style="Search" placeholder="Search files" />
+        <nc-text-box text-box-style="Search" text="quarterly report" clear-button="true" placeholder="Search files" style="margin-top:12px" />
+        <nc-text-box text="intranet.local" clear-button="true" style="margin-top:12px" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="textbox-multiline"><div class="nc-card">
+        <nc-text-box text-box-style="MultiLine" text="@("The meeting moves to Thursday at 09:30.\nBring the figures for the third quarter and the list of open conflicts.")" style="height:110px" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="passwordbox"><div class="nc-card">
+        <nc-label content="Password" />
+        <nc-password-box placeholder="Password" can-reveal="true" />
+        <nc-label content="Repeat password" style="margin-top:14px" />
+        <nc-password-box placeholder="Repeat password" can-reveal="true" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="richtextbox"><div class="nc-card">
+        <div class="nc-text-box nc-rich-text-box" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Release notes" style="height:130px">
+            <p><b>This release</b> adds the rest of the standard controls.</p>
+            <p>Trees, lists with columns, calendars, tool bars and status bars now take the <i>Nocturne</i> look.</p>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="combobox"><div class="nc-card">
+        <div style="margin-bottom:170px">
+            <nc-label content="Language" />
+            <nc-combo-box selected-index="1" data-demo-open>
+                @foreach (var language in DemoData.Languages) { <nc-combo-box-item content="@language" /> }
+            </nc-combo-box>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="combobox-variants"><div class="nc-card">
+        <nc-label content="Editable" />
+        <nc-combo-box is-editable="true" text="Norsk">
+            @foreach (var language in DemoData.Languages) { <nc-combo-box-item content="@language" /> }
+        </nc-combo-box>
+        <nc-label content="Nothing chosen yet" style="margin-top:14px" />
+        <nc-combo-box placeholder="Choose a language">
+            @foreach (var language in DemoData.Languages) { <nc-combo-box-item content="@language" /> }
+        </nc-combo-box>
+        <nc-label content="Disabled" style="margin-top:14px" />
+        <nc-combo-box selected-index="1" is-enabled="false">
+            @foreach (var language in DemoData.Languages) { <nc-combo-box-item content="@language" /> }
+        </nc-combo-box>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="numericupdown"><div class="nc-card">
+        <nc-label content="Port" />
+        <nc-numeric-up-down value="8080" minimum="1" maximum="65535" />
+        <nc-label content="Timeout (steps of 5)" style="margin-top:14px" />
+        <nc-numeric-up-down value="30" minimum="0" maximum="300" interval="5" />
+        <nc-label content="Retries (out of range)" style="margin-top:14px" />
+        <nc-numeric-up-down value="12" validation-error="At most 10 retries." />
+        <p class="nc-text-block--error">At most 10 retries.</p>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="datepicker" style="width:400px" data-nc-date-format="dddd, MMMM d, yyyy"><div class="nc-card">
+        <div style="margin-bottom:330px">
+            <nc-label content="Meeting" />
+            <nc-date-picker selected-date="meeting" is-today-highlighted="false" data-demo-open />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="datepicker-states" data-nc-date-format="dddd, MMMM d, yyyy"><div class="nc-card">
+        <nc-label content="Due date (nothing chosen yet)" />
+        <nc-date-picker />
+        <nc-label content="End date" style="margin-top:14px" />
+        <nc-date-picker selected-date="new DateTime(2026, 11, 2)" validation-error="Must be after the start date." />
+        <p class="nc-text-block--error">Must be after the start date.</p>
+        <nc-label content="Created (disabled)" style="margin-top:14px" />
+        <nc-date-picker selected-date="new DateTime(2026, 10, 1)" is-enabled="false" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="timepicker" style="width:400px"><div class="nc-card">
+        <div style="margin-bottom:320px">
+            <nc-label content="Meeting time" />
+            <nc-time-picker selected-time="new TimeSpan(9, 30, 0)" minute-step="30" data-demo-open />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="colorpicker" style="width:400px"><div class="nc-card">
+        <div style="margin-bottom:120px">
+            <nc-label content="Label colour" />
+            <nc-color-picker selected-color="#1F78D1" style="width:200px" data-demo-open />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="autosuggestbox"><div class="nc-card">
+        <div style="margin-bottom:300px">
+            <nc-label content="City" />
+            <nc-auto-suggest-box items="DemoData.Cities" placeholder="Start typing a city" data-demo-open="B" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="searchcombobox"><div class="nc-card">
+        <div style="margin-bottom:250px">
+            <nc-label content="Owner" />
+            <nc-search-combo-box items="DemoData.People" display-member-path="Name" placeholder="Choose or type a name" data-nc-max-drop-down-height="226" data-demo-open />
+        </div>
+    </div></div>
+
+    @* ======================================================== Selection *@
+    <div class="gallery-sample" data-shot="checkbox"><div class="nc-card">
+        <div class="demo-list">
+            <nc-check-box content="Start automatically with Windows" is-checked="true" />
+            <nc-check-box content="Send anonymous usage statistics" />
+            <nc-check-box content="Select all folders (partly selected)" is-checked="null" />
+            <nc-check-box content="Require administrator (disabled)" is-checked="true" is-enabled="false" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="radiobutton"><div class="nc-card">
+        <nc-label content="Updates" />
+        <div class="demo-list">
+            <nc-radio-button group-name="Updates" content="Automatic (recommended)" is-checked="true" />
+            <nc-radio-button group-name="Updates" content="Notify before installing" />
+            <nc-radio-button group-name="Updates" content="Never" />
+            <nc-radio-button group-name="Other" content="Disabled" is-enabled="false" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="toggleswitch"><div class="nc-card">
+        <nc-toggle-switch is-checked="true">Synchronise in the background</nc-toggle-switch>
+        <nc-toggle-switch>Only on unmetered networks</nc-toggle-switch>
+        <nc-toggle-switch is-checked="true" is-enabled="false">Keep deleted files (disabled)</nc-toggle-switch>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="slider"><div class="nc-card">
+        <div class="demo-label-row"><nc-label content="Bandwidth limit" /><span class="demo-value">62 Mbit/s</span></div>
+        <nc-slider value="62" minimum="0" maximum="100" />
+        <nc-label content="Disabled" style="margin-top:14px" />
+        <nc-slider value="30" minimum="0" maximum="100" is-enabled="false" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="rangeslider"><div class="nc-card">
+        <div class="demo-label-row"><nc-label content="Distance" /><span class="demo-value">20 – 65 km</span></div>
+        <nc-range-slider minimum="0" maximum="100" lower-value="20" upper-value="65" small-change="5" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="rating"><div class="nc-card">
+        <nc-label content="Your rating" style="margin-bottom:8px" />
+        <nc-rating value="4" />
+        <nc-label content="Average (read-only)" style="margin:14px 0 8px" />
+        <nc-rating value="3" is-read-only="true" />
+    </div></div>
+
+    @* ======================================================== Lists and data *@
+    <div class="gallery-sample" data-shot="listbox"><div class="nc-card">
+        <nc-list-box selected-index="0">
+            <nc-list-box-item content="Synchronisation" description="Keep files up to date across devices" stroke-icon="Sync" />
+            <nc-list-box-item content="Security" description="Passwords, 2FA and certificates" stroke-icon="Shield" />
+            <nc-list-box-item content="Network" description="Proxy, DNS and connections" stroke-icon="Globe" />
+        </nc-list-box>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="listbox-navigation" style="width:300px"><div class="nc-card">
+        <nc-list-box list-box-style="Navigation" selected-index="0">
+            <nc-list-box-item content="Controls" stroke-icon="Grid" />
+            <nc-list-box-item content="Files" stroke-icon="Folder" />
+            <nc-list-box-item content="Data" stroke-icon="Database" />
+        </nc-list-box>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="listview" style="width:640px"><div class="nc-card">
+        <nc-list-view items="DemoData.Files" selected-index="1" style="height:230px">
+            <nc-grid-view-column header="Name" binding="Name" width="220" />
+            <nc-grid-view-column header="Modified" binding="Modified" width="140" />
+            <nc-grid-view-column header="Kind" binding="Kind" width="120" />
+            <nc-grid-view-column header="Size" binding="Size" width="80" />
+        </nc-list-view>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="treeview" style="width:340px"><div class="nc-card">
+        <nc-tree-view style="height:264px">
+            @foreach (var folder in DemoData.Folders)
+            {
+                <partial name="Pages/_Folder" model="folder" />
+            }
+        </nc-tree-view>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="datagrid" style="width:640px"><div class="nc-card">
+        <nc-data-grid items="DemoData.People" selected-index="0" height="262">
+            <nc-data-grid-text-column header="Name" binding="Name" sort-direction="Ascending" />
+            <nc-data-grid-text-column header="Role" binding="Role" />
+            <nc-data-grid-text-column header="Status" binding="Status" />
+            <nc-data-grid-text-column header="Last active" binding="LastActive" />
+        </nc-data-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="datagrid-rowheaders"><div class="nc-card">
+        <nc-data-grid items="DemoData.People" selected-index="1" row-headers="true" height="196">
+            <nc-data-grid-text-column header="Name" binding="Name" />
+            <nc-data-grid-text-column header="Role" binding="Role" />
+        </nc-data-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="nocturnegrid" style="width:860px"><div class="nc-card">
+        <nc-text-box id="GallerySearch" text-box-style="Search" text="volvo automatic" clear-button="true" style="width:280px;margin-bottom:12px" />
+        <nc-nocturne-grid items="CarData.Cars" search-box="GallerySearch" search-delay="0" height="300">
+            <nc-nocturne-grid-column width="110" header="Stock no." binding="StockNo" />
+            <nc-nocturne-grid-column width="110" header="Make" binding="Make" />
+            <nc-nocturne-grid-column width="120" header="Model" binding="Model" />
+            <nc-nocturne-grid-column width="76" header="Year" binding="Year" text-alignment="Right" />
+            <nc-nocturne-grid-column width="92" header="Fuel" binding="Fuel" />
+            <nc-nocturne-grid-column width="116" header="Gearbox" binding="Gearbox" />
+            <nc-nocturne-grid-column width="*" header="Price (EUR)" binding="Price" string-format="N0" is-searchable="false" text-alignment="Right" />
+        </nc-nocturne-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="nocturnegrid-filter" style="width:640px"><div class="nc-card">
+        <nc-nocturne-grid items="CarData.Cars" height="420" data-demo-open>
+            <nc-nocturne-grid-column width="130" header="Make" binding="Make" />
+            <nc-nocturne-grid-column width="140" header="Body" binding="Body" filter-text="estate suv" />
+            <nc-nocturne-grid-column width="110" header="Fuel" binding="Fuel" />
+            <nc-nocturne-grid-column width="*" header="Price (EUR)" binding="Price" string-format="N0" text-alignment="Right" />
+        </nc-nocturne-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="nocturnegrid-groups" style="width:640px"><div class="nc-card">
+        <nc-nocturne-grid items="CarData.Cars" group-member-path="Make" height="330">
+            <nc-nocturne-grid-column width="130" header="Make" binding="Make" />
+            <nc-nocturne-grid-column width="140" header="Model" binding="Model" />
+            <nc-nocturne-grid-column width="76" header="Year" binding="Year" text-alignment="Right" />
+            <nc-nocturne-grid-check-box-column width="80" header="Sold" binding="IsSold" />
+            <nc-nocturne-grid-column width="*" header="Price (EUR)" binding="Price" string-format="N0" text-alignment="Right" />
+        </nc-nocturne-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="nocturnegrid-paging" style="width:640px"><div class="nc-card">
+        <nc-nocturne-grid items="CarData.Cars" page-size="25" height="300">
+            <nc-nocturne-grid-column width="110" header="Stock no." binding="StockNo" />
+            <nc-nocturne-grid-column width="130" header="Make" binding="Make" />
+            <nc-nocturne-grid-column width="140" header="Model" binding="Model" />
+            <nc-nocturne-grid-column width="*" header="Price (EUR)" binding="Price" string-format="N0" text-alignment="Right" />
+        </nc-nocturne-grid>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="calendar" style="width:360px"><div class="nc-card">
+        <nc-calendar selected-date="meeting" is-today-highlighted="false" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="scrollviewer" style="width:360px"><div class="nc-card">
+        <nc-scroll-viewer horizontal-scroll-bar-visibility="Auto" class="is-active" style="height:160px">
+            <p class="demo-body" style="width:460px">Scroll bars are 18px wide, but the drawn bar is a thin 6px line that widens to 10px under the mouse. They show while the mouse is over the box or it scrolls. This text is wider and taller than the box, so both bars show.</p>
+        </nc-scroll-viewer>
+    </div></div>
+
+    @* ======================================================== Navigation and layout *@
+    <div class="gallery-sample" data-shot="tabcontrol" style="width:420px"><div class="nc-card">
+        <nc-tab-control>
+            <nc-tab-item header="General">
+                <demo-row key="Theme" value="Nocturne (dark)" />
+                <demo-row key="Ground" value="Opaque" />
+                <demo-row key="Accent colour" value="Blue" />
+            </nc-tab-item>
+            <nc-tab-item header="Network" />
+            <nc-tab-item header="Advanced" />
+        </nc-tab-control>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="tabcontrol-document" style="width:440px"><div class="nc-card">
+        <nc-tab-control tab-control-style="Document" show-add-button="true">
+            <nc-tab-item header="Overview" show-close-button="true">
+                <demo-row key="Files" value="1,284" />
+                <demo-row key="Total size" value="18.6 GB" />
+            </nc-tab-item>
+            <nc-tab-item header="Logs" show-close-button="true" />
+            <nc-tab-item header="Conflicts" badge="2" show-close-button="true" />
+        </nc-tab-control>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="hamburgermenu" style="width:640px"><div class="nc-card">
+        <div class="demo-hamburger-frame" style="height:300px">
+            <nc-hamburger-menu selected-index="0">
+                <nc-hamburger-menu-item content="Dashboard" stroke-icon="Grid"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Dashboard</h2><p class="nc-text-block--caption">The page of the selected item goes here.</p></div></nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Files" stroke-icon="Folder" is-expanded="true">
+                    <nc-hamburger-menu-item content="Recent"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Recent</h2></div></nc-hamburger-menu-item>
+                    <nc-hamburger-menu-item content="Shared with me"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Shared with me</h2></div></nc-hamburger-menu-item>
+                </nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Security" stroke-icon="Shield"><div class="demo-hamburger-page"><h2 class="nc-text-block--subtitle">Security</h2></div></nc-hamburger-menu-item>
+            </nc-hamburger-menu>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="hamburgermenu-compact" style="width:300px"><div class="nc-card">
+        <div class="demo-hamburger-frame" style="height:250px">
+            <nc-hamburger-menu selected-index="1" is-pane-open="false">
+                <nc-hamburger-menu-item content="Dashboard" stroke-icon="Grid"><div class="demo-hamburger-page"></div></nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Files" stroke-icon="Folder"><div class="demo-hamburger-page"></div></nc-hamburger-menu-item>
+                <nc-hamburger-menu-item content="Security" stroke-icon="Shield"><div class="demo-hamburger-page"></div></nc-hamburger-menu-item>
+            </nc-hamburger-menu>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="expander"><div class="nc-card">
+        <nc-expander header="Advanced settings" is-expanded="true">
+            <p class="demo-body">The content folds out under the header. IsExpanded turns the chevron with a 150 ms animation.</p>
+        </nc-expander>
+        <nc-expander header="Logging" style="margin-top:10px" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="accordion" style="width:400px"><div class="nc-card">
+        <nc-accordion style="height:280px">
+            <nc-expander header="Account" is-expanded="true"><p class="demo-body">Opening one section closes the others; the open one takes the height that is left.</p></nc-expander>
+            <nc-expander header="Notifications" />
+            <nc-expander header="Privacy" />
+        </nc-accordion>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="groupbox"><div class="nc-card">
+        <nc-group-box header="Synchronisation">
+            <nc-toggle-switch is-checked="true">Synchronise in the background</nc-toggle-switch>
+            <nc-toggle-switch>Only on unmetered networks</nc-toggle-switch>
+        </nc-group-box>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="card" style="width:560px"><div class="nc-card">
+        <nc-card header="Settings" tag="Card · Tag">
+            <p class="nc-text-block--caption" style="margin:0">A card has a section label (header) and an optional tag on the right (tag).</p>
+        </nc-card>
+        <div class="demo-inline" style="gap:8px;margin-top:16px">
+            <nc-pill>Active</nc-pill>
+            <nc-pill pill-style="Success">Synchronised</nc-pill>
+            <nc-pill pill-style="Warning">Invited</nc-pill>
+            <nc-pill pill-style="Error" style="margin-right:8px">Blocked</nc-pill>
+            <nc-tag style="margin-right:8px">Tag</nc-tag>
+            <nc-badge>2</nc-badge>
+        </div>
+        <div class="demo-inline" style="margin-top:16px">
+            <nc-icon-tile stroke-icon="Sync" />
+            <nc-icon-tile stroke-icon="Folder" small="true" />
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="menu" style="width:400px"><div class="nc-card">
+        <div style="margin-bottom:150px">
+            <nc-menu>
+                <nc-menu-item header="_File" data-demo-open>
+                    <nc-menu-item header="_New" input-gesture-text="Ctrl+N" stroke-icon="Plus" />
+                    <nc-menu-item header="_Open…" input-gesture-text="Ctrl+O" />
+                    <nc-separator />
+                    <nc-menu-item header="E_xit" />
+                </nc-menu-item>
+                <nc-menu-item header="_Edit" />
+                <nc-menu-item header="_View" />
+            </nc-menu>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="contextmenu" style="width:420px"><div class="nc-card">
+        <div class="demo-menu-target" data-nc-context-menu="GalleryMenu" style="height:300px;box-sizing:border-box;margin:0" data-demo-open>
+            <span class="nc-text-block--caption">Right-click here for the context menu.</span>
+        </div>
+        <nc-context-menu id="GalleryMenu">
+            <nc-menu-item header="Cut" input-gesture-text="Ctrl+X" stroke-icon="Cut" />
+            <nc-menu-item header="Copy" input-gesture-text="Ctrl+C" stroke-icon="Copy" />
+            <nc-menu-item header="Paste" input-gesture-text="Ctrl+V" stroke-icon="Paste" />
+            <nc-separator />
+            <nc-menu-item header="Show hidden files" is-checkable="true" is-checked="true" />
+            <nc-menu-item header="Sort by"><nc-menu-item header="Name" /></nc-menu-item>
+            <nc-separator />
+            <nc-menu-item header="Delete" input-gesture-text="Del" stroke-icon="Delete" style="color:var(--nc-error-text)" />
+        </nc-context-menu>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="toolbar" style="width:640px"><div class="nc-card">
+        <nc-tool-bar-tray>
+            <nc-tool-bar>
+                <nc-button stroke-icon="Plus" content="New" />
+                <nc-button stroke-icon="Refresh" aria-label="Refresh" />
+                <nc-separator />
+                <nc-button stroke-icon="Cut" aria-label="Cut" />
+                <nc-button stroke-icon="Copy" aria-label="Copy" />
+                <nc-separator />
+                <nc-toggle-button content="Details" is-checked="true" />
+                <nc-check-box content="Hidden files" />
+                <nc-separator />
+                <nc-combo-box selected-index="0" style="width:130px">
+                    <nc-combo-box-item content="Name" />
+                    <nc-combo-box-item content="Size" />
+                </nc-combo-box>
+            </nc-tool-bar>
+        </nc-tool-bar-tray>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="statusbar" style="width:640px"><div class="nc-card">
+        <nc-status-bar>
+            <nc-status-bar-item>7 items</nc-status-bar-item>
+            <nc-status-bar-item>1 selected · 388 KB</nc-status-bar-item>
+            <nc-status-bar-item horizontal-alignment="Right"><span class="demo-dot"></span>Synchronised today 07:12</nc-status-bar-item>
+        </nc-status-bar>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="gridsplitter" style="width:520px"><div class="nc-card">
+        <div style="display:flex;height:140px">
+            <div class="gallery-pane" style="flex:1">Folders</div>
+            <nc-grid-splitter style="width:9px" />
+            <div class="gallery-pane" style="flex:1">Files</div>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="tooltip" style="width:320px"><div class="nc-card">
+        <div style="margin-bottom:40px">
+            <nc-button button-style="Icon" stroke-icon="Copy" aria-label="Copy" tool-tip="Copy to clipboard   Ctrl+C" data-demo-open />
+        </div>
+    </div></div>
+
+    @* ======================================================== Progress and status *@
+    <div class="gallery-sample" data-shot="progressbar"><div class="nc-card">
+        <div class="demo-label-row"><nc-label content="Uploading 128 of 200 files" /><span class="demo-value">64 %</span></div>
+        <nc-progress-bar value="64" />
+        <nc-label content="Connecting… (IsIndeterminate)" style="margin-top:16px" />
+        <nc-progress-bar is-indeterminate="true" />
+    </div></div>
+
+    <div class="gallery-sample" data-shot="progressring"><div class="nc-card">
+        <div class="demo-inline" style="gap:20px">
+            <nc-progress-ring width="20" />
+            <nc-progress-ring />
+            <nc-progress-ring width="48" style="margin-right:8px" />
+            <button type="button" class="nc-button nc-button--primary demo-saving" tabindex="-1">
+                <span class="nc-progress-ring" style="--nc-ring-size:16px"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="nc-progress-ring__track" cx="16" cy="16" r="12.5"/><path class="nc-progress-ring__arc" d="M16,3.5 A12.5,12.5 0 0 1 28.5,16"/></svg></span>
+                Saving…
+            </button>
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="busyindicator"><div class="nc-card">
+        <nc-busy-indicator is-busy="true" busy-content="Uploading 128 files…">
+            <nc-label content="Folder" />
+            <nc-text-box text="Projects\Nocturne" />
+            <nc-label content="Destination" style="margin-top:12px" />
+            <nc-text-box text="intranet.local/shared" />
+        </nc-busy-indicator>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="infobar" style="width:720px"><div class="nc-card">
+        <div class="demo-stack demo-stack--10">
+            <nc-info-bar title="Update available." message="Nocturne can be updated when you restart the app." is-closable="false"><nc-button content="Restart" /></nc-info-bar>
+            <nc-info-bar severity="Success" title="Synchronised." message="128 files were uploaded at 07:12." />
+            <nc-info-bar severity="Warning" title="Almost full." message="The shared drive has 2.1 GB free." />
+            <nc-info-bar severity="Error" title="Could not connect." message="intranet.local did not answer within 30 s."><nc-button content="Try again" /></nc-info-bar>
+        </div>
+    </div></div>
+
+    @* ======================================================== Typography and icons *@
+    <div class="gallery-sample" data-shot="typography" style="width:560px"><div class="nc-card">
+        <h1 class="nc-text-block--title">Title</h1>
+        <h2 class="nc-text-block--subtitle" style="margin-top:8px">Subtitle</h2>
+        <p class="nc-text-block--eyebrow" style="margin:12px 0 0">EYEBROW · SECTION LABEL</p>
+        <p class="nc-text-block--list-title" style="margin:12px 0 0">List title</p>
+        <p class="nc-text-block--body" style="margin:8px 0 0">Body text for paragraphs and controls.</p>
+        <p class="nc-label" style="margin:8px 0 0">Label above a field</p>
+        <p class="nc-text-block--caption" style="margin:6px 0 0">Caption under a list title</p>
+        <p class="nc-text-block--hint">Hint text, as under a field</p>
+        <p class="nc-text-block--error">Error text under an invalid field</p>
+        <p class="nc-text-block--mono" style="margin:6px 0 0">Mono · Nocturne.Brushes.Accent</p>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="icons" style="width:560px"><div class="nc-card">
+        <div class="gallery-icons">
+            @foreach (var name in new[] { "Search", "Refresh", "Copy", "Cut", "Paste", "Edit", "Delete", "Sync", "Shield", "Globe", "Database", "Folder", "Calendar", "Clock", "Info", "Warning", "Filter", "Menu", "Plus", "Close" })
+            {
+                <div class="gallery-icon"><nc-stroke-icon data="@name" /><span>@name</span></div>
+            }
+        </div>
+    </div></div>
+
+    <div class="gallery-sample" data-shot="nocturneicon" style="width:560px"><div class="nc-card">
+        <div class="gallery-icons">
+            @foreach (var kind in new[] { NocturneIconKind.Account, NocturneIconKind.Bell, NocturneIconKind.Calendar, NocturneIconKind.Cart, NocturneIconKind.ChartBar, NocturneIconKind.Cog, NocturneIconKind.ContentSave, NocturneIconKind.Delete, NocturneIconKind.Download, NocturneIconKind.Email, NocturneIconKind.Folder, NocturneIconKind.Home, NocturneIconKind.Lock, NocturneIconKind.Magnify, NocturneIconKind.Pencil, NocturneIconKind.Printer, NocturneIconKind.Refresh, NocturneIconKind.Star, NocturneIconKind.Tag, NocturneIconKind.ViewGrid })
+            {
+                <div class="gallery-icon"><nc-icon kind="@kind" /><span>@kind</span></div>
+            }
+        </div>
+    </div></div>
+
+    @* The dialog and the flyout, drawn in place (not opened over a page) *@
+    <div class="gallery-sample" data-shot="dialog" style="width:472px">
+        <div class="nc-dialog gallery-static">
+            <div class="nc-dialog__card">
+                <h2 class="nc-dialog__title">Delete project?</h2>
+                <div class="nc-dialog__content">Nocturne and its 1,284 files will be deleted for everyone. This cannot be undone.</div>
+                <div class="nc-dialog__buttons"><nc-button content="Cancel" /><nc-button button-style="Danger" content="Delete" /></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-sample" data-shot="flyout" style="width:392px">
+        <div class="nc-flyout-host" style="height:420px">
+            <nc-flyout id="GalleryFlyout" header="Display settings" is-open="true" style="top:0;right:0;bottom:0;width:360px">
+                <p class="nc-text-block--caption" style="margin:0 0 16px">A flyout floats over the page; Escape or the × closes it.</p>
+                <nc-toggle-switch is-checked="true">Show hidden files</nc-toggle-switch>
+                <nc-toggle-switch>Compact rows</nc-toggle-switch>
+                <nc-label content="Sort by" style="margin-top:14px" />
+                <nc-combo-box selected-index="0">
+                    <nc-combo-box-item content="Name" />
+                    <nc-combo-box-item content="Date modified" />
+                    <nc-combo-box-item content="Size" />
+                </nc-combo-box>
+            </nc-flyout>
+        </div>
+    </div>
+</div>
+<script src="~/js/gallery.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* Nocturne for the web · the window frame, title bar and window commands (Controls.Window.xaml) */
+@layer components {
+
+  /*
+  NocturneWindow as a page: the opaque ground with the light from the top-left corner (no backdrop:
+  nothing of the desktop shows through), a 44px title bar and the content under it.
+  <body class="nc-window" data-title-bar-style="seamless|separated|accent">
+    <canvas class="nc-window__light"></canvas>
+    <header class="nc-title-bar">
+      <div class="nc-window-commands">…</div>  (LeftWindowCommands, then a divider)
+      <span class="nc-title-bar__icon"></span><span class="nc-title-bar__title">…</span>
+      <div class="nc-window-commands">…</div>  (RightWindowCommands)
+    </header>
+    <div class="nc-window__body"> <nav class="nc-hamburger-menu">…</nav> <main class="nc-window__content">…</main> </div>
+    <footer class="nc-status-bar">…</footer>
+  </body>
+  The browser draws the real caption buttons, so the page has none.
+  */
+  .nc-window {
+    --nc-title-bar-height: 44px;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    background: var(--nc-window-ground);
+  }
+  .nc-window > :is(.nc-title-bar, .nc-window__body, .nc-status-bar, main) { position: relative; }
+  .nc-window__body { display: flex; min-height: 0; }
+  .nc-window__content { flex: 1; min-width: 0; overflow: auto; }
+
+  /* The light from the top-left corner: 8 % white fading out over the first 38 % of the diagonal,
+     drawn dithered by nocturne.js (Controls/LightTexture.cs); the gradient is what shows without script */
+  .nc-window__light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+  .nc-window__light:not([width]) { background: var(--nc-window-light); }
+
+  /* ------------------------------------------------------------ title bar */
+  .nc-title-bar {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--nc-title-bar-height);
+    padding: 0 8px 0 16px;
+    color: var(--nc-text);
+  }
+  .nc-title-bar:has(> .nc-window-commands:first-child) { padding-left: 8px; }
+  /* LeftWindowCommands, then a thin divider before the icon and title */
+  .nc-title-bar > .nc-window-commands:first-child::after {
+    content: "";
+    width: 1px;
+    height: 18px;
+    margin: 0 12px;
+    align-self: center;
+    background: var(--nc-divider);
+  }
+  .nc-title-bar > .nc-window-commands:last-child:not(:first-child) { margin-left: auto; }
+  .nc-title-bar__icon {
+    position: relative;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+  }
+  /* The default icon: an accent square with a white rounded square in it */
+  .nc-title-bar__icon:empty::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 4px;
+    background: var(--nc-accent);
+  }
+  .nc-title-bar__icon:empty::after {
+    content: "";
+    position: absolute;
+    inset: 4.5px;
+    border: 1.4px solid #fff;
+    border-radius: 2px;
+    box-sizing: border-box;
+  }
+  .nc-title-bar__icon > img, .nc-title-bar__icon > svg { display: block; width: 16px; height: 16px; }
+  .nc-title-bar__title {
+    min-width: 0;
+    font-size: var(--nc-font-size-small);
+    font-weight: var(--nc-font-weight-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Window commands: subtle 32px buttons, as the Button.Icon.Subtle the demo puts there */
+  .nc-window-commands { display: flex; align-items: center; gap: 2px; }
+  .nc-window-commands > :is(button, a):not(.nc-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-family: var(--nc-font-family);
+    font-size: var(--nc-font-size-caption);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nc-window-commands > :is(button, a):not(.nc-button):hover { background: var(--nc-caption-hover); }
+  .nc-window-commands > :is(button, a):not(.nc-button):active { background: var(--nc-caption-pressed); }
+  .nc-window-commands > :is(button, a):not(.nc-button):is([aria-pressed="true"], [aria-current]:not([aria-current="false"])) { background: var(--nc-item-selected); }
+  .nc-window-commands .nc-stroke-icon { width: 16px; height: 16px; stroke-width: 1.8; }
+
+  /* TitleBarStyle: Seamless (the default, no strip), Separated (a dark strip) or Accent (an accent strip),
+     each with a hairline under it */
+  .nc-window[data-title-bar-style="separated"] > .nc-title-bar {
+    background: var(--nc-title-bar-separated);
+    box-shadow: inset 0 -1px 0 var(--nc-title-bar-separated-border);
+  }
+  .nc-window[data-title-bar-style="accent"] > .nc-title-bar {
+    background: var(--nc-title-bar-accent);
+    box-shadow: inset 0 -1px 0 var(--nc-title-bar-accent-border);
+  }
+  /* The accent square would sink into the accent strip: the light shade */
+  .nc-window[data-title-bar-style="accent"] .nc-title-bar__icon:empty::before { background: var(--nc-accent-light); }
+
+  /* A dialog dims the window below the title bar, as NocturneWindow's dialog host does */
+  .nc-window .nc-dialog::backdrop { top: var(--nc-title-bar-height, 44px); }
+  /* Flyouts float under the title bar */
+  .nc-window > .nc-flyout:not([data-position="bottom"]) { top: calc(var(--nc-title-bar-height, 44px) + 12px); }
+}

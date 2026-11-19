@@ -1,0 +1,113 @@
+@{
+    var page = ViewContext.RouteData.Values["controller"]?.ToString();
+    // The same icons as the WPF admin sample: the theme's line icons and the sample's own
+    var pages = new (string Name, string Icon)[]
+    {
+        ("Dashboard", "stroke-grid"),
+        ("Employees", "sample-people"),
+        ("Timesheets", "stroke-clock"),
+        ("Projects", "sample-briefcase"),
+    };
+    var sprite = Url.Content("~/_content/Nocturne.Web/img/icons.svg");
+    string Href(string icon) => icon.StartsWith("stroke-") ? sprite + "#" + icon : "#" + icon;
+    var waiting = SampleData.Timesheet.Count(r => r.Status == "Submitted");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Contoso Staffing</title>
+
+    @* Nocturne first: its @layer statement places the Nocturne layers between Tailwind's *@
+    <link rel="stylesheet" href="~/_content/Nocturne.Web/css/nocturne.css" asp-append-version="true" />
+    <script src="~/_content/Nocturne.Web/js/nocturne.js" asp-append-version="true"></script>
+
+    @* Tailwind for layout. The browser build keeps this sample free of a Node build step;
+       a real site would run the Tailwind CLI and import nocturne.tailwind.css instead. *@
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@@4.1.11"></script>
+    <style type="text/tailwindcss">
+        /* Part of _content/Nocturne.Web/css/nocturne.tailwind.css (the browser build cannot import it) */
+        @@theme inline {
+            --color-nc-text: var(--nc-text);
+            --color-nc-secondary: var(--nc-text-secondary);
+            --color-nc-label: var(--nc-text-label);
+            --color-nc-hint: var(--nc-text-hint);
+            --color-nc-accent-text: var(--nc-accent-text);
+            --radius-nc: var(--nc-radius);
+        }
+    </style>
+</head>
+<body class="nc-window">
+    <partial name="_SampleIcons" />
+    <canvas class="nc-window__light" aria-hidden="true"></canvas>
+
+    <header class="nc-title-bar">
+        <span class="nc-title-bar__icon"></span>
+        <span class="nc-title-bar__title">Contoso Staffing · Administration</span>
+        <div class="nc-window-commands">
+            @* The badge sits on the bell, not on the button's corner *@
+            <a asp-controller="Timesheets" asp-action="Index" asp-route-status="Submitted" title="Timesheets waiting for approval">
+                <span class="nc-badged"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-bell" /></svg><span class="nc-badged__badge">@waiting</span></span>
+                <span class="sr-only">@waiting timesheets waiting for approval</span>
+            </a>
+            <button type="button" data-nc-open="settings" title="Settings" aria-label="Settings"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-settings" /></svg></button>
+        </div>
+    </header>
+
+    <div class="nc-window__body">
+        <nav class="nc-hamburger-menu" aria-label="Pages">
+            <button type="button" class="nc-hamburger-menu__toggle" data-nc-toggle-pane aria-expanded="true" aria-label="Show page names">
+                <nc-stroke-icon data="Menu" />
+            </button>
+            @foreach (var (name, icon) in pages)
+            {
+                <a class="nc-hamburger-menu__item" asp-controller="@name" asp-action="Index" aria-current="@(page == name ? "page" : null)" title="@name">
+                    <span class="nc-hamburger-menu__icon"><svg class="nc-stroke-icon" aria-hidden="true"><use href="@Href(icon)" /></svg></span>
+                    <span class="nc-hamburger-menu__label">@name</span>
+                </a>
+            }
+        </nav>
+
+        <main class="nc-window__content">
+            <div class="px-7 pt-3 pb-7">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <footer class="nc-status-bar">
+        <span>Ready</span>
+        <span>Signed in as Ida Kragh</span>
+        <span class="nc-status-bar__item--right">Nocturne.Web · ASP.NET Core @Environment.Version</span>
+    </footer>
+
+    @* The Settings flyout of the WPF sample *@
+    <nc-flyout id="settings" header="Settings" width="320">
+        <p class="nc-text-block--eyebrow mb-3">APPEARANCE</p>
+        <nc-label content="Accent" target="AccentBox" />
+        <select id="AccentBox" class="nc-combo-box" data-sample-accent>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="orange">Orange</option>
+            <option value="yellow">Yellow</option>
+            <option value="teal">Teal</option>
+            <option value="system">System</option>
+        </select>
+        <label class="nc-toggle-switch mt-4"><input type="checkbox" role="switch" data-nc-pane-switch checked /> Show page names</label>
+
+        <p class="nc-text-block--eyebrow mt-7 mb-3">ACCOUNT</p>
+        <div class="flex items-center gap-3">
+            <span class="nc-icon-tile"><svg class="nc-stroke-icon" aria-hidden="true"><use href="#sample-user" /></svg></span>
+            <span>
+                <span class="nc-text-block--list-title block">Ida Kragh</span>
+                <span class="nc-text-block--caption">Controller · Finance</span>
+            </span>
+        </div>
+        <button type="button" class="nc-button mt-4">Sign out</button>
+    </nc-flyout>
+
+    @await RenderSectionAsync("Dialogs", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

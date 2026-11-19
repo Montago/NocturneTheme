@@ -1,0 +1,245 @@
+@* Views/ControlsPage.xaml: the most used controls at rest, on hover, in focus and with an error *@
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">Controls</h1>
+        <p class="demo-page-header__text">Nocturne on the web — the most used controls at rest, on hover, in focus and with an error.</p>
+    </div>
+    <nc-text-box text-box-style="Search" placeholder="Search controls…" aria-label="Search controls" style="width:280px" />
+</header>
+
+<div class="demo-columns demo-columns--3">
+    @* Column 1 *@
+    <div class="demo-stack">
+        <nc-card header="Button" tag="Button · RepeatButton">
+            <div class="demo-wrap">
+                <nc-button button-style="Primary" content="Save changes" />
+                <nc-button content="Cancel" />
+                <nc-button button-style="Subtle" content="More" />
+                <nc-button button-style="Icon" stroke-icon="Refresh" tool-tip="Refresh" aria-label="Refresh" />
+            </div>
+            <nc-label content="Toggle, repeat and disabled" style="margin-top:8px" />
+            <div class="demo-uniform demo-uniform--4">
+                <nc-toggle-button content="Off" />
+                <nc-toggle-button content="On" is-checked="true" />
+                <nc-repeat-button content="Repeat" id="RepeatButton" />
+                <nc-button button-style="Primary" content="Disabled" is-enabled="false" />
+            </div>
+            <nc-label content="Danger, for what cannot be undone" style="margin-top:14px" />
+            <div class="demo-wrap">
+                <nc-button button-style="Danger" icon="Delete" content="Delete project" id="DeleteProject" />
+                <nc-button button-style="Danger" content="Disabled" is-enabled="false" />
+            </div>
+        </nc-card>
+
+        <nc-card header="TextBox · PasswordBox" tag="TextBox · PasswordBox">
+            <nc-label content="Server name" target="ServerBox" />
+            <nc-text-box id="ServerBox" text="intranet.local" />
+            <nc-label content="User name" target="UserBox" style="margin-top:14px" />
+            <nc-text-box id="UserBox" placeholder="e.g. anna.holm" />
+            <nc-label content="Password" target="PasswordBox" style="margin-top:14px" />
+            <nc-password-box id="PasswordBox" placeholder="Password" can-reveal="true" />
+            <nc-label content="Port" target="PortBox" style="margin-top:14px" />
+            @* The message shows in the error callout on focus or hover *@
+            <nc-text-box id="PortBox" text="99999" validation-error="The port must be a whole number from 1 to 65535." />
+        </nc-card>
+
+        <nc-card header="ComboBox" tag="ComboBox">
+            <nc-label content="Language" target="LanguageBox" />
+            <nc-combo-box id="LanguageBox" selected-index="1">
+                @foreach (var language in DemoData.Languages)
+                {
+                    <nc-combo-box-item content="@language" />
+                }
+            </nc-combo-box>
+            <nc-label content="Editable" target="EditableBox" style="margin-top:14px" />
+            <nc-combo-box id="EditableBox" is-editable="true" text="Norsk">
+                @foreach (var language in DemoData.Languages)
+                {
+                    <nc-combo-box-item content="@language" />
+                }
+            </nc-combo-box>
+            <nc-label content="Nothing chosen yet" target="EmptyBox" style="margin-top:14px" />
+            <nc-combo-box id="EmptyBox" placeholder="Choose a language">
+                @foreach (var language in DemoData.Languages)
+                {
+                    <nc-combo-box-item content="@language" />
+                }
+            </nc-combo-box>
+        </nc-card>
+    </div>
+
+    @* Column 2 *@
+    <div class="demo-stack">
+        <nc-card header="CheckBox" tag="CheckBox · IsThreeState">
+            <div class="demo-list">
+                <nc-check-box content="Start automatically with Windows" is-checked="true" />
+                <nc-check-box content="Send anonymous usage statistics" />
+                <nc-check-box content="Select all folders (partly selected)" is-checked="null" />
+                <nc-check-box content="Require administrator (disabled)" is-checked="true" is-enabled="false" />
+            </div>
+        </nc-card>
+
+        <nc-card header="RadioButton" tag="RadioButton · GroupName">
+            <nc-label content="Updates" />
+            <div class="demo-list">
+                <nc-radio-button group-name="Updates" content="Automatic (recommended)" is-checked="true" />
+                <nc-radio-button group-name="Updates" content="Notify before installing" />
+                <nc-radio-button group-name="Updates" content="Never" />
+            </div>
+        </nc-card>
+
+        <nc-card header="GroupBox · ToggleSwitch" tag="GroupBox · ToggleButton">
+            <nc-group-box header="Synchronisation">
+                <nc-toggle-switch is-checked="true"><span class="nc-toggle-switch__text"><span>Synchronise in the background</span><small data-demo-on-off>On</small></span></nc-toggle-switch>
+                <nc-toggle-switch><span class="nc-toggle-switch__text"><span>Only on unmetered networks</span><small data-demo-on-off>Off</small></span></nc-toggle-switch>
+                <nc-toggle-switch is-checked="true"><span class="nc-toggle-switch__text"><span>Keep deleted files for 30 days</span><small data-demo-on-off>On</small></span></nc-toggle-switch>
+            </nc-group-box>
+        </nc-card>
+
+        <nc-card header="Slider · ProgressBar" tag="Slider · ProgressBar">
+            <div class="demo-label-row"><nc-label content="Bandwidth limit" /><span class="demo-value" id="BandwidthValue">62 Mbit/s</span></div>
+            <nc-slider id="BandwidthSlider" value="62" minimum="0" maximum="100" small-change="1" large-change="10" label="Bandwidth limit" />
+            <div class="demo-label-row" style="margin-top:16px"><nc-label content="Uploading 128 of 200 files" /><span class="demo-value">64 %</span></div>
+            <nc-progress-bar value="64" aria-label="Upload" />
+            <nc-label content="Connecting… (IsIndeterminate)" style="margin-top:16px" />
+            <nc-progress-bar is-indeterminate="true" aria-label="Connecting" />
+        </nc-card>
+    </div>
+
+    @* Column 3 *@
+    <div class="demo-stack">
+        <nc-card header="TabControl · Segments" tag="TabControl · TabItem">
+            <nc-tab-control>
+                <nc-tab-item header="General">
+                    <demo-row key="Theme" value="Nocturne (dark)" />
+                    <demo-row key="Ground" value="Opaque" />
+                    <demo-row key="Accent colour" value="Blue" />
+                </nc-tab-item>
+                <nc-tab-item header="Network">
+                    <demo-row key="Proxy" value="Automatic" />
+                    <demo-row key="Timeout" value="30 s" />
+                    <demo-row key="IPv6" value="Enabled" />
+                </nc-tab-item>
+                <nc-tab-item header="Advanced">
+                    <demo-row key="Log level" value="Information" />
+                    <demo-row key="Hardware acceleration" value="On" />
+                    <demo-row key="Diagnostics" value="Off" />
+                </nc-tab-item>
+            </nc-tab-control>
+        </nc-card>
+
+        @* Document tabs sit straight on the window, without a card *@
+        <div class="demo-heading-row"><span class="nc-text-block--eyebrow">TABCONTROL · DOCUMENTS</span><nc-tag>TabControl · TabItem</nc-tag></div>
+        <nc-tab-control id="DocumentTabs" tab-control-style="Document" show-add-button="true" style="margin-bottom:20px">
+            <nc-tab-item header="Overview" show-close-button="true">
+                <demo-row key="Files" value="1,284" />
+                <demo-row key="Total size" value="18.6 GB" />
+                <demo-row key="Last synchronised" value="Today 07:12" />
+            </nc-tab-item>
+            <nc-tab-item header="Logs" show-close-button="true">
+                <demo-row key="07:12:04" value="Synchronisation complete" />
+                <demo-row key="07:11:58" value="128 files uploaded" />
+                <demo-row key="07:10:02" value="Connected to server" />
+            </nc-tab-item>
+            <nc-tab-item header="Conflicts" badge="2" show-close-button="true">
+                <demo-row key="Budget 2027.xlsx" value="Changed in both places" />
+                <demo-row key="Notes.md" value="Deleted locally" />
+            </nc-tab-item>
+        </nc-tab-control>
+
+        <nc-card header="ListBox" tag="ListBox · ListBoxItem">
+            <nc-list-box selected-index="0" aria-label="Settings">
+                <nc-list-box-item content="Synchronisation" description="Keep files up to date across devices" stroke-icon="Sync" />
+                <nc-list-box-item content="Security" description="Passwords, 2FA and certificates" stroke-icon="Shield" />
+                <nc-list-box-item content="Network" description="Proxy, DNS and connections" stroke-icon="Globe" />
+                <nc-list-box-item content="Storage" description="Disk usage and clean-up" stroke-icon="Database" />
+            </nc-list-box>
+        </nc-card>
+
+        <nc-card header="Expander" tag="Expander">
+            <nc-expander header="Advanced settings" is-expanded="true">
+                <p class="demo-body">The content folds out under the header and shares the card's surface. IsExpanded turns the chevron with a 150 ms animation.</p>
+            </nc-expander>
+        </nc-card>
+    </div>
+</div>
+
+@* Bottom row *@
+<div class="demo-columns demo-columns--2-1">
+    <nc-card header="DataGrid · ScrollBar" tag="DataGrid · ScrollViewer">
+        <div class="nc-data-grid-host" style="height:262px">
+            <table class="nc-data-grid" data-nc-selection="single">
+                <thead>
+                    <tr>
+                        <th style="width:44px" data-nc-sort="false"></th>
+                        <th aria-sort="ascending">Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < DemoData.People.Count; i++)
+                    {
+                        var p = DemoData.People[i];
+                        var pill = p.Status switch { "Invited" => "nc-pill--warning", "Blocked" => "nc-pill--error", _ => "nc-pill--success" };
+                        <tr aria-selected="@(i == 0 ? "true" : "false")">
+                            <td><span class="nc-check-box demo-row-check"><input type="checkbox" tabindex="-1" aria-label="Selected" @(i == 0 ? "checked" : null)></span></td>
+                            <td data-sort-value="@p.Name"><b class="demo-strong">@p.Name</b></td>
+                            <td>@p.Role</td>
+                            <td data-sort-value="@p.Status"><span class="nc-pill @pill">@p.Status</span></td>
+                            <td>@p.LastActive</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </nc-card>
+
+    <nc-card header="ToolTip · ContextMenu" tag="ToolTip · ContextMenu">
+        <div class="demo-inline">
+            <nc-button button-style="Icon" stroke-icon="Copy" aria-label="Copy" tool-tip="Copy to clipboard   Ctrl+C" />
+            <span class="nc-text-block--caption">Hover for the tool tip</span>
+        </div>
+        <div class="demo-menu-target" data-nc-context-menu="DemoContextMenu">
+            <span class="nc-text-block--caption">Right-click here for the context menu.</span>
+        </div>
+        <nc-context-menu id="DemoContextMenu">
+            <nc-menu-item header="Cut" input-gesture-text="Ctrl+X" stroke-icon="Cut" />
+            <nc-menu-item header="Copy" input-gesture-text="Ctrl+C" stroke-icon="Copy" />
+            <nc-menu-item header="Paste" input-gesture-text="Ctrl+V" stroke-icon="Paste" />
+            <nc-separator />
+            <nc-menu-item header="Show hidden files" is-checkable="true" is-checked="true" />
+            <nc-menu-item header="Sort by">
+                <nc-menu-item header="Name" is-checkable="true" is-checked="true" />
+                <nc-menu-item header="Date modified" is-checkable="true" />
+                <nc-menu-item header="Size" is-checkable="true" />
+            </nc-menu-item>
+            <nc-separator />
+            <nc-menu-item header="Rename" input-gesture-text="F2" stroke-icon="Edit" />
+            <nc-menu-item header="Delete" input-gesture-text="Del" stroke-icon="Delete" style="color:var(--nc-error-text)" />
+        </nc-context-menu>
+
+        <nc-label content="Menu bar" style="margin-top:16px" />
+        <nc-menu>
+            <nc-menu-item header="_File">
+                <nc-menu-item header="_New" input-gesture-text="Ctrl+N" stroke-icon="Plus" />
+                <nc-menu-item header="_Open…" input-gesture-text="Ctrl+O" />
+                <nc-separator />
+                <nc-menu-item header="E_xit" />
+            </nc-menu-item>
+            <nc-menu-item header="_Edit">
+                <nc-menu-item header="Cu_t" input-gesture-text="Ctrl+X" stroke-icon="Cut" />
+                <nc-menu-item header="_Copy" input-gesture-text="Ctrl+C" stroke-icon="Copy" />
+                <nc-menu-item header="_Paste" input-gesture-text="Ctrl+V" stroke-icon="Paste" />
+            </nc-menu-item>
+            <nc-menu-item header="_View">
+                <nc-menu-item header="_Status bar" is-checkable="true" is-checked="true" />
+                <nc-menu-item header="_Zoom">
+                    <nc-menu-item header="Zoom _in" input-gesture-text="Ctrl++" />
+                    <nc-menu-item header="Zoom _out" input-gesture-text="Ctrl+-" />
+                </nc-menu-item>
+            </nc-menu-item>
+        </nc-menu>
+    </nc-card>
+</div>

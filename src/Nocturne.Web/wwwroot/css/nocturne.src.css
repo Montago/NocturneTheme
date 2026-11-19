@@ -1,0 +1,102 @@
+/*
+Nocturne for the web: the Nocturne look as CSS classes, with the values of Nocturne.Wpf
+(nocturne.tokens.css is generated from its Styles/ and accent palettes by tools/generate_web_tokens.py).
+Sites link nocturne.css, which tools/bundle_web_css.py writes from this file and the files it imports.
+
+No transparency to the desktop: where the WPF window shows Acrylic or Mica through a tint, the page
+paints the opaque ground (--nc-window-ground, the ground NocturneWindow paints over Remote Desktop)
+with the soft light from the top-left corner (canvas.nc-window__light, drawn by nocturne.js). Popups,
+menus, dialogs and flyouts are solid; cards, hover and selection keep their light alpha over it.
+
+Class names follow the WPF controls and style keys:
+    control      ComboBox                          -> .nc-combo-box
+    style key    Nocturne.Styles.Button.Primary    -> .nc-button.nc-button--primary
+    part         the title of a Tile               -> .nc-tile__title
+
+Everything sits in cascade layers, so utility classes (Tailwind or your own) override it.
+Load this file before Tailwind: the first @layer statement fixes the order of the layers.
+*/
+@layer theme, base, nocturne-base, components, utilities;
+
+@import url("nocturne.tokens.css");
+@import url("controls/shared.css");
+@import url("controls/buttons.css");
+@import url("controls/text.css");
+@import url("controls/toggles.css");
+@import url("controls/lists.css");
+@import url("controls/range.css");
+@import url("controls/calendar.css");
+@import url("controls/pickers.css");
+@import url("controls/containers.css");
+@import url("controls/datagrid.css");
+@import url("controls/menu.css");
+@import url("controls/window.css");
+@import url("controls/overlays.css");
+
+/* Values that are not in the WPF dictionaries */
+:root {
+  /* The 120 and 150 ms transitions of the WPF templates */
+  --nc-fast: 0.12s;
+  --nc-slow: 0.15s;
+  --nc-radius: 8px;
+  /* DropShadowEffect of the primary button, the popups and the dialog */
+  --nc-shadow-button: 0 1px 4px rgb(0 0 0 / 0.3);
+  --nc-shadow-popup: 0 10px 28px rgb(0 0 0 / 0.45);
+  --nc-shadow-dialog: 0 16px 40px rgb(0 0 0 / 0.5);
+  --nc-shadow-flyout: 0 8px 32px rgb(0 0 0 / 0.45);
+  /* The solid colour of the ground where an element sits: what sticky headers and frozen columns
+     paint so the rows that scroll under them do not show through. A card is Surface1 over the ground. */
+  --nc-local-ground: var(--nc-window-ground);
+  /* FontWeight Medium: Segoe UI has no 500. WPF draws Medium with the regular face, browsers with the
+     semibold one; 400 keeps labels as they look in WPF. Set it to 500 with a font that has the weight. */
+  --nc-font-weight-medium: 400;
+}
+
+/* ------------------------------------------------------------------ base */
+@layer nocturne-base {
+  html {
+    color-scheme: dark;
+    background: var(--nc-window-ground);
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--nc-window-ground);
+    color: var(--nc-text);
+    font: var(--nc-font-size-default) / 1.45 var(--nc-font-family);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--nc-accent-light) 45%, transparent);
+    color: var(--nc-text-selected);
+  }
+  /* Nocturne.Styles.FocusVisual: a 2px white ring, 2px outside the control */
+  :focus-visible {
+    outline: 2px solid var(--nc-focus);
+    outline-offset: 2px;
+  }
+  button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  h1 { font-size: var(--nc-font-size-title); }
+  h2 { font-size: var(--nc-font-size-subtitle); }
+  h3 { font-size: var(--nc-font-size-list-title); }
+  h4, h5, h6 { font-size: var(--nc-font-size-default); }
+  a { color: var(--nc-accent-text); }
+  a:hover { color: var(--nc-accent-text-hover); }
+  hr { border: 0; height: 1px; background: var(--nc-divider); margin: 8px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    /* The theme's own transitions ignore Windows' animation setting in WPF (it is off over RDP);
+       here only the long, decorative ones stop */
+    .nc-progress-ring svg, .nc-progress-bar:indeterminate::after { animation-duration: 3s; }
+  }
+}

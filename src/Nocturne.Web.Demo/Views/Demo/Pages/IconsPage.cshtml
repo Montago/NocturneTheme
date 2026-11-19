@@ -1,0 +1,69 @@
+@* Views/IconsPage.xaml: the NocturneIcon set and the theme's own line icons *@
+@{
+    var strokeIcons = new[]
+    {
+        "Check", "ChevronDown", "ChevronUp", "ChevronRight", "ChevronLeft", "Close", "Plus", "Search", "Refresh", "Eye", "Copy", "Cut",
+        "Paste", "Undo", "SelectAll", "Edit", "Delete", "Sync", "Shield", "Globe", "Database", "Grid", "Layers", "Text", "Clock",
+        "Calendar", "Folder", "Info", "CheckCircle", "Warning", "Error", "Components", "Filter", "PageFirst", "PageLast", "Menu", "File",
+    };
+}
+<header class="demo-page-header">
+    <div>
+        <h1 class="nc-text-block--title">Icons</h1>
+        <p class="demo-page-header__text">nc-icon draws Material Design Icons by Pictogrammers (Apache License 2.0), with the names MahApps' IconBrowser uses; nc-stroke-icon the theme's own line icons. Click an icon to copy its markup; add more in icons/icons.json.</p>
+    </div>
+</header>
+
+<nc-card header="Shortcuts" tag="nc-icon · nc-stroke-icon · icon" class="demo-stack-item">
+    <div class="demo-shortcuts">
+        <div class="demo-inline" style="gap:12px">
+            <nc-icon kind="Bell" style="width:20px;height:20px" />
+            <nc-icon kind="Cog" style="width:20px;height:20px" />
+            <nc-icon kind="AccountMultiple" style="width:20px;height:20px;color:var(--nc-accent-light)" />
+        </div>
+        <span class="nc-text-block--mono">&lt;nc-icon kind="Bell" /&gt;  — in the text colour; size it with CSS</span>
+
+        <nc-button button-style="Icon" icon="Refresh" aria-label="Refresh" />
+        <span class="nc-text-block--mono">&lt;nc-button button-style="Icon" icon="Refresh" /&gt;  — an icon where content goes</span>
+
+        <nc-menu style="justify-self:start">
+            <nc-menu-item header="File">
+                <nc-menu-item header="New" icon="FilePlus" input-gesture-text="Ctrl+N" />
+                <nc-menu-item header="Save" icon="ContentSave" input-gesture-text="Ctrl+S" />
+                <nc-menu-item header="Print" icon="Printer" input-gesture-text="Ctrl+P" />
+            </nc-menu-item>
+        </nc-menu>
+        <span class="nc-text-block--mono">&lt;nc-menu-item icon="ContentSave" /&gt;  — the menu's 16px column</span>
+
+        <nc-stroke-icon data="Shield" style="color:var(--nc-warning)" />
+        <span class="nc-text-block--mono">&lt;nc-stroke-icon data="Shield" /&gt;  — a line icon of Styles/Icons.xaml, 24 × 24</span>
+    </div>
+</nc-card>
+
+<nc-card header="All icons" tag="NocturneIconKind" class="demo-stack-item">
+    <div class="demo-icon-toolbar">
+        <nc-text-box id="IconSearch" text-box-style="Search" placeholder="Search icons" clear-button="true" aria-label="Search icons" style="width:240px" />
+        <span class="nc-text-block--mono" id="IconCopied"></span>
+    </div>
+    <div class="demo-icons" id="IconCards">
+        @foreach (var kind in Enum.GetValues<NocturneIconKind>().Where(k => k != NocturneIconKind.None))
+        {
+            <button type="button" class="demo-icon-card" data-kind="@kind" data-markup="@($"<nc-icon kind=\"{kind}\" />")" title="@kind">
+                <nc-icon kind="@kind" />
+                <span class="demo-icon-card__name">@kind</span>
+            </button>
+        }
+    </div>
+</nc-card>
+
+<nc-card header="Line icons" tag="Nocturne.Icons.* · StrokeIcon" class="demo-stack-item">
+    <div class="demo-icons">
+        @foreach (var name in strokeIcons)
+        {
+            <button type="button" class="demo-icon-card" data-kind="@name" data-markup="@($"<nc-stroke-icon data=\"{name}\" />")" title="@name">
+                <nc-stroke-icon data="@name" />
+                <span class="demo-icon-card__name">@name</span>
+            </button>
+        }
+    </div>
+</nc-card>

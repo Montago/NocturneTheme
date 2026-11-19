@@ -1,0 +1,117 @@
+@model EmployeesPage
+@{
+    ViewData["Title"] = "Employees";
+    var selectedId = Model.Form?.Id;
+}
+
+<h1 class="nc-text-block--title">Employees</h1>
+<p class="nc-text-block--caption mt-1 mb-4">@Model.Employees.Count employees</p>
+
+@* Filters on the left, actions on the right. The form reloads the page when a filter changes. *@
+<form method="get" class="flex flex-wrap items-center gap-2.5 mb-4" data-auto-submit>
+    <div class="nc-text-box-host nc-text-box-host--search w-[260px]">
+        <input class="nc-text-box" type="search" name="search" value="@Model.Search" placeholder="Search employees" aria-label="Search employees" autofocus="@(string.IsNullOrEmpty(Model.Search) ? null : "autofocus")" />
+        <button type="button" class="nc-text-box-host__button nc-text-box-host__clear" data-nc-clear aria-label="Clear search" title="Clear" tabindex="-1"></button>
+    </div>
+    <select class="nc-combo-box w-[170px]" name="department" aria-label="Department">
+        @foreach (var d in FilterLists.DepartmentFilter)
+        {
+            <option selected="@(d == Model.Department)">@d</option>
+        }
+    </select>
+    <nc-toggle-switch name="activeOnly" checked="@Model.ActiveOnly" class="ml-2">Active only</nc-toggle-switch>
+
+    <div class="ml-auto flex gap-2.5">
+        <button type="button" class="nc-button" data-nc-open="confirm-delete" disabled="@(Model.Form is null)"><nc-icon kind="Delete" /> Delete</button>
+        <button type="button" class="nc-button nc-button--primary">New employee</button>
+    </div>
+</form>
+
+<div class="grid grid-cols-1 min-[1100px]:grid-cols-[minmax(0,1fr)_340px] gap-4 items-start">
+    <div class="nc-data-grid-host">
+        <table class="nc-data-grid min-w-[560px]">
+            <thead>
+                <tr>
+                    <th aria-sort="ascending">Name</th>
+                    <th class="w-[150px]">Title</th>
+                    <th class="w-[130px]">Department</th>
+                    <th class="w-[100px] text-right">Started</th>
+                    <th class="w-[70px]">Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Employees)
+                {
+                    <tr data-href="@Model.Link(e)" aria-selected="@(Slug.Of(e.Name) == selectedId ? "true" : null)">
+                        <td><a class="text-inherit no-underline" href="@Model.Link(e)">@e.Name</a></td>
+                        <td>@e.Title</td>
+                        <td>@e.Department</td>
+                        <td class="nc-data-grid__number" data-sort-value="@e.StartDate.ToString("yyyy-MM-dd")">@e.StartDate.ToShortDateString()</td>
+                        <td data-sort-value="@(e.IsActive ? 1 : 0)">
+                            <span class="nc-check-box" inert><input type="checkbox" checked="@e.IsActive" aria-label="Active" /></span>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Employees.Count == 0)
+                {
+                    <tr><td colspan="5" class="text-center">No employees match the filter.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* The details follow the selected row *@
+    @if (Model.Form is { } form)
+    {
+        <nc-card header="Details">
+            <nc-info-bar severity="Success" title="Saved." message="The changes are stored." is-open="@Model.Saved" class="mb-3" />
+
+            <form method="post" asp-action="Save" novalidate>
+                <input type="hidden" asp-for="Form!.Id" />
+
+                <label class="nc-label" asp-for="Form!.Name">Name</label>
+                <input class="nc-text-box" asp-for="Form!.Name" />
+                <span class="nc-validation-message" asp-validation-for="Form!.Name"></span>
+
+                <label class="nc-label mt-3.5" asp-for="Form!.Title">Title</label>
+                <input class="nc-text-box" asp-for="Form!.Title" />
+                <span class="nc-validation-message" asp-validation-for="Form!.Title"></span>
+
+                <label class="nc-label mt-3.5" asp-for="Form!.Department">Department</label>
+                <select class="nc-combo-box" asp-for="Form!.Department" asp-items="@(new SelectList(SampleData.Departments))"></select>
+
+                <label class="nc-label mt-3.5" asp-for="Form!.Email">Email</label>
+                <input class="nc-text-box" asp-for="Form!.Email" />
+                <span class="nc-validation-message" asp-validation-for="Form!.Email"></span>
+
+                <div class="grid grid-cols-[minmax(0,1fr)_110px] gap-x-3 mt-3.5">
+                    <label class="nc-label" asp-for="Form!.StartDate">Start date</label>
+                    <label class="nc-label" asp-for="Form!.HoursPerWeek">Hours a week</label>
+                    <input class="nc-text-box" asp-for="Form!.StartDate" />
+                    <nc-numeric-up-down asp-for="Form!.HoursPerWeek" minimum="0" maximum="40" interval="0.5" />
+                </div>
+                <span class="nc-validation-message" asp-validation-for="Form!.HoursPerWeek"></span>
+
+                <nc-toggle-switch asp-for="Form!.IsActive" class="mt-3">Active</nc-toggle-switch>
+
+                <div class="flex justify-end gap-2 mt-4">
+                    <a class="nc-button min-w-[80px]" href="@Url.Action("Index", new { id = form.Id })">Cancel</a>
+                    <button type="submit" class="nc-button nc-button--primary min-w-[80px]">Save</button>
+                </div>
+            </form>
+        </nc-card>
+    }
+</div>
+
+@section Dialogs {
+    <dialog class="nc-dialog" id="confirm-delete" aria-labelledby="confirm-delete-title">
+        <div class="nc-dialog__card">
+            <h2 class="nc-dialog__title" id="confirm-delete-title">Delete employee?</h2>
+            <div class="nc-dialog__content">@Model.Form?.Name will be removed from the staff list. Approved timesheets stay in the archive.</div>
+            <div class="nc-dialog__buttons">
+                <button type="button" class="nc-button" data-nc-close autofocus>Cancel</button>
+                <button type="button" class="nc-button nc-button--danger" data-nc-close>Delete</button>
+            </div>
+        </div>
+    </dialog>
+}
