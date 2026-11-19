@@ -8,7 +8,7 @@ namespace Nocturne.Avalonia.Demo;
 
 /// <summary>
 /// The command-line commands that draw pictures instead of showing the demo: <c>--snapshot</c>
-/// (<see cref="Snapshot"/>) and <c>--render</c> (<see cref="RenderCommand"/>). They run on Avalonia's
+/// (<see cref="Snapshot"/>), <c>--render</c> and <c>--render-gallery</c> (<see cref="RenderCommand"/>). They run on Avalonia's
 /// headless platform with Skia, so they need no screen and work the same on Windows, macOS and Linux.
 /// Popups are drawn into the window (OverlayPopups), so they show in the pictures.
 /// </summary>
@@ -17,7 +17,7 @@ internal static class Headless
     public static bool TryRun(string[] args, out int exitCode)
     {
         exitCode = 0;
-        if (args.Length == 0 || args[0] is not ("--snapshot" or "--render"))
+        if (args.Length == 0 || args[0] is not ("--snapshot" or "--render" or "--render-gallery"))
             return false;
 
         AppBuilder.Configure<App>()
@@ -27,7 +27,12 @@ internal static class Headless
         // The headless platform cannot extend the client area into the frame; draw the title bar anyway.
         Controls.NocturneWindow.AlwaysDrawTitleBar = true;
 
-        exitCode = args[0] == "--snapshot" ? Snapshot.Run(args) : RenderCommand.Run(args);
+        exitCode = args[0] switch
+        {
+            "--snapshot" => Snapshot.Run(args),
+            "--render-gallery" => RenderCommand.RunGallery(args),
+            _ => RenderCommand.Run(args),
+        };
         return true;
     }
 

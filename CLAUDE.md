@@ -138,11 +138,12 @@ same repo, Avalonia's own controls where they exist (NumericUpDown, TimePicker, 
 by the theme, our own classes only for what Avalonia lacks, NocturneGrid in a later version.
 
 ```
-src/Avalonia.props             the Avalonia version, imported by every Avalonia project
+src/Avalonia.props             the Avalonia and Avalonia.Controls.DataGrid versions, imported by every Avalonia project
 src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmlns urn:nocturne-avalonia, prefix nc)
   NocturneTheme.axaml(.cs)     the Styles class apps add to Application.Styles (<nc:NocturneTheme />); merges Styles/*;
                                NocturneTheme.Accents.cs: SetAccent, System accent (Windows' AccentPalette, else Avalonia's)
-  Styles/                      Brushes, Icons (generated), Fonts, Controls.*.axaml (ControlThemes keyed {x:Type …});
+  Styles/                      Brushes, Icons (generated), Fonts, Controls.*.axaml (ControlThemes keyed {x:Type …};
+                               Controls.DataGrid.axaml styles Avalonia's DataGrid, a package the library references);
                                Controls.Base.axaml holds the hosts every standalone theme needs (PopupRoot,
                                OverlayPopupHost, AdornerLayer with the focus ring, FlyoutPresenter, ItemsControl, …)
   Controls/                    NocturneWindow (hosts Flyouts and dialogs), LightTexture, NativeMethods (Windows only),
@@ -153,8 +154,12 @@ src/Nocturne.Avalonia/         library (net10.0, package Nocturne.Avalonia, xmln
                                ColorPicker, NocturneDialog, Flyout (Overlays.cs)
   Helpers/                     ControlHelper (attached properties), TabHelper (document tabs: close, badge, "+"),
                                ScrollViewerHelper (bars fade in on hover and while scrolling), NocturneConverters
-src/Nocturne.Avalonia.Demo/    demo (Views/ControlsPage, CustomControlsPage, TokensPage); Headless.cs, Snapshot.cs (--snapshot),
-                               RenderCommand.cs (--render)
+src/Nocturne.Avalonia.Demo/    demo (Views/: Controls, MoreControls, CustomControls, Icons, Tokens pages; GalleryPage with one
+                               sample per control, Tag = file name); DemoData.cs; Headless.cs, Snapshot.cs (--snapshot),
+                               RenderCommand.cs (--render, --render-gallery), GallerySnapshot.cs + Gallery.cs (Gallery.Open:
+                               the drop-down, menu or tool tip drawn open in a sample's picture)
+samples/Nocturne.Avalonia.Samples.Admin, .Portal   the WPF samples' pages on Avalonia (DataGrid where WPF has NocturneGrid);
+                               samples/Shared/Avalonia: SampleIcons.axaml, SampleSnapshot.cs (--snapshot), SampleConverters.cs
 tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent palettes of NocturneTheme.cs (WPF) ->
                                Styles/Brushes.axaml, Styles/Icons.axaml, Controls/NocturneAccent.g.cs; --check in CI
 ```
@@ -169,9 +174,10 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
   (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
   (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
-  `--snapshot` ends with `checks.txt` (behaviour driven with the headless mouse and keyboard: scroll bars
-  hide and appear, document tabs close and add, the custom page's SearchComboBox, ColorPicker, TimePicker,
-  dialog and flyout) and exits with 1 when a check fails, so CI catches it.
+  `--snapshot` draws the pages, popups, the gallery (`controls/`), and ends with `checks.txt` (behaviour
+  driven with the headless mouse and keyboard: scroll bars hide and appear, document tabs close and add,
+  the custom page's SearchComboBox, ColorPicker, TimePicker, dialog and flyout) and exits with 1 when a
+  check fails, so CI catches it. The sample apps take `--snapshot <folder>` too (CI runs all three on Linux).
 - NocturneWindow extends the client area and marks its title bar and caption buttons with Avalonia 12's
   `WindowDecorationProperties.ElementRole` (TitleBar, MinimizeButton, MaximizeButton, CloseButton; User for
   commands inside the bar): Windows drags, snaps and shows the snap layouts itself. macOS keeps its traffic
@@ -223,6 +229,18 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   for the user moving in and opens its list.
 - Elements that draw outside their bounds (Badged's badge, a swatch ring) need room inside the
   bounds or `ClipToBounds="False"`; negative margins are clipped.
+- Headless, open popups are `OverlayPopupHost`s in the window's `PopupOverlayLayer` (not `OverlayLayer`);
+  `GallerySnapshot` crops to them. A flyout's popup is not a visual descendant of its button: close it
+  with `Hide()`, not by looking for a Popup.
+- A `ResourceDictionary` keeps resources nothing has used yet deferred: enumerate its keys and read each
+  with `TryGetResource` (the gallery's line icons), not its values.
+- Resources and the clipboard: `Application.Current.TryFindResource` works before a
+  control is in the tree, `control.TryFindResource` does not; `IClipboard.SetTextAsync` is an extension in
+  `Avalonia.Input.Platform`; `InputElement.TappedEvent` (not `Gestures`).
+- DataGrid: a `DataGridTextColumn` cell's text takes the theme `DataGridCellTextBlockTheme` (and the editor
+  `DataGridCellTextBoxTheme`), found by key; right-aligned columns use `CellStyleClasses` and a
+  `DataGridCell.<class>` style; grouping is `DataGridCollectionView.GroupDescriptions`, and a grid selects
+  its first row when it gets its items unless `SelectedItem` is set to null after.
 
 ## Releases
 

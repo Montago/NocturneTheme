@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Portal"
+             x:Class="Nocturne.Avalonia.Samples.Portal.Views.ProductsView">
+    <Grid Margin="20,12,28,24" RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="320,24,*">
+        <TextBlock Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Products" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro" Text="14 products from 10 suppliers" />
+
+        <!-- Search and category filter above the list -->
+        <Grid Grid.Row="2" Margin="0,0,0,12" ColumnDefinitions="*,8,130">
+            <TextBox Name="Search" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" PlaceholderText="Search products" Classes="clearButton"
+                     AutomationProperties.Name="Search products" />
+            <ComboBox Name="Category" Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0"
+                      ItemsSource="{x:Static local:SampleData.Categories}" AutomationProperties.Name="Category" />
+        </Grid>
+
+        <ListBox Name="List" Grid.Row="3" AutomationProperties.Name="Products">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:Product">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Price, StringFormat=C}" VerticalAlignment="Center" />
+                        <StackPanel>
+                            <TextBlock FontWeight="SemiBold" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Hint}" Text="{Binding Category}" />
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Details of the selected product -->
+        <StackPanel Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" DataContext="{Binding #List.SelectedItem}" x:DataType="local:Product">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Name}" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Margin="0,2,0,16" Text="{Binding Subtitle}" />
+
+            <nc:InfoBar Name="LowStock" Severity="Warning" Title="Low stock." Message="Fewer units than the reorder level are left."
+                        IsClosable="False" Margin="0,0,0,16" />
+
+            <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="STOCK AND PRICE">
+                <StackPanel>
+                    <!-- Short number fields side by side, each with its label above -->
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <StackPanel Width="130">
+                            <Label Content="_Price" Target="PriceBox" />
+                            <NumericUpDown Name="PriceBox" Value="{Binding Price, Mode=OneWay}" Minimum="0" Increment="0.5" FormatString="C" />
+                        </StackPanel>
+                        <StackPanel Width="110">
+                            <Label Content="Units in _stock" Target="StockBox" />
+                            <NumericUpDown Name="StockBox" Value="{Binding InStock, Mode=OneWay}" Minimum="0" FormatString="0" />
+                        </StackPanel>
+                        <StackPanel Width="110">
+                            <Label Content="_Reorder level" Target="ReorderBox" />
+                            <NumericUpDown Name="ReorderBox" Value="{Binding ReorderLevel, Mode=OneWay}" Minimum="0" FormatString="0" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="Customer rating" Margin="0,0,12,0" />
+                        <nc:Rating Value="{Binding Rating, Mode=OneWay}" VerticalAlignment="Center" />
+                        <CheckBox Content="Discontinued" IsChecked="{Binding Discontinued, Mode=OneWay}" Margin="32,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </HeaderedContentControl>
+
+            <Expander Header="Description" IsExpanded="True" Margin="0,16,0,0" HorizontalAlignment="Stretch">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
+            </Expander>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0" Spacing="8">
+                <SplitButton Content="Reorder">
+                    <SplitButton.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedRight">
+                            <MenuItem Header="Order the usual quantity" />
+                            <MenuItem Header="Order from another supplier…" />
+                        </MenuFlyout>
+                    </SplitButton.Flyout>
+                </SplitButton>
+                <Button Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" MinWidth="80" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

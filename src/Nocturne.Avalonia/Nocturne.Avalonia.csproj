@@ -39,6 +39,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <!-- The theme styles Avalonia's DataGrid, which lives in its own package (and its own version numbers) -->
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaDataGridVersion)" />
   </ItemGroup>
 
   <ItemGroup>

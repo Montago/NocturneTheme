@@ -1,8 +1,9 @@
 # Plan: Nocturne for Avalonia
 
-Status: phases 0-5 done (2026-11-19, branch `feature/avalonia`, PR #4): the standard controls with the
-document tabs and fading scroll bars, StatusBar, the own controls and Avalonia's pickers; phase 6
-(gallery and sample apps) next. Avalonia 12.1.6.
+Status: phases 0-6 done (2026-11-19, branch `feature/avalonia`, PR #4): the standard controls with the
+document tabs and fading scroll bars, StatusBar, the own controls and Avalonia's pickers, a plain
+DataGrid theme, the demo pages, the gallery and the Admin and Portal sample apps; phase 7
+(NocturneGrid) next. Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
 Decided by the user (2026-11-19): 1. cross-platform; 2. same repository; 3. Avalonia's own
 controls, styled by the theme, plus our own classes for what Avalonia lacks; 4. NocturneGrid waits
@@ -85,8 +86,20 @@ NocturneGrid alone is ~3,500 lines on top of WPF's DataGrid and is the heaviest 
   flyout, folded HamburgerMenu) and `checks.txt` drives it (SearchComboBox typing and Enter, a
   ColorPicker swatch, the TimePicker accept button, a dialog answer, Escape on the flyout).
 
-### 6. Demo and samples
-- The demo pages, the gallery (one sample per control) and the Admin and Portal sample apps.
+### 6. Demo and samples (done)
+- Demo pages as in WPF: Controls, More controls (an app frame with TreeView, GridSplitter, DataGrid and
+  StatusBar; Calendar, CalendarDatePicker, DataGrid row headers), Custom controls, Icons, Tokens. The
+  WPF Grid page waits for NocturneGrid.
+- `Views/GalleryPage.axaml`: one sample per control (WPF's names where the control is the same;
+  ToolBar, RichTextBox, ListView and the NocturneGrid samples are left out, DataGrid groups and the
+  dialog are new). `--render-gallery <Tag,…|all> <folder>` draws chosen samples, `--snapshot` all of
+  them into `controls/`, cropped to the sample and its open popups.
+- A plain DataGrid theme (WPF's look: headers, 42px rows, selection, row headers, group headers) came
+  forward from phase 7: both sample apps list their data in DataGrids. The theme depends on the
+  `Avalonia.Controls.DataGrid` package for it.
+- `samples/Nocturne.Avalonia.Samples.Admin` and `.Portal`: the WPF samples' pages, with DataGrid and
+  `DataGridCollectionView` (search filter, groups) where WPF uses NocturneGrid. Shared files in
+  `samples/Shared/Avalonia`; `--snapshot <folder>` writes `admin-*.png` / `portal-*.png` (also in CI on Linux).
 
 ### 7. NocturneGrid (later version)
 - On `Avalonia.Controls.DataGrid`: columns, filters, grouping through `DataGridCollectionView`,

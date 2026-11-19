@@ -69,12 +69,28 @@
                         <TextBlock VerticalAlignment="Center" Text="Controls" />
                     </StackPanel>
                 </ListBoxItem>
+                <ListBoxItem Tag="more">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Layers}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="More controls" />
+                    </StackPanel>
+                </ListBoxItem>
                 <ListBoxItem Tag="custom">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
                             <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Grid}" />
                         </ContentControl>
                         <TextBlock VerticalAlignment="Center" Text="Custom controls" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Tag="icons">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Nocturne.Icons.Text}" />
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="Icons" />
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Tag="tokens">

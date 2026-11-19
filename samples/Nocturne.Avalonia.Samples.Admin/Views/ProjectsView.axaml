@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Admin"
+             x:Class="Nocturne.Avalonia.Samples.Admin.Views.ProjectsView">
+    <UserControl.DataTemplates>
+        <!-- The right-hand side shows whatever is selected in the tree: a customer or a project -->
+        <DataTemplate DataType="local:Customer">
+            <StackPanel>
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Name}" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Margin="0,2,0,16" Text="{Binding Subtitle}" />
+                <DataGrid ItemsSource="{Binding Projects}" Height="180" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="PROJECT" Binding="{Binding Name}" Width="220" x:DataType="local:Project" />
+                        <DataGridTextColumn Header="MANAGER" Binding="{Binding Manager}" Width="170" x:DataType="local:Project" />
+                        <DataGridTextColumn Header="DEADLINE" Binding="{Binding Deadline, StringFormat=d}" Width="*" x:DataType="local:Project" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="local:Project">
+            <StackPanel>
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Subtitle}" Text="{Binding Name}" />
+                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Margin="0,2,0,16" Text="{Binding Subtitle}" />
+
+                <Grid ColumnDefinitions="*,16,240">
+                    <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="BUDGET">
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption"
+                                           Text="{Binding HoursText, StringFormat='{}{0} hours'}" />
+                                <TextBlock FontWeight="SemiBold" Text="Hours used" />
+                            </DockPanel>
+                            <ProgressBar Margin="0,10,0,18" Value="{Binding Progress, Mode=OneWay}" />
+                            <Grid ColumnDefinitions="120,*" RowDefinitions="30,30">
+                                <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="Deadline" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Deadline, StringFormat=D}" />
+                                <TextBlock Grid.Row="1" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="Satisfaction" />
+                                <nc:Rating Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" IsReadOnly="True"
+                                           Value="{Binding Satisfaction, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </HeaderedContentControl>
+
+                    <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="TEAM">
+                        <ItemsControl ItemsSource="{Binding Team}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Spacing="10">
+                                        <ContentControl Theme="{StaticResource Nocturne.Styles.IconTile.Small}">
+                                            <nc:StrokeIcon Width="18" Height="18" Data="{StaticResource Sample.Icons.User}" />
+                                        </ContentControl>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </HeaderedContentControl>
+                </Grid>
+
+                <Expander Header="Notes" IsExpanded="True" Margin="0,16,0,0" HorizontalAlignment="Stretch">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Notes}" />
+                </Expander>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Grid Margin="28,12,28,24" RowDefinitions="Auto,Auto,*" ColumnDefinitions="250,24,*">
+        <TextBlock Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Projects" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro" Text="5 projects for 3 customers" />
+
+        <TreeView Name="Tree" Grid.Row="2" ItemsSource="{x:Static local:SampleData.Customers}">
+            <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.Styles>
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="local:Customer" ItemsSource="{Binding Projects}">
+                    <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+                <DataTemplate DataType="local:Project">
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </TreeView.DataTemplates>
+        </TreeView>
+
+        <ScrollViewer Grid.Row="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ContentControl Focusable="False" Content="{Binding #Tree.SelectedItem}" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

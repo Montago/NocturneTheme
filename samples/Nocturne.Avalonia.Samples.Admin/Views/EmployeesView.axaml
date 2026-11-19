@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Admin"
+             x:Class="Nocturne.Avalonia.Samples.Admin.Views.EmployeesView">
+    <Grid Margin="28,12,28,24" RowDefinitions="Auto,Auto,Auto,*">
+        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Employees" />
+        <TextBlock Name="Count" Grid.Row="1" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro" />
+
+        <!-- The search on the left, actions on the right -->
+        <DockPanel Grid.Row="2" Classes="pageToolbar">
+            <TextBox Name="Search" Width="260" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" Classes="clearButton"
+                     PlaceholderText="Search employees" AutomationProperties.Name="Search employees" />
+
+            <Button DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="New employee" Margin="8,0,0,0" />
+            <Button DockPanel.Dock="Right" Click="OnDelete" AutomationProperties.Name="Delete">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <nc:StrokeIcon Width="16" Height="16" Data="{StaticResource Nocturne.Icons.Delete}" />
+                    <TextBlock Text="Delete" />
+                </StackPanel>
+            </Button>
+        </DockPanel>
+
+        <Grid Grid.Row="3" ColumnDefinitions="*,16,340">
+            <DataGrid Name="List" IsReadOnly="True" SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NAME" Binding="{Binding Name}" Width="*" x:DataType="local:Employee" />
+                    <DataGridTextColumn Header="TITLE" Binding="{Binding Title}" Width="150" x:DataType="local:Employee" />
+                    <DataGridTextColumn Header="DEPARTMENT" Binding="{Binding Department}" Width="130" x:DataType="local:Employee" />
+                    <DataGridTextColumn Header="STARTED" Binding="{Binding StartDate, StringFormat=d}" Width="110" CellStyleClasses="right"
+                                        x:DataType="local:Employee" />
+                    <DataGridCheckBoxColumn Header="ACTIVE" Binding="{Binding IsActive}" Width="90" x:DataType="local:Employee" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- The details follow the selected row -->
+            <HeaderedContentControl Grid.Column="2" Theme="{StaticResource Nocturne.Styles.Card}" Header="DETAILS" VerticalAlignment="Top"
+                                    DataContext="{Binding #List.SelectedItem}">
+                <StackPanel x:DataType="local:Employee">
+                    <nc:InfoBar Name="Saved" Severity="Success" Title="Saved." Message="The changes are stored." IsOpen="False" Margin="0,0,0,12" />
+
+                    <Label Content="_Name" Target="NameBox" />
+                    <TextBox Name="NameBox" Text="{Binding Name, Mode=OneWay}" />
+                    <Label Margin="0,12,0,0" Content="_Title" Target="TitleBox" />
+                    <TextBox Name="TitleBox" Text="{Binding Title, Mode=OneWay}" />
+                    <Label Margin="0,12,0,0" Content="_Department" Target="DepartmentBox" />
+                    <ComboBox Name="DepartmentBox" HorizontalAlignment="Stretch" ItemsSource="{x:Static local:SampleData.Departments}"
+                              SelectedItem="{Binding Department, Mode=OneWay}" />
+                    <Label Margin="0,12,0,0" Content="_Email" Target="EmailBox" />
+                    <TextBox Name="EmailBox" Text="{Binding Email, Mode=OneWay}" />
+
+                    <!-- Short values side by side -->
+                    <Grid Margin="0,12,0,0" ColumnDefinitions="*,12,110">
+                        <StackPanel>
+                            <Label Content="_Start date" Target="StartBox" />
+                            <CalendarDatePicker Name="StartBox" HorizontalAlignment="Stretch" SelectedDate="{Binding StartDate, Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="_Hours a week" Target="HoursBox" />
+                            <NumericUpDown Name="HoursBox" Value="{Binding HoursPerWeek, Mode=OneWay}" Minimum="0" Maximum="40" Increment="0.5" FormatString="N1" />
+                        </StackPanel>
+                    </Grid>
+
+                    <ToggleSwitch Margin="0,16,0,0" Content="Active" IsChecked="{Binding IsActive, Mode=OneWay}" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0" Spacing="8">
+                        <Button Content="Cancel" MinWidth="80" />
+                        <Button Theme="{StaticResource Nocturne.Styles.Button.Primary}" Content="Save" MinWidth="80" Click="OnSave" />
+                    </StackPanel>
+                </StackPanel>
+            </HeaderedContentControl>
+        </Grid>
+    </Grid>
+</UserControl>

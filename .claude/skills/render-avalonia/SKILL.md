@@ -5,13 +5,17 @@ description: Take a quick picture of Nocturne.Avalonia (the Avalonia port) - one
 
 # Render Nocturne.Avalonia
 
-The Avalonia demo (`src/Nocturne.Avalonia.Demo`) has two commands that draw off screen on Avalonia's
+The Avalonia demo (`src/Nocturne.Avalonia.Demo`) has three commands that draw off screen on Avalonia's
 headless platform with Skia (`Headless.cs`). They open no window, need no screen and take about a
 second; they work the same on Windows, macOS and Linux (CI runs `--snapshot` on Linux).
 
 - `--render <snippet.axaml> <out.png>`: one XAML element on the window ground with 16px around it
   (`RenderCommand.cs`).
-- `--snapshot <folder>` (`Snapshot.cs`, a few seconds): `controls.png`, `controls-bottom.png`,
+- `--render-gallery <Tag,…|all> <folder>`: chosen samples of `Views/GalleryPage.axaml` (one per control,
+  Tag = file name) to `<folder>/<Tag>.png`, with popups marked `demo:Gallery.Open` drawn open and the
+  picture cropped to the sample and its popups. All 59 take about six seconds.
+- `--snapshot <folder>` (`Snapshot.cs`, a few seconds): `controls.png`, `controls-bottom.png`, `more.png`,
+  `more-bottom.png`, `icons.png`, every gallery sample in `controls/`,
   `tokens.png`, `popup-combobox.png` and `popup-menu.png` (drawn open), `accent-<name>.png` and
   `titlebar-separated.png` / `titlebar-accent.png`, the custom controls page (`custom.png`,
   `custom-bottom.png`, `popup-timepicker.png`, `popup-datepicker.png`, `popup-colorpicker.png`,

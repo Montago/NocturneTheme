@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nc="urn:nocturne-avalonia"
+             xmlns:local="using:Nocturne.Avalonia.Samples.Admin"
+             xmlns:s="using:Nocturne.Avalonia.Samples"
+             x:Class="Nocturne.Avalonia.Samples.Admin.Views.TimesheetsView">
+    <Grid Margin="28,12,28,24" RowDefinitions="Auto,Auto,Auto,*,Auto">
+        <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Classes="pageTitle" Text="Timesheets" />
+        <TextBlock Grid.Row="1" Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="pageIntro"
+                   Text="Hours by employee and project, one group per employee. Click a column header to sort." />
+
+        <DockPanel Grid.Row="2" Classes="pageToolbar">
+            <ComboBox Width="210" SelectedIndex="0" ItemsSource="{x:Static local:SampleData.Weeks}" AutomationProperties.Name="Week" />
+
+            <SplitButton DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.SplitButton.Primary}" Content="Approve selected" Margin="8,0,0,0">
+                <SplitButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="Approve all submitted" nc:ControlHelper.Icon="{StaticResource Nocturne.Icons.CheckCircle}" />
+                        <MenuItem Header="Reject selected…" />
+                        <Separator />
+                        <MenuItem Header="Send reminder to drafts" />
+                    </MenuFlyout>
+                </SplitButton.Flyout>
+            </SplitButton>
+            <DropDownButton DockPanel.Dock="Right" Content="Export">
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="Payroll file (.csv)" />
+                        <MenuItem Header="Excel (.xlsx)" />
+                        <MenuItem Header="PDF report" />
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+        </DockPanel>
+
+        <!-- One group of rows per employee (DataGridCollectionView.GroupDescriptions) -->
+        <DataGrid Name="Sheet" Grid.Row="3" IsReadOnly="True" SelectionMode="Extended">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="PROJECT" Binding="{Binding Project}" Width="*" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="MON" Binding="{Binding Monday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="TUE" Binding="{Binding Tuesday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="WED" Binding="{Binding Wednesday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="THU" Binding="{Binding Thursday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="FRI" Binding="{Binding Friday, StringFormat=N1}" Width="74" CellStyleClasses="right" x:DataType="local:TimesheetRow" />
+                <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat=N1}" Width="84" CellStyleClasses="right" FontWeight="SemiBold"
+                                    x:DataType="local:TimesheetRow" />
+                <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="local:TimesheetRow">
+                            <ContentControl Theme="{Binding Status, Converter={x:Static s:SampleConverters.StatusTheme}}" Content="{Binding Status}"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Week summary -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,14,0,0" Spacing="12">
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="Approved this week" />
+            <ProgressBar Width="220" Value="38" VerticalAlignment="Center" />
+            <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Caption}" Classes="caption" Text="112.5 of 296 hours · 4 timesheets submitted · 1 rejected" />
+        </StackPanel>
+    </Grid>
+</UserControl>

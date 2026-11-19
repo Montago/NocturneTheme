@@ -59,6 +59,31 @@ internal static partial class RenderCommand
         }
     }
 
+    /// <summary>
+    /// <c>--render-gallery &lt;Tag,…|all&gt; &lt;folder&gt; [--scale 1]</c>: draws chosen samples of the
+    /// gallery (Views/GalleryPage.axaml) to <c>&lt;folder&gt;/&lt;Tag&gt;.png</c>, popups open as marked.
+    /// </summary>
+    public static int RunGallery(string[] args)
+    {
+        if (args.Length < 3)
+        {
+            Console.Error.WriteLine("Usage: --render-gallery <Tag,...|all> <folder> [--scale 1]");
+            return 2;
+        }
+        try
+        {
+            var scale = double.Parse(Headless.Option(args, "--scale") ?? "1", CultureInfo.InvariantCulture);
+            var only = args[1] == "all" ? null : args[1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            GallerySnapshot.Save(Path.GetFullPath(args[2]), only, scale);
+            return 0;
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            return 1;
+        }
+    }
+
     /// <summary>Adds the namespaces to the snippet's root element and loads it.</summary>
     private static Control Load(string xaml)
     {

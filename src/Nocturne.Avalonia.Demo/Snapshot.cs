@@ -73,9 +73,19 @@ internal static class Snapshot
         window.ShowPage("tokens");
         Save(window, folder, "tokens.png");
 
+        window.ShowPage("more");
+        Save(window, folder, "more.png");
+        ScrollToEnd(window);
+        Save(window, folder, "more-bottom.png");
+        ScrollToStart(window);
+
+        window.ShowPage("icons");
+        Save(window, folder, "icons.png");
+
         SaveCustomPage(window, folder);
 
         window.Close();
+        GallerySnapshot.Save(Path.Combine(folder, "controls"), scale: scale);
         return Checks(folder) ? 0 : 1;
     }
 
