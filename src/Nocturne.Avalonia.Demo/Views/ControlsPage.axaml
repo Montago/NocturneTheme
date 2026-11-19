@@ -33,7 +33,7 @@
                     </StackPanel>
                 </HeaderedContentControl>
 
-                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="DROPDOWN · SPLIT" Tag="DropDownButton · SplitButton">
+                <HeaderedContentControl Theme="{StaticResource Nocturne.Styles.Card}" Header="MENU BUTTONS" Tag="DropDownButton · SplitButton">
                     <WrapPanel ItemSpacing="8" LineSpacing="8">
                         <DropDownButton Content="Export">
                             <DropDownButton.Flyout>

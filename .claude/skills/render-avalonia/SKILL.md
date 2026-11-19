@@ -29,6 +29,10 @@ does), or draw the drop-down inline in a snippet with `<TimePickerPresenter Widt
 
 Popups are drawn into the window (`OverlayPopups`), so an open popup shows in the picture.
 
+Animation time is virtual: each captured frame moves it 1/60 s (30 frames by default, so transitions
+finish), whatever the real time. Endless animations (ProgressRing, the indeterminate ProgressBar) show the
+moment after those frames; the gallery restarts them per sample so they stand at 700 ms, as in WPF.
+
 ## 1. Build (only when the library or the demo changed)
 
 Build to a folder in your scratchpad directory, never to `bin/` (Visual Studio may have it locked):

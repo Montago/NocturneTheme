@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Bring the Nocturne documentation up to date with the code - screenshots of the demo and the control gallery, docs/resource-keys.md, and the docs pages for anything that changed. Use before a release (a v*.*.* tag), or when the user asks to update the docs or the screenshots. Not after ordinary code changes - docs and screenshots change only for releases.
+description: Bring the Nocturne documentation up to date with the code - screenshots of the demo and the control gallery, docs/resource-keys.md, and the docs pages for anything that changed. Use before a release (a v*.*.* or avalonia-v*.*.* tag), or when the user asks to update the docs or the screenshots. Not after ordinary code changes - docs and screenshots change only for releases.
 ---
 
 # Update the documentation
@@ -13,6 +13,10 @@ match the code. Work in the repository root.
 ```bash
 python tools/update_docs.py
 ```
+
+For a release of one library, add `--only wpf` or `--only avalonia`: only that library's pictures are
+rendered and copied (Nocturne.Avalonia's go to `docs/screenshots/avalonia/`, drawn headless, so a
+locked screen does not matter there), and `--only avalonia` leaves `docs/resource-keys.md` alone.
 
 It builds the demo and the two sample apps into a scratch folder (never into `bin/`, which Visual
 Studio may have locked), runs them with `--snapshot`, copies the page pictures to `docs/screenshots/`,
@@ -64,6 +68,11 @@ Then, for each change:
   it shows, with its picture.
 - `README.md` and `src/Nocturne.Wpf/PACKAGE.md` (the nuget.org page) still match, including the list
   of own controls.
+- **Nocturne.Avalonia**: `docs/avalonia.md` (window, accents, how it differs from WPF),
+  `docs/avalonia-controls.md` (one section per gallery sample of `src/Nocturne.Avalonia.Demo/Views/GalleryPage.axaml`,
+  pictures from `screenshots/avalonia/controls/`), `docs/avalonia-samples.md` and
+  `src/Nocturne.Avalonia/PACKAGE.md`. The script warns about Avalonia controls those pages do not mention
+  and pictures no page shows.
 - `CLAUDE.md` gets any new pitfall that was found along the way.
 
 Everything in the repository is English, also when the user writes in Danish.

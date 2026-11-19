@@ -2,8 +2,10 @@
 
 Status: phases 0-6 are done and merged into master (2026-11-19, PR #4): tokens, NocturneWindow, the
 standard controls, StatusBar, the own controls, Avalonia's pickers, a plain DataGrid theme, the demo
-pages, the gallery and the Admin and Portal sample apps. What is built, how it works and its gotchas
-are in CLAUDE.md ("Avalonia port"). Left: NocturneGrid (phase 7), then docs and release (phase 8).
+pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs and release) is done on
+master (2026-11-19): docs, the package README, `avalonia-v*` release tags and frozen animations in the
+pictures, and the nuget.org policy allows the new package; left is the first tag. What is built, how
+it works and its gotchas are in CLAUDE.md ("Avalonia port"). Left after that: NocturneGrid (phase 7).
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
 Decided by the user (2026-11-19): cross-platform (`net10.0`, Windows-only parts behind
@@ -24,11 +26,21 @@ classes only for what Avalonia lacks; NocturneGrid in a later version.
 
 ## 8. Docs and release
 
-- An Avalonia section in `docs/` with the gallery pictures; `release.yml` for own tags
-  (e.g. `avalonia-v0.1.0`) and the NuGet package `Nocturne.Avalonia`.
-- Freeze the endless animations in the gallery pictures (ProgressRing, the indeterminate ProgressBar),
-  as WPF does at 700 ms, so a picture only changes when the look does. Avalonia's animation clock
-  (`Animatable.Clock`) is internal in version 12, so it needs another way than in WPF.
+Done:
+- `docs/avalonia.md` (getting started, window, dialogs, flyout, accents, fonts, how it differs from WPF),
+  `docs/avalonia-controls.md` (every gallery sample) and `docs/avalonia-samples.md`, pictures in
+  `docs/screenshots/avalonia/`; `tools/update_docs.py --only avalonia` renders and checks them.
+  README, the docs home page and the site description point at them.
+- `src/Nocturne.Avalonia/PACKAGE.md` (the nuget.org page), the package icon and release notes link.
+- `release.yml`: a tag `avalonia-v1.2.3` packs Nocturne.Avalonia (GitHub release not marked latest).
+- Headless animation time is virtual (`Headless.AnimationClock`), and the gallery restarts the
+  ProgressRing and indeterminate ProgressBar so they stand at 700 ms as in WPF. The Avalonia demo runs
+  in en-US (month and day names in the pictures were Danish).
+
+Left:
+- Tag and push `avalonia-v0.1.0` when the user asks.
+- A few page pictures (the accent title bar, a popup) can still differ by a shade between runs: the
+  scroll bars fade on real-time DispatcherTimers, which the virtual clock does not drive.
 
 ## Not in the first version
 

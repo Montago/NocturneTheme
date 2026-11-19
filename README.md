@@ -44,6 +44,15 @@ control; the package adds the controls a desktop app usually needs on top.
 | --- | --- |
 | ![NocturneGrid grouped by make](docs/screenshots/grid.png) | ![A dialog in the window](docs/screenshots/dialog.png) |
 
+## Nocturne for Avalonia
+
+The same theme for Avalonia 12 on Windows, macOS and Linux is the package
+[`Nocturne.Avalonia`](https://www.nuget.org/packages/Nocturne.Avalonia): it styles Avalonia's own
+controls and adds the window, dialogs, flyouts and the controls Avalonia lacks. See
+[Nocturne for Avalonia](https://montago.github.io/NocturneTheme/avalonia.html).
+
+![The Avalonia demo](docs/screenshots/avalonia/controls.png)
+
 ## Install
 
 The package [`Nocturne.Wpf`](https://www.nuget.org/packages/Nocturne.Wpf) is on nuget.org (each
@@ -108,8 +117,10 @@ a picture and XAML, and every resource key.
 src/Nocturne.Wpf/          the library (NuGet package Nocturne.Wpf)
 src/Nocturne.Wpf.Demo/     the demo: every control on five pages, with backdrop, tint and accent settings,
                            and the gallery (Views/GalleryPage.xaml) the docs pictures come from
+src/Nocturne.Avalonia/     the Avalonia library (NuGet package Nocturne.Avalonia), with its demo next to it
 samples/                   two sample apps built with the theme: Admin (HamburgerMenu; dashboard,
-                           employees, timesheets, projects) and Portal (side bar; products, orders, customers)
+                           employees, timesheets, projects) and Portal (side bar; products, orders, customers),
+                           for WPF and for Avalonia
 docs/                      the documentation site (Just the Docs on GitHub Pages)
 tools/                     update_docs.py (pictures, resource keys, checks), generate_icon.ps1
 ```

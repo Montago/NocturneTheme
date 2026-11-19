@@ -109,7 +109,7 @@ internal static class Snapshot
         window.MouseMove(new Point(4, window.Bounds.Height - 4)); // over the navigation, away from the page
         Headless.Capture(window);
         // The page settles at start, which shows the bars for a second; they fade once that has passed
-        Wait(TimeSpan.FromSeconds(1.5));
+        Headless.Wait(TimeSpan.FromSeconds(1.5));
         Check("the page's scroll bars hide a moment after scrolling", !scroller.Classes.Contains("barsVisible"));
         scroller.Offset = new Vector(0, 200);
         Headless.Capture(window);
@@ -289,14 +289,6 @@ internal static class Snapshot
         var top = control.TranslatePoint(default, window)!.Value.Y;
         scroller.Offset = new Vector(0, Math.Max(0, scroller.Offset.Y + top - 300));
         Headless.Capture(window);
-    }
-
-    /// <summary>Runs the dispatcher for a while of real time, so its timers fire.</summary>
-    private static void Wait(TimeSpan time)
-    {
-        using var stop = new CancellationTokenSource(time);
-        Dispatcher.UIThread.MainLoop(stop.Token);
-        Dispatcher.UIThread.RunJobs();
     }
 
     private static void Click(Window window, Control target)

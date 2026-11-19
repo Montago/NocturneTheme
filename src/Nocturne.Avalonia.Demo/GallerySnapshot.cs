@@ -51,11 +51,12 @@ internal static class GallerySnapshot
     private static void Capture(Window window, ContentControl sample, string file, double scale)
     {
         Headless.Capture(window);
+        RestartEndlessAnimations(window, sample);
+        Headless.Capture(window, 10);
         var closers = sample.GetVisualDescendants().OfType<Control>().Where(Gallery.GetOpen).Select(Gallery.Open).ToList();
 
-        var frame = Headless.Capture(window);
+        var frame = Headless.Capture(window, 32);
         var bounds = new Rect(sample.Bounds.Size);
-        // Open popups live in the overlay layer, not under the sample
         // Open popups are drawn in the window's popup layer (OverlayPopupHost), not under the sample
         foreach (var host in window.GetVisualDescendants().OfType<OverlayPopupHost>().Where(h => h.IsVisible && h.Bounds.Width > 0))
         {
@@ -70,6 +71,24 @@ internal static class GallerySnapshot
         foreach (var close in closers)
             close();
         Headless.Capture(window, 5);
+    }
+
+    /// <summary>
+    /// Starts the endless animations under <paramref name="sample"/> (ProgressRing, the indeterminate ProgressBar) again,
+    /// so they stand at 700 ms in the picture (42 frames later), as in WPF, whatever was drawn before. Their styles
+    /// match on IsActive and IsIndeterminate; putting the content back into the sample stops them instead.
+    /// </summary>
+    private static void RestartEndlessAnimations(Window window, Control sample)
+    {
+        var rings = sample.GetVisualDescendants().OfType<Controls.ProgressRing>().Where(r => r.IsActive).ToList();
+        var bars = sample.GetVisualDescendants().OfType<ProgressBar>().Where(b => b.IsIndeterminate).ToList();
+        if (rings.Count + bars.Count == 0)
+            return;
+        rings.ForEach(r => r.IsActive = false);
+        bars.ForEach(b => b.IsIndeterminate = false);
+        Headless.Capture(window, 1);
+        rings.ForEach(r => r.IsActive = true);
+        bars.ForEach(b => b.IsIndeterminate = true);
     }
 
     /// <summary>Copies the part of <paramref name="frame"/> under <paramref name="bounds"/> (in DIPs) to a PNG.</summary>

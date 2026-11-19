@@ -1,9 +1,11 @@
 # Publishes a package when a version tag is pushed; the tag picks the package:
 #   v1.2.3      Nocturne.Wpf   git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"; git push origin v1.2.3
 #   web-v1.2.3  Nocturne.Web   git tag -a web-v1.2.3 -m "Nocturne.Web 1.2.3"; git push origin web-v1.2.3
+#   avalonia-v1.2.3  Nocturne.Avalonia   git tag -a avalonia-v1.2.3 -m "Nocturne.Avalonia 1.2.3"; git push origin avalonia-v1.2.3
 #
 # - A GitHub release with the .nupkg and .snupkg attached (assets are replaced if the release exists,
-#   so the workflow can be re-run for the same tag). Nocturne.Web releases are not marked as the latest.
+#   so the workflow can be re-run for the same tag). Nocturne.Web and Nocturne.Avalonia releases are not
+#   marked as the latest.
 # - nuget.org: with Trusted Publishing (no API key stored anywhere). Runs only when the repository
 #   variable NUGET_PUBLISH is 'true' and the repository secret NUGET_USER holds the nuget.org profile
 #   name. Needs a Trusted Publishing policy on nuget.org: owner Montago, repository NocturneTheme,
@@ -14,7 +16,7 @@ name: Release
 
 on:
   push:
-    tags: ['v*.*.*', 'web-v*.*.*']
+    tags: ['v*.*.*', 'web-v*.*.*', 'avalonia-v*.*.*']
 
 permissions:
   contents: write
@@ -39,6 +41,10 @@ jobs:
           if [[ "$GITHUB_REF_NAME" == web-v* ]]; then
             echo "value=${GITHUB_REF_NAME#web-v}" >> "$GITHUB_OUTPUT"
             echo "package=Nocturne.Web" >> "$GITHUB_OUTPUT"
+            echo "latest=false" >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF_NAME" == avalonia-v* ]]; then
+            echo "value=${GITHUB_REF_NAME#avalonia-v}" >> "$GITHUB_OUTPUT"
+            echo "package=Nocturne.Avalonia" >> "$GITHUB_OUTPUT"
             echo "latest=false" >> "$GITHUB_OUTPUT"
           else
             echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"

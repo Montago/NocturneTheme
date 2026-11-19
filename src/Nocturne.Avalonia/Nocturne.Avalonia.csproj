@@ -14,7 +14,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
-  <!-- NuGet package. Not released yet; it will get its own avalonia-v* tags. -->
+  <!-- NuGet package, released with its own avalonia-v* tags (release.yml) -->
   <PropertyGroup>
     <PackageId>Nocturne.Avalonia</PackageId>
     <Version>0.1.0</Version>
@@ -25,6 +25,9 @@
     <PackageProjectUrl>https://github.com/Montago/NocturneTheme</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Montago/NocturneTheme</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>https://github.com/Montago/NocturneTheme/releases</PackageReleaseNotes>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- MIT, except the icons (Material Design Icons, Apache License 2.0) and the font (Inter, SIL OFL 1.1); see NOTICE.md -->
     <PackageLicenseExpression>MIT AND Apache-2.0 AND OFL-1.1</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -44,6 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\Nocturne.Wpf\icon.png" Pack="true" PackagePath="\" Link="icon.png" />
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\README.md" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
     <None Include="..\..\NOTICE.md" Pack="true" PackagePath="\" />
     <None Include="..\..\icons\LICENSE" Pack="true" PackagePath="\icons\" />

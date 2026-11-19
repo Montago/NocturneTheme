@@ -2,7 +2,7 @@
 # https://just-the-docs.com/docs/configuration/
 
 title: Nocturne
-description: A dark theme for WPF on .NET 10+, over the Windows 11 backdrop.
+description: A dark theme for WPF and Avalonia on .NET 10+, over the Windows 11 backdrop.
 
 remote_theme: just-the-docs/just-the-docs@v0.12.0
 plugins:

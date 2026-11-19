@@ -184,6 +184,8 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   seconds, the same on Linux (CI's `avalonia-linux` job uploads its snapshots). `/render-avalonia`
   (`.claude/skills/render-avalonia`) describes them. Popups are drawn into the window there
   (OverlayPopups); `NocturneWindow.AlwaysDrawTitleBar` draws the title bar, which headless cannot extend into.
+  Docs: `docs/avalonia*.md` (pictures in `docs/screenshots/avalonia/`), updated only for an Avalonia release
+  with `python tools/update_docs.py --only avalonia` (`--only` leaves the other library's pictures alone).
   `--snapshot` draws the pages, popups, the gallery (`controls/`), and ends with `checks.txt` (behaviour
   driven with the headless mouse and keyboard: scroll bars hide and appear, document tabs close and add,
   the custom page's SearchComboBox, ColorPicker, TimePicker, dialog and flyout) and exits with 1 when a
@@ -217,6 +219,12 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   wide as the travel, 20).
 - Transitions: `Transitions` on the part (120/150 ms); rotate chevrons with `RenderTransform="rotate(…)"`
   and a `TransformOperationsTransition`. Headless captures run 30 frames (0.5 s) so they finish.
+- Headless animation time is virtual (`Headless.AnimationClock`, reflection into Avalonia 12's internal
+  `MediaContext`): `Headless.Capture` moves it 1/60 s a frame and `Headless.Wait` by the time waited, and fires
+  the `_animationsTimer` that `RunJobs` would never fire; without it animations stop after a frame or two. The
+  gallery restarts a sample's ProgressRing / indeterminate ProgressBar (IsActive / IsIndeterminate off and on;
+  putting the content back stops them instead), so they stand at 700 ms in the picture as in WPF. Scroll bars
+  fade on real-time `DispatcherTimer`s, so a few page pictures can still differ by a pixel shade between runs.
 - Headless, `Dispatcher.UIThread.RunJobs()` never fires a `DispatcherTimer`; run
   `Dispatcher.UIThread.MainLoop(token)` for the time to wait (`Snapshot.Wait`).
 - Avalonia has no WPF `RoutedCommand`: TabHelper offers `CloseTabCommand` / `AddTabCommand` (ICommand),
@@ -261,7 +269,9 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   `<Version>` in the csproj) and creates a GitHub release with the `.nupkg` and `.snupkg` attached.
   Tag with `git tag -a v1.2.3 -m "Nocturne.Wpf 1.2.3"` and push the tag; tag and push only when the
   user asks. A tag `web-v1.2.3` packs Nocturne.Web instead (release "Nocturne.Web 1.2.3", not marked
-  latest). The first nuget.org push of Nocturne.Web needs a policy that allows new packages.
+  latest), and `avalonia-v1.2.3` packs Nocturne.Avalonia (release "Nocturne.Avalonia 1.2.3", not marked
+  latest). The first nuget.org push of Nocturne.Web needs a policy that allows new packages; the user
+  has set it up for Nocturne.Avalonia (2026-11-19).
 - nuget.org (Trusted Publishing) is on since 0.1.2: the release workflow pushes to nuget.org because
   the repository variable `NUGET_PUBLISH` is `true` and the secret `NUGET_USER` is set (the user set
   both, and the nuget.org policy "Nocturne Publishing" for Montago/NocturneTheme, release.yml). Never
