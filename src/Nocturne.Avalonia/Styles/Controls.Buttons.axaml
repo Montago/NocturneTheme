@@ -19,6 +19,8 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
+        <!-- Avalonia's Button clips to its bounds; the shadow falls outside them -->
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
         <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
         <Setter Property="Padding" Value="16,0" />
@@ -29,7 +31,7 @@
             <ControlTemplate>
                 <Panel Name="Root">
                     <!-- Shadow sits on its own layer, under the fill -->
-                    <Border Name="Shadow" CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 1 4 0 #4D000000"
+                    <Border Name="Shadow" CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="0 1 4 0 #4D000000"
                             IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
                     <Border Name="Bg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}">
                         <Border.Transitions>
@@ -221,6 +223,8 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
+        <!-- Avalonia's Button clips to its bounds; the shadow falls outside them -->
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
         <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
         <Setter Property="Padding" Value="16,0" />
@@ -232,12 +236,15 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="Root">
-                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 1 4 0 #4D000000"
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="0 1 4 0 #4D000000"
                             IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
                     <DockPanel>
                         <Button Name="PART_SecondaryButton" DockPanel.Dock="Right" Theme="{StaticResource Nocturne.Styles.SplitButton.Arrow}"
                                 Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" />
-                        <Border DockPanel.Dock="Right" Width="1" Margin="0,8" Background="{TemplateBinding BorderBrush}" />
+                        <!-- The fill behind the hairline, or the ground shows through above and below it -->
+                        <Panel DockPanel.Dock="Right" Width="1" Background="{TemplateBinding Background}">
+                            <Border Margin="0,8" Background="{TemplateBinding BorderBrush}" />
+                        </Panel>
                         <Button Name="PART_PrimaryButton" Theme="{StaticResource Nocturne.Styles.SplitButton.Main}"
                                 Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}"
                                 h:ControlHelper.HoverBackground="{TemplateBinding h:ControlHelper.HoverBackground}"
@@ -299,6 +306,8 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="14" />
+        <!-- Avalonia's Button clips to its bounds; the shadow falls outside them -->
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="h:ControlHelper.HoverBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Hover}" />
         <Setter Property="h:ControlHelper.PressedBackground" Value="{DynamicResource Nocturne.Brushes.Button.Secondary.Pressed}" />
         <Setter Property="h:ControlHelper.HighlightBrush" Value="{DynamicResource Nocturne.Brushes.Surface1.Highlight}" />
@@ -308,7 +317,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="Root">
-                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="Black" BoxShadow="0 2 6 0 #4D000000"
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="0 2 6 0 #4D000000"
                             IsVisible="{TemplateBinding h:ControlHelper.HasShadow}" />
                     <Border CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" />
                     <Border Name="HoverBg" CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding h:ControlHelper.HoverBackground}" Opacity="0">

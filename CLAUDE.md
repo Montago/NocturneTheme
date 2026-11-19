@@ -238,7 +238,9 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
 - Giving focus back (dialog, flyout) uses no `NavigationMethod`: with Tab, SearchComboBox takes it
   for the user moving in and opens its list.
 - Elements that draw outside their bounds (Badged's badge, a swatch ring) need room inside the
-  bounds or `ClipToBounds="False"`; negative margins are clipped.
+  bounds or `ClipToBounds="False"`; negative margins are clipped. Button (and so Tile) clips by
+  default: the button themes turn it off for their shadow. A shadow layer has no fill (an outer
+  `BoxShadow` draws only outside its shape); a black fill showed at anti-aliased corners.
 - Headless, open popups are `OverlayPopupHost`s in the window's `PopupOverlayLayer` (not `OverlayLayer`);
   `GallerySnapshot` crops to them. A flyout's popup is not a visual descendant of its button: close it
   with `Hide()`, not by looking for a Popup.
