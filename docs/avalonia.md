@@ -191,8 +191,9 @@ icons are the WPF keys:
 - Attached properties cannot be selected on in Avalonia styles, so the switches are style classes:
   `Classes="clearButton"` (or `nc:ControlHelper.ClearButton="True"`), `Classes="hasError"`
   (or `nc:ControlHelper.HasError="True"`), `Classes="revealPasswordButton"` for the eye button.
-- The data grid is Avalonia's `DataGrid` with the Nocturne look. NocturneGrid (search, header filters,
-  paging) is not in this version yet.
+- `NocturneGrid` builds on Avalonia's `DataGrid` and its `DataGridCollectionView`: groups are the
+  DataGrid's own group headers, and the WPF version's tricks for scrolling speed (cell text drawn as glyph
+  runs, the preview while the scroll bar thumb is dragged) are not needed or not there.
 - ToolBar, RichTextBox and ListView/GridView do not exist in Avalonia; `DataGrid` takes the place of a
   ListView with columns.
 - Checked on screen on Windows 11; on macOS and Linux it builds and renders headless in CI, but the
@@ -200,7 +201,7 @@ icons are the WPF keys:
 
 ## The demo
 
-`src/Nocturne.Avalonia.Demo` shows every control on five pages, with the window settings in the side
+`src/Nocturne.Avalonia.Demo` shows every control on six pages, with the window settings in the side
 bar. Like the WPF demo it takes `--snapshot <folder>`: it draws the pages, popups and the gallery on
 Avalonia's headless platform (no screen needed, the same on Linux) and checks behaviour with the
 headless mouse and keyboard. The pictures on these pages come from there.
@@ -209,6 +210,10 @@ headless mouse and keyboard. The pictures on these pages come from there.
 dotnet run --project src/Nocturne.Avalonia.Demo
 ```
 
-| More controls | Custom controls | Icons |
-| --- | --- | --- |
-| ![The more controls page](screenshots/avalonia/more.png) | ![The custom controls page](screenshots/avalonia/custom.png) | ![The icons page](screenshots/avalonia/icons.png) |
+| More controls | Custom controls |
+| --- | --- |
+| ![The more controls page](screenshots/avalonia/more.png) | ![The custom controls page](screenshots/avalonia/custom.png) |
+
+| Data grid | Icons |
+| --- | --- |
+| ![The data grid page](screenshots/avalonia/grid.png) | ![The icons page](screenshots/avalonia/icons.png) |

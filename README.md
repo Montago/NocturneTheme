@@ -48,7 +48,7 @@ control; the package adds the controls a desktop app usually needs on top.
 
 The same theme for Avalonia 12 on Windows, macOS and Linux is the package
 [`Nocturne.Avalonia`](https://www.nuget.org/packages/Nocturne.Avalonia): it styles Avalonia's own
-controls and adds the window, dialogs, flyouts and the controls Avalonia lacks. See
+controls and adds the window, dialogs, flyouts, NocturneGrid and the controls Avalonia lacks. See
 [Nocturne for Avalonia](https://montago.github.io/NocturneTheme/avalonia.html).
 
 ![The Avalonia demo](docs/screenshots/avalonia/controls.png)

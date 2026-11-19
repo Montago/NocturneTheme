@@ -324,6 +324,97 @@ Right-aligned columns (numbers) use a cell class:
 </DataGrid.Styles>
 ```
 
+### NocturneGrid
+
+![NocturneGrid searching](screenshots/avalonia/controls/nocturnegrid.png)
+
+`nc:NocturneGrid` is a `DataGrid` for large lists, with the same members as in Nocturne.Wpf. It shows its
+rows through a `DataGridCollectionView`: one it makes for the `ItemsSource` you give it, or the view
+itself when you give it one. Rows and columns are virtualized.
+
+- **Search**: `SearchText` filters the rows to those that contain every word somewhere (in the
+  searchable columns); quotes keep a phrase together. The hits are drawn in the light accent in faintly
+  lit cells (the cell gets the style class `searchHit`).
+- **Filters**: every column header has a funnel. Its filter lists the column's values with their counts
+  to tick, or takes typed values: `*` matches any text (`vol*`), and numbers and dates take ranges
+  (`>50000`, `<=2019`, `2020-01-01..2020-06-30`). A column of dates gets a tree of years, months and days.
+- **Sorting**: a click on a header sorts up, then down, then back to the original order.
+- **Grouping**: `GroupMemberPath` groups the rows under the DataGrid's group headers, with the row count.
+- **Paging**: `PageSize` shows one page at a time with a pager under the rows.
+- A new search, filter or page keeps the selected row when it is still shown, and otherwise selects none.
+
+```xml
+<TextBox Name="Search" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" Classes="clearButton" />
+<nc:NocturneGrid ItemsSource="{Binding Cars}" SearchText="{Binding #Search.Text}">
+    <nc:NocturneGrid.Columns>
+        <nc:NocturneGridColumn Width="130" Header="MAKE" Binding="{Binding Make}" />
+        <nc:NocturneGridColumn Width="150" Header="MODEL" Binding="{Binding Model}" />
+        <nc:NocturneGridColumn Width="80" Header="YEAR" Binding="{Binding Year}" TextAlignment="Right" />
+        <nc:NocturneGridColumn Width="136" Header="PRICE (EUR)" Binding="{Binding Price, StringFormat=N0}" IsSearchable="False" TextAlignment="Right" />
+        <nc:NocturneGridCheckBoxColumn Width="92" Header="SOLD" Binding="{Binding IsSold}" />
+    </nc:NocturneGrid.Columns>
+</nc:NocturneGrid>
+```
+
+#### Header filters
+
+![The filter of a column](screenshots/avalonia/controls/nocturnegrid-filter.png)
+
+A column with at most `FilterListLimit` different values lists them to tick; with more, the values
+are typed. A column's filter can be set from XAML or code with `FilterText` (`FilterDates` for dates).
+`ClearFilter(column)` clears one column's filter, `ClearFilters()` the search and every filter.
+
+```xml
+<nc:NocturneGridColumn Header="BODY" Binding="{Binding Body}" FilterText="estate suv" />
+```
+
+#### Groups
+
+![Grouped rows](screenshots/avalonia/controls/nocturnegrid-groups.png)
+
+```xml
+<nc:NocturneGrid ItemsSource="{Binding Cars}" GroupMemberPath="Make">
+```
+
+`ExpandAllGroups()` and `CollapseAllGroups()` unfold and fold every group.
+
+#### Pages
+
+![A grid with a pager](screenshots/avalonia/controls/nocturnegrid-paging.png)
+
+```xml
+<nc:NocturneGrid ItemsSource="{Binding Cars}" PageSize="25">
+```
+
+#### Members
+
+| Property | |
+| --- | --- |
+| `SearchText` | Words that must all be found in a row; quotes keep a phrase together |
+| `SearchDelay` | Pause after the last change before the rows are filtered (zero filters at once) |
+| `FilterListLimit` | A filter lists the values to tick when the column has at most this many |
+| `GroupMemberPath` | Member the rows are grouped by; empty for none |
+| `PageSize`, `PageIndex` | Rows per page (0 shows every row) and the page shown, from 0 |
+| `PageCount`, `PageNumber`, `PageFirstRow`, `PageLastRow`, `IsPaging` | Read-only, for your own pager text |
+| `FilteredItemCount`, `TotalItemCount`, `IsFiltered` | Read-only counts, for a status line |
+| `HighlightForeground`, `HighlightBrush`, `HighlightCellBackground` | Colours of the search hits |
+| `View` | The `DataGridCollectionView` the grid shows its rows through |
+
+| Method or event | |
+| --- | --- |
+| `Filtered` | Raised after the rows have been filtered; `Count` and `TotalCount` in the event data |
+| `SelectedItemChanged` | Raised when `SelectedItem` changes (not by combo boxes inside cells, unlike `SelectionChanged`) |
+| `ApplyFilters()` | Filters now instead of after `SearchDelay`, and re-reads changed values |
+| `ClearFilters()`, `ClearFilter(column)` | Clears the search and every column filter, or one column's |
+| `GetVisibleItems()` | The rows left after the search and filters, in the order shown (all pages) |
+| `MoveToFirstPage()` … `MoveToLastPage()` | Page through the rows, as the pager does |
+
+Columns are `nc:NocturneGridColumn` (text; `TextAlignment` for numbers) and
+`nc:NocturneGridCheckBoxColumn` (`TrueText` and `FalseText` name the values in the filter and the search;
+its search is off by default). Both take `IsSearchable`, `IsFilterable`, `FilterMemberPath` and
+`FilterText`; other `DataGrid` columns work too (attached: `nc:NocturneGrid.IsFilterable="False"`), and
+are searched through `NocturneGrid.FilterMemberPath` or their `SortMemberPath`.
+
 ### ScrollViewer
 
 ![ScrollViewer](screenshots/avalonia/controls/scrollviewer.png)

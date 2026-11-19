@@ -5,7 +5,7 @@ standard controls, StatusBar, the own controls, Avalonia's pickers, a plain Data
 pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs, package README, `avalonia-v*`
 release tags, frozen animations in the pictures) is done, and Nocturne.Avalonia 0.1.0 is released
 (2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). Phase 7 (NocturneGrid) is merged into master
-(2026-11-19, PR #5), not released yet. What is built, how it works and its gotchas are in
+(2026-11-19, PR #5) and released with its docs in Nocturne.Avalonia 0.2.0 (tag `avalonia-v0.2.0`). What is built, how it works and its gotchas are in
 CLAUDE.md ("Avalonia port").
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 
@@ -33,8 +33,6 @@ scoping, the group rows of its own (Avalonia groups natively), the alternating r
 Left:
 - The thumb-drag preview: check on screen whether dragging the scroll bar thumb over the 3,000 rows keeps up
   in Avalonia; port the preview only if it lags.
-- Docs for the next Avalonia release: NocturneGrid on `docs/avalonia-controls.md` (the three classes are not
-  mentioned yet; `update_docs.py` warns), `PACKAGE.md` and the new gallery pictures.
 
 ## 8. Docs and release
 

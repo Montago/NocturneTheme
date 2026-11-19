@@ -7,8 +7,7 @@ nav_order: 2
 # Avalonia sample apps
 
 The two [WPF sample apps](samples.md) are in the repository for Avalonia too, with the same pages and
-the same fixed sample data, so the two libraries can be compared side by side. Where the WPF samples
-use NocturneGrid, these use Avalonia's `DataGrid` with a search box of their own.
+the same fixed sample data, so the two libraries can be compared side by side.
 
 ```bash
 dotnet run --project samples/Nocturne.Avalonia.Samples.Admin
@@ -37,8 +36,8 @@ Accent and plain [`Tile`](avalonia-controls.md#tile)s with the key figures, an
 
 ### Employees
 
-A [`DataGrid`](avalonia-controls.md#datagrid) with a check box column, searched from the box above it,
-next to a details form: `TextBox`, `ComboBox`, `CalendarDatePicker`, `NumericUpDown` and a
+A [`NocturneGrid`](avalonia-controls.md#nocturnegrid) with filters in the column headers and a check box
+column, searched from the box above it, next to a details form: `TextBox`, `ComboBox`, `CalendarDatePicker`, `NumericUpDown` and a
 `ToggleSwitch`.
 
 ![The Admin employees page](screenshots/avalonia/samples/admin-employees.png)
@@ -53,7 +52,7 @@ The settings button opens a [`Flyout`](avalonia.md#flyout) with the accent, the 
 
 ### Timesheets
 
-A `DataGrid` grouped by employee (`DataGridCollectionView`), with the week's hours, a total and a status
+A `NocturneGrid` grouped by employee (`GroupMemberPath`), with the week's hours, a total and a status
 column of pills (`Nocturne.Styles.Pill.Success`, `.Warning`) and tags. Above it a week `ComboBox`, a
 `DropDownButton` for export and a primary `SplitButton`; a `ProgressBar` below sums up the week.
 
@@ -88,7 +87,8 @@ A searchable product `ListBox` with a category `ComboBox`, and the chosen produc
 
 ### Orders
 
-Two `CalendarDatePicker`s and an `AutoCompleteBox` for the customer above a `DataGrid` of orders with
+Two `CalendarDatePicker`s and an `AutoCompleteBox` for the customer (the grid's search) above a
+`NocturneGrid` of orders with
 status pills and right-aligned dates and totals, the chosen order's lines in an `Expander` below, and
 a `ProgressBar` with the share shipped on time.
 

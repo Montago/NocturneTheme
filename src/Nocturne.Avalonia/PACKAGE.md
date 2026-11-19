@@ -70,6 +70,11 @@ public partial class MainWindow : Nocturne.Avalonia.Controls.NocturneWindow
   in to filter thousands of items), `RangeSlider`, `Rating`, `ProgressRing`, `BusyIndicator`, `InfoBar`,
   `Accordion`, `HamburgerMenu`, `StatusBar`, `NocturneDialog` and `Flyout` (a panel that slides in
   from a window edge).
+- **NocturneGrid**: a DataGrid for large lists. Search across all columns (every word must match; hits
+  drawn in the accent), a filter in every column header (tick values with their counts or type them, `*`
+  wildcards, ranges such as `>50000` or `2020-01-01..2020-06-30`, a tree of years, months and days for
+  dates), three-state sorting, grouping (`GroupMemberPath`) and paging (`PageSize`). Columns:
+  `NocturneGridColumn` and `NocturneGridCheckBoxColumn`.
 - **Accents**: blue by default; `NocturneTheme.SetAccent(NocturneAccent.Green)` (or Orange, Yellow, Teal,
   or `System`, the accent colour of the operating system) switches them at run time.
 - **Building blocks**: cards, tags, pills, badges, icon tiles, a type scale, the theme's line icons

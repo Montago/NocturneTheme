@@ -59,7 +59,7 @@ AVALONIA_APPS = [
 AVALONIA_SHOTS = os.path.join(SHOTS, 'avalonia')
 AVALONIA_GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Avalonia.Demo', 'Views', 'GalleryPage.axaml')
 AVALONIA_PAGES = [
-    'controls.png', 'more.png', 'custom.png', 'tokens.png', 'icons.png', 'dialog.png', 'flyout.png',
+    'controls.png', 'more.png', 'custom.png', 'grid.png', 'tokens.png', 'icons.png', 'dialog.png', 'flyout.png',
     'accent-green.png', 'accent-orange.png', 'accent-yellow.png', 'accent-teal.png',
     'titlebar-separated.png', 'titlebar-accent.png',
 ]
