@@ -62,7 +62,7 @@ def style_keys():
     return out
 
 
-doc = ["---", "title: Resource keys", "parent: Reference", "nav_order: 1", "---", "", "# Resource keys", "",
+doc = ["---", "title: Resource keys", "parent: Reference", "grand_parent: Nocturne for WPF", "nav_order: 1", "---", "", "# Resource keys", "",
        "Every brush, colour, font size, icon and named style the theme defines, generated from the XAML in",
        "`src/Nocturne.Wpf/Styles` by `tools/generate_resource_keys.py`. Reference brushes with",
        "`{DynamicResource ...}` so they follow accent changes.", "",

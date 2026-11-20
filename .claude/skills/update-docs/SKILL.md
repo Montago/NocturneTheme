@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Bring the Nocturne documentation up to date with the code - screenshots of the demo and the control gallery, docs/resource-keys.md, and the docs pages for anything that changed. Use before a release (a v*.*.* or avalonia-v*.*.* tag), or when the user asks to update the docs or the screenshots. Not after ordinary code changes - docs and screenshots change only for releases.
+description: Bring the Nocturne documentation up to date with the code - screenshots of the demo and the control gallery, docs/resource-keys.md, and the docs pages for anything that changed. Use before a release (a v*.*.*, avalonia-v*.*.* or web-v*.*.* tag), or when the user asks to update the docs or the screenshots. Not after ordinary code changes - docs and screenshots change only for releases.
 ---
 
 # Update the documentation
@@ -14,9 +14,11 @@ match the code. Work in the repository root.
 python tools/update_docs.py
 ```
 
-For a release of one library, add `--only wpf` or `--only avalonia`: only that library's pictures are
-rendered and copied (Nocturne.Avalonia's go to `docs/screenshots/avalonia/`, drawn headless, so a
-locked screen does not matter there), and `--only avalonia` leaves `docs/resource-keys.md` alone.
+For a release of one library, add `--only wpf`, `--only avalonia` or `--only web`: only that library's
+pictures are rendered and copied (Nocturne.Avalonia's go to `docs/screenshots/avalonia/`, drawn
+headless, so a locked screen does not matter there; Nocturne.Web's go to `docs/screenshots/web/` and
+`docs/screenshots/samples/web-*.png`, taken by `tools/web_snapshots.py` with headless Edge, which needs
+Pillow), and only `--only wpf` (or no `--only`) regenerates `docs/resource-keys.md`.
 
 It builds the demo and the two sample apps into a scratch folder (never into `bin/`, which Visual
 Studio may have locked), runs them with `--snapshot`, copies the page pictures to `docs/screenshots/`,
@@ -73,6 +75,13 @@ Then, for each change:
   pictures from `screenshots/avalonia/controls/`), `docs/avalonia-samples.md` and
   `src/Nocturne.Avalonia/PACKAGE.md`. The script warns about Avalonia controls those pages do not mention
   and pictures no page shows.
+- **Nocturne.Web**: `docs/web.md` and the pages in `docs/web/` (one section per control with the tag
+  helper, the HTML it writes and its attributes, pictures from `../screenshots/web/controls/`, one per
+  sample of `src/Nocturne.Web.Demo/Views/Demo/Gallery.cshtml`), `docs/web/reference.md` (data
+  attributes, the `window.Nocturne` API, events, the server mode types) and
+  `src/Nocturne.Web/PACKAGE.md`. Check the attribute tables against the tag helpers in
+  `src/Nocturne.Web/TagHelpers/`. The script warns about tag helpers no page of `docs/web/` mentions.
+- The docs are split per library: `docs/index.md` (Home) compares the three packages; keep it in step.
 - `CLAUDE.md` gets any new pitfall that was found along the way.
 
 Everything in the repository is English, also when the user writes in Danish.

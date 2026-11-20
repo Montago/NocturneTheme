@@ -89,12 +89,17 @@ samples/                      two sample apps built with the theme, in the solut
                               customers, about). Fixed data in SampleData.cs, one UserControl per page in Views/;
                               Shared/ has WindowSnapshot.cs (--snapshot: admin-*.png / portal-*.png) and
                               SampleIcons.xaml (Sample.Icons.*, icons the theme lacks)
-docs/                         GitHub Pages site (Just the Docs, colour scheme in _sass); pages per control
-                              group, screenshots/ (pages) and screenshots/controls/ (gallery)
+docs/                         GitHub Pages site (Just the Docs, colour scheme in _sass), split per library as
+                              JetPack's: index.md (Home, all three), wpf.md + the WPF pages at the root
+                              (parent "Nocturne for WPF"), avalonia*.md ("Nocturne for Avalonia"), web.md +
+                              web/*.md ("Nocturne for the web"; pictures ../screenshots/web/); children of a
+                              "Controls" or "Reference" page need grand_parent. screenshots/ (pages),
+                              screenshots/controls/ (gallery)
 tools/update_docs.py          builds the demo and the samples, runs --snapshot, copies the pictures to docs/
                               (samples to screenshots/samples/), regenerates
                               docs/resource-keys.md (generate_resource_keys.py) and runs the checks
-                              (StaticResource order, images, every control documented); --check: checks only
+                              (StaticResource order, images, every control and web tag helper documented);
+                              --only wpf|avalonia|web for one library's pictures; --check: checks only
 icons/                        icons.json (the MDI names in the set), mdi/*.svg, LICENSE (Apache 2.0)
 fonts/inter/                  Inter-{Regular,Medium,SemiBold,Bold}.ttf + LICENSE.txt (OFL 1.1), embedded by WPF and Avalonia
 tools/generate_icons.py       icons.json + icons/mdi -> Controls/NocturneIconKind.g.cs; --fetch, --check
@@ -314,7 +319,8 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   (`body.gallery`); compare a web gallery picture with `docs/screenshots/controls/<name>.png`.
 - Check visual changes with `python tools/web_snapshots.py --out <scratch>` (needs Pillow and Edge);
   it builds both sites to a scratch folder, so a running Visual Studio does not get in the way.
-- Web docs and pictures (`docs/screenshots/web/`) follow the same rule: only for a release.
+- Web docs (`docs/web.md`, `docs/web/*.md`) and pictures (`docs/screenshots/web/`) follow the same rule:
+  only for a release, with `python tools/update_docs.py --only web`.
 
 ## WPF gotchas (same as JetPack)
 

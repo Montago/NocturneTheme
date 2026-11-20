@@ -4,7 +4,7 @@ Usage (from the repository root):
 
     python tools/update_docs.py              build, render and copy everything
     python tools/update_docs.py --check      only the checks, no build or screenshots
-    python tools/update_docs.py --only avalonia   pictures of one library only (wpf or avalonia), for its own release
+    python tools/update_docs.py --only avalonia   pictures of one library only (wpf, avalonia or web), for its own release
 
 Steps:
   1. Builds the demo and the sample apps into a scratch folder (never into bin/, which Visual Studio
@@ -13,15 +13,18 @@ Steps:
      transparent images while the screen is off or the session is locked.
   3. Copies the page pictures to docs/screenshots, the gallery to docs/screenshots/controls and the
      sample apps' pages to docs/screenshots/samples. Nocturne.Avalonia's demo and samples (drawn on
-     Avalonia's headless platform) go to docs/screenshots/avalonia/ in the same layout.
+     Avalonia's headless platform) go to docs/screenshots/avalonia/ in the same layout. Nocturne.Web's
+     demo, gallery and MVC sample are drawn by tools/web_snapshots.py (headless Edge) into
+     docs/screenshots/web/ and docs/screenshots/samples/web-*.png.
   4. Regenerates docs/resource-keys.md.
   5. Checks that every {StaticResource} in Styles/ is defined earlier in the same file, that every
      image the docs reference exists, that every gallery and sample picture is shown on a docs page,
      that every gallery picture still has its sample, and that every public control class is
-     mentioned on a docs page (for Avalonia: on the avalonia*.md pages).
+     mentioned on a docs page (for Avalonia: on the avalonia*.md pages; for the web: every tag helper
+     on a page of docs/web/).
 
-Prints a report and exits with 1 when a step or a check fails. Needs only the Python standard library
-and the .NET SDK.
+Prints a report and exits with 1 when a step or a check fails. Needs the Python standard library and
+the .NET SDK; the web pictures also need Pillow and Microsoft Edge.
 """
 import argparse
 import filecmp
@@ -58,6 +61,9 @@ AVALONIA_APPS = [
 ]
 AVALONIA_SHOTS = os.path.join(SHOTS, 'avalonia')
 AVALONIA_GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Avalonia.Demo', 'Views', 'GalleryPage.axaml')
+WEB_GALLERY = os.path.join(ROOT, 'src', 'Nocturne.Web.Demo', 'Views', 'Demo', 'Gallery.cshtml')
+WEB_SHOTS = os.path.join(SHOTS, 'web')
+
 AVALONIA_PAGES = [
     'controls.png', 'more.png', 'custom.png', 'grid.png', 'tokens.png', 'icons.png', 'dialog.png', 'flyout.png',
     'accent-green.png', 'accent-orange.png', 'accent-yellow.png', 'accent-teal.png',
@@ -98,7 +104,7 @@ def step(text):
 def build_and_render(scratch, only, report):
     snap = os.path.join(scratch, 'snap')
     shutil.rmtree(snap, ignore_errors=True)
-    apps = (APPS if only != 'avalonia' else []) + (AVALONIA_APPS if only != 'wpf' else [])
+    apps = (APPS if only in (None, 'wpf') else []) + (AVALONIA_APPS if only in (None, 'avalonia') else [])
     for project, exe, subfolder in apps:
         out = os.path.join(scratch, 'bin', exe)
         step(f'Building {project}')
@@ -131,7 +137,7 @@ def build_and_render(scratch, only, report):
     if os.path.exists(wheel) and not open(wheel, encoding='utf-8').read().startswith('PASS'):
         report.error('wheel-check.txt: ' + open(wheel, encoding='utf-8').read())
     checks = os.path.join(snap, 'avalonia', 'checks.txt')
-    if only == 'wpf':
+    if only in ('wpf', 'web'):
         pass
     elif not os.path.exists(checks):
         report.error('Nocturne.Avalonia.Demo --snapshot wrote no checks.txt')
@@ -163,10 +169,10 @@ def is_blank(path):
 def copy_pictures(snap, only, report):
     step('Copying pictures to docs/screenshots')
     plan, folders = [], []
-    if only != 'avalonia':
+    if only in (None, 'wpf'):
         plan += [(os.path.join(snap, name), os.path.join(SHOTS, name)) for name in DEMO_PAGES]
         folders += ['controls', 'samples']
-    if only != 'wpf':
+    if only in (None, 'avalonia'):
         plan += [(os.path.join(snap, 'avalonia', name), os.path.join(AVALONIA_SHOTS, name)) for name in AVALONIA_PAGES]
         folders += [os.path.join('avalonia', 'controls'), os.path.join('avalonia', 'samples')]
     for folder in folders:
@@ -187,6 +193,17 @@ def copy_pictures(snap, only, report):
             continue
         shutil.copyfile(source, target)
     print(f'  {len(report.added)} new, {len(report.changed)} changed, {len(plan) - len(report.added) - len(report.changed)} unchanged')
+
+
+def web_pictures(scratch, report):
+    """The web demo, its gallery and the MVC sample, through tools/web_snapshots.py (headless Edge), which
+    copies a picture into docs/screenshots only when its pixels changed."""
+    step('Rendering the web demo, gallery and sample (headless Edge)')
+    result = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'web_snapshots.py'), '--scratch', os.path.join(scratch, 'web')],
+                            capture_output=True, text=True)
+    print(result.stdout.rstrip())
+    if result.returncode != 0:
+        report.error('web_snapshots.py failed:\n' + result.stdout[-3000:] + result.stderr[-2000:])
 
 
 # ---------------------------------------------------------------- checks
@@ -226,19 +243,23 @@ def check_static_resources(report):
 
 
 def doc_pages():
-    return sorted(glob.glob(os.path.join(DOCS, '*.md')))
+    """The docs pages: docs/*.md (home, WPF and Avalonia) and docs/web/*.md (the web theme)."""
+    return sorted(glob.glob(os.path.join(DOCS, '*.md')) + glob.glob(os.path.join(DOCS, 'web', '*.md')))
 
 
 def check_doc_images(report):
     step('Checking images in docs/')
     referenced = set()
     for page in doc_pages():
-        name = os.path.basename(page)
-        for m in re.finditer(r'!\[[^\]]*\]\((screenshots/[^)\s]+)\)', open(page, encoding='utf-8').read()):
-            referenced.add(m.group(1))
-            if not os.path.exists(os.path.join(DOCS, m.group(1))):
+        name = os.path.relpath(page, DOCS).replace(os.sep, '/')
+        # screenshots/... from docs/, ../screenshots/... from docs/web/
+        for m in re.finditer(r'!\[[^\]]*\]\(((?:\.\./)*screenshots/[^)\s]+)\)', open(page, encoding='utf-8').read()):
+            target = os.path.normpath(os.path.join(os.path.dirname(page), m.group(1)))
+            referenced.add(os.path.relpath(target, DOCS).replace(os.sep, '/'))
+            if not os.path.exists(target):
                 report.error(f'{name} shows {m.group(1)}, which does not exist')
-    for root_md in ('README.md', os.path.join('src', 'Nocturne.Wpf', 'PACKAGE.md')):
+    for root_md in ('README.md', os.path.join('src', 'Nocturne.Wpf', 'PACKAGE.md'), os.path.join('src', 'Nocturne.Avalonia', 'PACKAGE.md'),
+                    os.path.join('src', 'Nocturne.Web', 'PACKAGE.md')):
         path = os.path.join(ROOT, root_md)
         if os.path.exists(path):
             text = open(path, encoding='utf-8').read()
@@ -247,7 +268,8 @@ def check_doc_images(report):
                 if not os.path.exists(os.path.join(DOCS, m.group(1))):
                     report.error(f'{root_md} shows docs/{m.group(1)}, which does not exist')
 
-    shown = [os.path.join(SHOTS, *folder, '*.png') for folder in (['controls'], ['samples'], ['avalonia', 'controls'], ['avalonia', 'samples'])]
+    shown = [os.path.join(SHOTS, *folder, '*.png') for folder in
+             (['controls'], ['samples'], ['avalonia', 'controls'], ['avalonia', 'samples'], ['web'], ['web', 'controls'])]
     for picture in sorted(p for pattern in shown for p in glob.glob(pattern)):
         name = os.path.relpath(picture, DOCS).replace(os.sep, '/')
         if name not in referenced:
@@ -264,13 +286,19 @@ def check_doc_images(report):
         tag = os.path.splitext(os.path.basename(picture))[0]
         if tag not in avalonia_tags:
             report.warn(f'screenshots/avalonia/controls/{tag}.png has no sample in GalleryPage.axaml any more')
-    print(f'  {len(referenced)} references, {len(tags)} WPF and {len(avalonia_tags)} Avalonia gallery samples')
+    web_tags = set(re.findall(r'class="gallery-sample" data-shot="([^"@]+)"', open(WEB_GALLERY, encoding='utf-8').read()))
+    for picture in glob.glob(os.path.join(WEB_SHOTS, 'controls', '*.png')):
+        tag = os.path.splitext(os.path.basename(picture))[0]
+        if tag not in web_tags:
+            report.warn(f'screenshots/web/controls/{tag}.png has no sample in Gallery.cshtml any more')
+    print(f'  {len(referenced)} references, {len(tags)} WPF, {len(avalonia_tags)} Avalonia and {len(web_tags)} web gallery samples')
 
 
 def check_controls_documented(report):
     """Every public control class should be mentioned on a docs page."""
     step('Checking that every control is documented')
-    pages = '\n'.join(open(p, encoding='utf-8').read() for p in doc_pages() if not os.path.basename(p).startswith('avalonia'))
+    pages = '\n'.join(open(p, encoding='utf-8').read() for p in glob.glob(os.path.join(DOCS, '*.md'))
+                      if not os.path.basename(p).startswith('avalonia'))
     classes = []
     for path in glob.glob(os.path.join(ROOT, 'src', 'Nocturne.Wpf', 'Controls', '*.cs')):
         classes += re.findall(r'^public (?:sealed |abstract |partial )*class (\w+)\s*:\s*(?:\w+)', open(path, encoding='utf-8').read(), re.M)
@@ -297,23 +325,36 @@ def check_controls_documented(report):
             report.warn(f'Avalonia control {name} is not mentioned on the avalonia*.md pages')
     print(f'  {len(set(classes) - internal)} Avalonia controls')
 
+    # Nocturne.Web: every tag helper on a page of docs/web/
+    web_pages = '\n'.join(open(p, encoding='utf-8').read() for p in glob.glob(os.path.join(DOCS, 'web', '*.md')))
+    tags = set()
+    for path in glob.glob(os.path.join(ROOT, 'src', 'Nocturne.Web', 'TagHelpers', '*.cs')):
+        tags.update(re.findall(r'\[HtmlTargetElement\("(nc-[\w-]+)"', open(path, encoding='utf-8').read()))
+    for tag in sorted(tags):
+        if f'`{tag}`' not in web_pages and f'<{tag}' not in web_pages:
+            report.warn(f'tag helper {tag} is not mentioned in docs/web/')
+    print(f'  {len(tags)} web tag helpers')
+
 
 # ---------------------------------------------------------------- main
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--check', action='store_true', help='only run the checks; no build, no screenshots')
-    parser.add_argument('--only', choices=['wpf', 'avalonia'], help='build and copy the pictures of one library only')
+    parser.add_argument('--only', choices=['wpf', 'avalonia', 'web'], help='build and copy the pictures of one library only')
     parser.add_argument('--scratch', default=os.path.join(tempfile.gettempdir(), 'nocturne-docs'),
                         help='folder for the build and the raw snapshots (default: %(default)s)')
     args = parser.parse_args()
     report = Report()
 
     if not args.check:
-        snap = build_and_render(args.scratch, args.only, report)
-        if snap:
-            copy_pictures(snap, args.only, report)
-    if args.only != 'avalonia':
+        if args.only != 'web':
+            snap = build_and_render(args.scratch, args.only, report)
+            if snap:
+                copy_pictures(snap, args.only, report)
+        if args.only in (None, 'web'):
+            web_pictures(args.scratch, report)
+    if args.only in (None, 'wpf'):
         regenerate_resource_keys(report)
     check_static_resources(report)
     check_doc_images(report)
