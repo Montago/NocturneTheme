@@ -91,9 +91,11 @@ grid lines of a data grid. It takes the attributes of [`nc-data-grid`](#datagrid
 
 ![TreeView](../screenshots/web/controls/treeview.png)
 
-`nc-tree-view` is a tree of nested `nc-tree-view-item`s. An item with children folds open and shut with
-its [+]/[−] box (a `<details>`, so it works without the script); a click on an item's text, or the arrow
-keys, select it.
+`nc-tree-view` is a tree of nested `nc-tree-view-item`s. An item with children is a `<details>`, so it
+folds without the script too. With the script it works as WPF's TreeView: a click on the chevron folds
+an item without selecting it, a click on its text selects it and a double-click folds it. The Up and
+Down keys move the selection over the items that show; Right opens the selected item (or moves to its
+first child) and Left folds it shut (or moves to its parent).
 
 ```cshtml
 <nc-tree-view name="Folder">

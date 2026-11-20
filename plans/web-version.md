@@ -4,7 +4,7 @@ Status: built and merged into master (2026-11-19, PR #3): the package (CSS, scri
 NocturneGrid with server mode, icons), the demo pages, the gallery, the MVC sample, the tools
 (`generate_web_tokens.py`, `bundle_web_css.py`, `web_snapshots.py`), CI checks and `web-v*` release
 tags. Docs written and the docs split per library as JetPack's (2026-11-20); first release
-`web-v0.1.0`. How it works and its rules are in CLAUDE.md ("Nocturne.Web"). Left: the differences and
+`web-v0.1.0`; `web-v0.1.1` (2026-11-20) lets the TreeView fold on its chevron. How it works and its rules are in CLAUDE.md ("Nocturne.Web"). Left: the differences and
 checks below.
 
 Decided: no transparency to the desktop (opaque ground, solid popups); alpha is kept on hover, card
@@ -16,13 +16,6 @@ and selection surfaces.
   `docs/index.md` compares the three packages, the WPF pages sit under `wpf.md`.
 - `tools/update_docs.py --only web` runs `web_snapshots.py` and checks that every tag helper is
   mentioned in `docs/web/`; the `/update-docs` skill describes it.
-
-## For the next release's docs
-
-Remove each line once it is in the docs.
-- `docs/web/lists.md`, TreeView: a click on the chevron folds an item (it did nothing before 0.1.1), a
-  double-click on its text folds it too, Left / Right fold it shut and open (or move to the parent /
-  first child), and the arrow keys skip items in folded branches.
 
 ## Differences from WPF still open
 
