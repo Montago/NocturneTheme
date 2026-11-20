@@ -1,6 +1,6 @@
 ---
-title: Avalonia sample apps
-parent: Avalonia
+title: Sample apps
+parent: Nocturne for Avalonia
 nav_order: 2
 ---
 

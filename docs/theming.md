@@ -1,6 +1,7 @@
 ---
 title: Theme and accents
-nav_order: 3
+parent: Nocturne for WPF
+nav_order: 2
 ---
 
 # Theme and accents

@@ -1,6 +1,6 @@
 ---
-title: Avalonia controls
-parent: Avalonia
+title: Controls
+parent: Nocturne for Avalonia
 nav_order: 1
 ---
 

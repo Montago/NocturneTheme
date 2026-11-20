@@ -1,7 +1,8 @@
 ---
-title: Avalonia
-nav_order: 7
+title: Nocturne for Avalonia
+nav_order: 3
 has_children: true
+has_toc: false
 ---
 
 # Nocturne for Avalonia
@@ -19,7 +20,7 @@ both look alike.
 | Package | [Nocturne.Avalonia](https://www.nuget.org/packages/Nocturne.Avalonia) on nuget.org (and on each `avalonia-v*` [GitHub release](https://github.com/Montago/NocturneTheme/releases)) |
 | Needs | .NET 10 or later, Avalonia 12. The backdrop needs Windows 11 22H2 with transparency effects on; elsewhere the window paints an opaque ground of the same colour. |
 | Namespace | `xmlns:nc="urn:nocturne-avalonia"` |
-| Pages | [Avalonia controls](avalonia-controls.md), [Avalonia sample apps](avalonia-samples.md) |
+| Pages | [Controls](avalonia-controls.md), [Sample apps](avalonia-samples.md) |
 
 ## Getting started
 

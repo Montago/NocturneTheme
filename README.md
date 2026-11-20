@@ -53,6 +53,17 @@ controls and adds the window, dialogs, flyouts, NocturneGrid and the controls Av
 
 ![The Avalonia demo](docs/screenshots/avalonia/controls.png)
 
+## Nocturne for the web
+
+The same look in HTML and CSS for ASP.NET Core is the package
+[`Nocturne.Web`](https://www.nuget.org/packages/Nocturne.Web): a Razor class library with the controls
+as CSS classes, a script without dependencies, tag helpers with the WPF names (`<nc-combo-box>`,
+`<nc-nocturne-grid>`) and the icons as an SVG sprite. The page paints the opaque ground, as nothing of
+the desktop can show through. See
+[Nocturne for the web](https://montago.github.io/NocturneTheme/web.html).
+
+![The web demo](docs/screenshots/web/controls.png)
+
 ## Install
 
 The package [`Nocturne.Wpf`](https://www.nuget.org/packages/Nocturne.Wpf) is on nuget.org (each

@@ -1,6 +1,7 @@
 ---
 title: Sample apps
-nav_order: 5
+parent: Nocturne for WPF
+nav_order: 4
 ---
 
 # Sample apps

@@ -1,6 +1,7 @@
 ---
 title: Navigation and layout
 parent: Controls
+grand_parent: Nocturne for WPF
 nav_order: 6
 ---
 

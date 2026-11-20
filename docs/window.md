@@ -1,6 +1,7 @@
 ---
 title: Window and dialogs
 parent: Controls
+grand_parent: Nocturne for WPF
 nav_order: 1
 ---
 

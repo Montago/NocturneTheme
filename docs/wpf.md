@@ -1,7 +1,8 @@
 ---
-title: Home
-nav_order: 1
-permalink: /
+title: Nocturne for WPF
+nav_order: 2
+has_children: true
+has_toc: false
 ---
 
 # Nocturne for WPF
@@ -48,7 +49,9 @@ standard control; the package adds the controls a desktop app usually needs on t
 | [Controls](controls.md) | One page per group of controls, each with a picture and XAML |
 | [Sample apps](samples.md) | Two applications built with the theme, page by page |
 | [Reference](reference.md) | [Resource keys](resource-keys.md) and [helpers](helpers.md) (attached properties, template parts) |
-| [Avalonia](avalonia.md) | Nocturne.Avalonia, the same theme for Avalonia on Windows, macOS and Linux: its controls and sample apps |
+
+The same theme is also made for [Avalonia](avalonia.md) (Windows, macOS and Linux) and for
+[the web](web.md) (ASP.NET Core).
 
 The pictures come from the demo app in `src/Nocturne.Wpf.Demo` (`--snapshot`); the one under each
 control's heading is rendered from its gallery, with drop-downs and menus open where the control has

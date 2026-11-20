@@ -1,6 +1,7 @@
 ---
 title: Text and input
 parent: Controls
+grand_parent: Nocturne for WPF
 nav_order: 3
 ---
 

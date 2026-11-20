@@ -1,6 +1,7 @@
 ---
 title: Resource keys
 parent: Reference
+grand_parent: Nocturne for WPF
 nav_order: 1
 ---
 
@@ -124,7 +125,7 @@ The font family and the type scale. Override `Nocturne.Fonts.Family` to use anot
 
 | Key | Type | Value |
 | --- | --- | --- |
-| `Nocturne.Fonts.Family` | FontFamily | `Segoe UI` |
+| `Nocturne.Fonts.Family` | FontFamily | `/Nocturne.Wpf;component/Fonts/#Inter, Segoe UI` |
 | `Nocturne.Fonts.Family.Mono` | FontFamily | `Cascadia Mono, Consolas` |
 | `Nocturne.Font.Size.Title` | Double | `30` |
 | `Nocturne.Font.Size.Subtitle` | Double | `20` |

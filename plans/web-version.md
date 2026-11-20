@@ -3,22 +3,19 @@
 Status: built and merged into master (2026-11-19, PR #3): the package (CSS, script, tag helpers,
 NocturneGrid with server mode, icons), the demo pages, the gallery, the MVC sample, the tools
 (`generate_web_tokens.py`, `bundle_web_css.py`, `web_snapshots.py`), CI checks and `web-v*` release
-tags. How it works and its rules are in CLAUDE.md ("Nocturne.Web"). Left: docs and the first release,
-then the differences and checks below.
+tags. Docs written and the docs split per library as JetPack's (2026-11-20); first release
+`web-v0.1.0`. How it works and its rules are in CLAUDE.md ("Nocturne.Web"). Left: the differences and
+checks below.
 
 Decided: no transparency to the desktop (opaque ground, solid popups); alpha is kept on hover, card
 and selection surfaces.
 
-## Docs and the first release
+## Docs and the first release (done 2026-11-20)
 
-- A web section in `docs/` (Just the Docs) with the same page names as the WPF docs: the tag
-  helpers, classes, `Nocturne.setAccent` and the icons. `PACKAGE.md` points at
-  `https://montago.github.io/NocturneTheme/web.html`.
-- Pictures: `web_snapshots.py` writes `docs/screenshots/web/` (`PACKAGE.md` shows
-  `web/controls.png`) and `docs/screenshots/samples/web-*.png`. Hook it into `tools/update_docs.py`
-  and the `/update-docs` skill, with a check that every web control is documented.
-- nuget.org: the Trusted Publishing policy must allow the new package `Nocturne.Web` before the first
-  `web-v0.1.0` tag.
+- `docs/web.md` and `docs/web/*.md` (same page names as the WPF docs, as JetPack's web docs);
+  `docs/index.md` compares the three packages, the WPF pages sit under `wpf.md`.
+- `tools/update_docs.py --only web` runs `web_snapshots.py` and checks that every tag helper is
+  mentioned in `docs/web/`; the `/update-docs` skill describes it.
 
 ## Differences from WPF still open
 

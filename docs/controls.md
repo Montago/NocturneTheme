@@ -1,6 +1,7 @@
 ---
 title: Controls
-nav_order: 4
+parent: Nocturne for WPF
+nav_order: 3
 has_children: true
 ---
 
