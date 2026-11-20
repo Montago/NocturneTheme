@@ -44,6 +44,8 @@ style, or the sample in `src/Nocturne.Wpf.Demo/Views/GalleryPage.xaml`) and run 
 
 ## 3. Check the text against the code
 
+- **Notes waiting for a release**: `plans/*.md` may list text to add "for the next release's docs";
+  write it into the pages of the library being released and remove the note from the plan.
 Docs change only for releases, so the code changes since the last commit that touched `docs/` are
 the ones the text has not caught up with yet:
 

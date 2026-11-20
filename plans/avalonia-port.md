@@ -5,7 +5,9 @@ standard controls, StatusBar, the own controls, Avalonia's pickers, a plain Data
 pages, the gallery and the Admin and Portal sample apps. Phase 8 (docs, package README, `avalonia-v*`
 release tags, frozen animations in the pictures) is done, and Nocturne.Avalonia 0.1.0 is released
 (2026-11-19, tag `avalonia-v0.1.0`, on nuget.org). Phase 7 (NocturneGrid) is merged into master
-(2026-11-19, PR #5) and released with its docs in Nocturne.Avalonia 0.2.0 (tag `avalonia-v0.2.0`). What is built, how it works and its gotchas are in
+(2026-11-19, PR #5) and released with its docs in Nocturne.Avalonia 0.2.0 (tag `avalonia-v0.2.0`). Nocturne.Avalonia 0.2.1
+(2026-11-20, tag `avalonia-v0.2.1`): the demo's icon cells no longer stay lit after a page switch, and
+the docs say how the Acrylic backdrop differs from WPF's. What is built, how it works and its gotchas are in
 CLAUDE.md ("Avalonia port").
 Avalonia 12.1.6, Avalonia.Controls.DataGrid 12.1.2.
 

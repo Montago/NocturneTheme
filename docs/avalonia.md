@@ -87,7 +87,7 @@ lights.
 | Property | |
 | --- | --- |
 | `Backdrop` | `Acrylic` (the default), `Mica`, `MicaAlt` (Windows 11) or `None`. Where it is not available (Windows 10, transparency effects off, most Linux desktops) the window paints its opaque ground. |
-| `TintOpacity` | How much of the dark tint covers the backdrop (0.5). |
+| `TintOpacity` | How much of the dark tint covers the backdrop (0.5). On Windows the Acrylic backdrop is lighter than the WPF window's (see [How it differs from WPF](#how-it-differs-from-wpf)); about 0.7 matches WPF at 0.5. |
 | `UseBackdropInRemoteSession` | Over Remote Desktop the window paints the opaque ground, which draws faster there, unless this is true. |
 | `TitleBarStyle` | `Seamless` (the default), `Separated` (a darker strip with a hairline) or `Accent` (a strip tinted with the accent). |
 | `CornerStyle` | `Round`, `RoundSmall` or `Square` (Windows 11). |
@@ -195,6 +195,11 @@ icons are the WPF keys:
 - `NocturneGrid` builds on Avalonia's `DataGrid` and its `DataGridCollectionView`: groups are the
   DataGrid's own group headers, and the WPF version's tricks for scrolling speed (cell text drawn as glyph
   runs, the preview while the scroll bar thumb is dragged) are not needed or not there.
+- The Acrylic backdrop on Windows is Avalonia's own (the desktop blurred and saturated through Windows'
+  composition), without the dark layer that Windows adds to the Acrylic the WPF window gets. With the
+  same `TintOpacity` the window looks lighter; set it to about 0.7 to match WPF at 0.5. The theme leaves
+  that to the app. It also stays translucent while the window is inactive, where Windows paints the
+  WPF window's backdrop as a solid colour.
 - ToolBar, RichTextBox and ListView/GridView do not exist in Avalonia; `DataGrid` takes the place of a
   ListView with columns.
 - Checked on screen on Windows 11; on macOS and Linux it builds and renders headless in CI, but the
