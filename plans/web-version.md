@@ -17,6 +17,13 @@ and selection surfaces.
 - `tools/update_docs.py --only web` runs `web_snapshots.py` and checks that every tag helper is
   mentioned in `docs/web/`; the `/update-docs` skill describes it.
 
+## For the next release's docs
+
+Remove each line once it is in the docs.
+- `docs/web/lists.md`, TreeView: a click on the chevron folds an item (it did nothing before 0.1.1), a
+  double-click on its text folds it too, Left / Right fold it shut and open (or move to the parent /
+  first child), and the arrow keys skip items in folded branches.
+
 ## Differences from WPF still open
 
 - The ListView sample has no file icons.

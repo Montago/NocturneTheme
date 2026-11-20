@@ -500,7 +500,10 @@ also raise "nc-change" with the new value in event.detail. A data grid raises "n
   /* ================================================== list box and friends */
   /* Single selection with the mouse and the arrow keys; data-nc-name keeps a hidden input */
   function setUpSelection(container, itemSelector) {
-    const items = () => [...container.querySelectorAll(itemSelector)].filter(el => !el.hasAttribute('aria-disabled'));
+    /* the items the user can see: not disabled, not inside a folded tree branch or a hidden part */
+    const items = () => [...container.querySelectorAll(itemSelector)]
+      .filter(el => !el.hasAttribute('aria-disabled')
+        && (el.checkVisibility ? el.checkVisibility({ contentVisibilityAuto: true }) : el.getClientRects().length > 0));
     const select = (item, focus) => {
       items().forEach(el => el.setAttribute('aria-selected', String(el === item)));
       if (focus !== false) item?.scrollIntoView?.({ block: 'nearest' });
@@ -516,7 +519,7 @@ also raise "nc-change" with the new value in event.detail. A data grid raises "n
     };
     container.addEventListener('click', e => {
       const item = e.target.closest(itemSelector);
-      if (item && container.contains(item) && !item.hasAttribute('aria-disabled')) {
+      if (item && container.contains(item) && !item.hasAttribute('aria-disabled') && !e.ncNoSelect) {
         select(item);
       }
     });
@@ -533,15 +536,53 @@ also raise "nc-change" with the new value in event.detail. A data grid raises "n
     if (!container.hasAttribute('tabindex')) container.tabIndex = 0;
   }
 
-  /* TreeView: the [+]/[-] boxes are <details>; the items select like a list; it scrolls with the thin bar */
+  /* TreeView: an item with children is the <summary> of a <details>. As in WPF, a click on its chevron
+     folds it without selecting it, a click on its text selects it, a double-click on the text folds it,
+     and Left / Right fold the selected item shut and open (or move to its parent / first child). */
   function setUpTreeView(tree) {
+    const branchOf = item => {
+      const summary = item?.parentElement;
+      return summary?.tagName === 'SUMMARY' ? summary.parentElement : null;
+    };
+    const fold = (details, open) => { if (details) details.open = open ?? !details.open; };
+    /* the chevron sits in the item's left padding, after the indent */
+    const onChevron = (item, e) => {
+      const indent = parseFloat(getComputedStyle(item).getPropertyValue('--nc-tree-indent')) || 0;
+      return e.clientX - item.getBoundingClientRect().left < indent + 32;
+    };
+
+    /* before the selection's own click handler (capture), so a chevron click does not select */
+    tree.addEventListener('click', e => {
+      const item = e.target.closest('.nc-tree-view__item');
+      if (!item || !e.target.closest('summary')) return;
+      e.preventDefault(); /* <summary> would fold on every click */
+      if (e.detail > 0 && onChevron(item, e)) { /* detail 0: a click from code or the keyboard */
+        fold(branchOf(item));
+        e.ncNoSelect = true;
+      }
+    }, true);
+    tree.addEventListener('dblclick', e => {
+      const item = e.target.closest('.nc-tree-view__item');
+      if (item && !onChevron(item, e)) fold(branchOf(item));
+    });
+    tree.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const item = tree.querySelector('.nc-tree-view__item[aria-selected="true"]');
+      if (!item) return;
+      e.preventDefault();
+      const details = branchOf(item);
+      if (e.key === 'ArrowRight') {
+        if (details && !details.open) fold(details, true);
+        else if (details) details.querySelector(':scope > ul .nc-tree-view__item')?.click();
+      } else if (details?.open) {
+        fold(details, false);
+      } else {
+        /* the parent: the summary of the <details> this item's list sits in */
+        item.closest('ul[role="group"]')?.closest('details')?.querySelector(':scope > summary > .nc-tree-view__item')?.click();
+      }
+    });
     setUpSelection(tree, '.nc-tree-view__item');
     setUpThinScroll(tree);
-    tree.addEventListener('click', e => {
-      /* only the box folds; a click on the header text selects without folding */
-      const summary = e.target.closest('summary');
-      if (summary && e.target.closest('.nc-tree-view__item')) e.preventDefault();
-    });
   }
 
   /* ============================================================= data grid */

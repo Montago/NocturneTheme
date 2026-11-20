@@ -261,6 +261,7 @@
     text-decoration: none;
     white-space: nowrap;
     cursor: default;
+    user-select: none; /* a double-click folds the item rather than selecting its text */
     transition: background-color var(--nc-fast) linear;
   }
   .nc-tree-view__item:hover { background: var(--nc-item-hover); }
