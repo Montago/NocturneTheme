@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -93,8 +94,8 @@ internal static class Snapshot
     /// <summary>
     /// Behaviour the pictures cannot show, driven with the headless mouse: the page's scroll bars hide
     /// a moment after scrolling and appear while it scrolls, a document tab's × closes it, and the "+"
-    /// button adds one. Writes
-    /// checks.txt (PASS or FAIL per line); the command fails when one fails.
+    /// button adds one; then the custom, grid and icons pages (CheckCustomPage, CheckGridPage,
+    /// CheckIconsPage). Writes checks.txt (PASS or FAIL per line); the command fails when one fails.
     /// </summary>
     private static bool Checks(string folder)
     {
@@ -131,6 +132,7 @@ internal static class Snapshot
 
         CheckCustomPage(window, Check);
         CheckGridPage(window, Check);
+        CheckIconsPage(window, Check);
 
         window.Close();
         var path = Path.Combine(folder, "checks.txt");
@@ -413,6 +415,36 @@ internal static class Snapshot
         foreach (var popup in window.GetVisualDescendants().OfType<Popup>().Where(p => p.IsOpen).ToList())
             popup.IsOpen = false;
         Headless.Capture(window);
+    }
+
+    /// <summary>
+    /// The icons page: an icon cell lights up under the mouse and goes dark when it leaves, also after
+    /// the page has been left and shown again (the cells kept a resource binding to the hover brush once).
+    /// </summary>
+    private static void CheckIconsPage(MainWindow window, Action<string, bool> check)
+    {
+        window.ShowPage("icons");
+        Headless.Capture(window);
+        var cells = window.GetVisualDescendants().OfType<WrapPanel>().First(p => p.Name == "Icons").Children.OfType<Border>().Take(3).ToList();
+        ScrollTo(window, cells[0]);
+        foreach (var cell in cells)
+        {
+            var centre = cell.TranslatePoint(new Point(cell.Bounds.Width / 2, cell.Bounds.Height / 2), window)!.Value;
+            window.MouseMove(centre);
+            Headless.Capture(window);
+        }
+        check("an icon cell lights up under the mouse", IsLit(cells[^1]));
+        window.MouseMove(new Point(4, window.Bounds.Height - 4)); // over the navigation
+        Headless.Capture(window);
+        check("an icon cell goes dark when the mouse leaves", !cells.Any(IsLit));
+
+        window.ShowPage("tokens");
+        Headless.Capture(window);
+        window.ShowPage("icons");
+        Headless.Capture(window);
+        check("no icon cell lights up after the page is shown again", !cells.Any(IsLit));
+
+        static bool IsLit(Border cell) => cell.Background is ISolidColorBrush { Color.A: > 0 };
     }
 
     /// <summary>Scrolls the page so the top of the control sits 300px down the window.</summary>

@@ -2,6 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:nc="urn:nocturne-avalonia"
              x:Class="Nocturne.Avalonia.Demo.Views.IconsPage">
+    <UserControl.Styles>
+        <!-- The icon cells (built in code) light up under the mouse -->
+        <Style Selector="Border.iconCell">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.iconCell:pointerover">
+            <Setter Property="Background" Value="{DynamicResource Nocturne.Brushes.Item.Hover}" />
+        </Style>
+    </UserControl.Styles>
     <StackPanel Spacing="20">
         <StackPanel Spacing="6" Margin="8,8,0,4">
             <TextBlock Theme="{StaticResource Nocturne.Styles.TextBlock.Title}" Text="Icons" />

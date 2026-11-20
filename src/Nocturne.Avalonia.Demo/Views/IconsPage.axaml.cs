@@ -42,14 +42,12 @@ public partial class IconsPage : UserControl
             Padding = new Thickness(6, 10, 6, 8),
             Margin = new Thickness(0, 0, 6, 6),
             CornerRadius = new CornerRadius(8),
-            Background = Brushes.Transparent,
             Cursor = new Cursor(StandardCursorType.Hand),
             Tag = kind,
             Child = new StackPanel { Children = { tile, name } },
         };
+        cell.Classes.Add("iconCell");
         ToolTip.SetTip(cell, Xaml(kind));
-        cell.PointerEntered += (_, _) => cell.Bind(Border.BackgroundProperty, cell.GetResourceObservable("Nocturne.Brushes.Item.Hover"));
-        cell.PointerExited += (_, _) => cell.Background = Brushes.Transparent;
         cell.PointerReleased += async (_, _) =>
         {
             Copied.Text = Xaml(kind);
