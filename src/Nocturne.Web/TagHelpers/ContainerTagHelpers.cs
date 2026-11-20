@@ -179,7 +179,8 @@ public class AccordionTagHelper : NocturneTagHelper
 
 /// <summary>
 /// <c>&lt;nc-busy-indicator is-busy="true" busy-content="Loading orders…"&gt;content&lt;/nc-busy-indicator&gt;</c>:
-/// dims the content under a small card with a progress ring. Set data-busy from script.
+/// blurs and dims the content under a small card with a progress ring (blur-radius, 4 by default, as in WPF).
+/// Set data-busy from script.
 /// </summary>
 [HtmlTargetElement("nc-busy-indicator")]
 public class BusyIndicatorTagHelper : NocturneTagHelper
@@ -188,12 +189,20 @@ public class BusyIndicatorTagHelper : NocturneTagHelper
 
     public string BusyContent { get; set; } = "Please wait…";
 
+    /// <summary>Blur radius of the content while busy, as WPF's BlurRadius (4 by default); 0 turns the blur off.</summary>
+    public double? BlurRadius { get; set; }
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var content = (await output.GetChildContentAsync()).GetContent();
         output.TagName = "div";
         output.TagMode = TagMode.StartTagAndEndTag;
         AddClasses(output, "nc-busy-indicator");
+        if (BlurRadius is { } radius)
+        {
+            // WPF's Gaussian radius is about three times CSS blur()'s standard deviation.
+            output.Attributes.SetAttribute("style", $"--nc-busy-blur:{Html.Num(Math.Round(Math.Max(0, radius) / 3, 2))}px;" + (output.Attributes["style"]?.Value ?? ""));
+        }
         output.Attributes.SetAttribute("data-busy", IsBusy ? "true" : "false");
         output.Attributes.SetAttribute("aria-busy", IsBusy ? "true" : "false");
         ApplyCommon(output);

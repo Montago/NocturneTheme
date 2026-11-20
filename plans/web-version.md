@@ -25,7 +25,6 @@ and selection surfaces.
 - The ListView sample has no file icons.
 - NocturneGrid's filter counts differ from WPF's (the logic came from JetPack.Web); make it count
   as `NocturneGrid.cs` does.
-- The BusyIndicator does not blur the content behind it (WPF does).
 - A grouped NocturneGrid marks every other row in a group `is-alternate`, but the class draws nothing.
   Compare with the WPF `nocturnegrid-groups` picture.
 - Chromium draws text a little heavier than WPF.

@@ -2115,8 +2115,11 @@ Load this file before Tailwind: the first @layer statement fixes the order of th
   }
 
   /* -------------------------------------------------------- busy indicator */
-  /* The content dimmed under a small card with a progress ring while data-busy="true" */
+  /* The content blurred and dimmed under a small card with a progress ring while data-busy="true".
+     --nc-busy-blur is the blur (the tag helper's blur-radius sets it; 0 turns it off) */
   .nc-busy-indicator { position: relative; display: block; }
+  /* the blur reaches past the content's edge: clip it there, as the WPF template does while busy */
+  .nc-busy-indicator[data-busy="true"] { overflow: hidden; }
   .nc-busy-indicator__card {
     position: absolute;
     top: 50%;
@@ -2145,7 +2148,12 @@ Load this file before Tailwind: the first @layer statement fixes the order of th
   }
   .nc-busy-indicator[data-busy="true"] > .nc-busy-indicator__card { display: flex; }
   /* the content is disabled under the card, as BusyIndicator sets IsEnabled="False" on it */
-  .nc-busy-indicator[data-busy="true"] > .nc-busy-indicator__content { opacity: 0.42; pointer-events: none; user-select: none; }
+  .nc-busy-indicator[data-busy="true"] > .nc-busy-indicator__content {
+    opacity: 0.42;
+    filter: blur(var(--nc-busy-blur, 1.33px));
+    pointer-events: none;
+    user-select: none;
+  }
 }
 
 /* ---------------------------------------------------------------- controls/datagrid.css */
