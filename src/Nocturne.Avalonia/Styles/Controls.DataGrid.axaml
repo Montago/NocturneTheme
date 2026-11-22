@@ -216,6 +216,8 @@
     </ControlTheme>
 
     <ControlTheme x:Key="{x:Type DataGrid}" TargetType="DataGrid">
+        <!-- Wheel turns stay in the grid at its ends, as in the theme's other scroll viewers -->
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />

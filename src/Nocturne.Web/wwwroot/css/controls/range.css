@@ -53,6 +53,12 @@
     }
   }
   .nc-scroll-viewer { overflow: auto; }
+  /* Wheel turns stay in a scroll container that has something to scroll, also at its ends, so the page
+     around it does not move on (as in Nocturne.Wpf and Nocturne.Avalonia); one with nothing to scroll
+     lets them through. overscroll-behavior on the containers themselves would hold those back too, so
+     nocturne.js marks the theme's scroll containers under the pointer by their overflow at the time. */
+  [data-nc-overscroll~="x"] { overscroll-behavior-x: contain; }
+  [data-nc-overscroll~="y"] { overscroll-behavior-y: contain; }
 
   /* --------------------------------------------------------------- slider */
   /*

@@ -1223,6 +1223,13 @@ public partial class NocturneGrid : DataGrid
         if (e.OriginalSource is ToggleButton { Name: "PART_FilterButton", TemplatedParent: DataGridColumnHeader { Column: { } column } header })
         {
             ((NocturneGrid)sender).LoadFilterOptions(column);
+            if (header.Template?.FindName("PART_FilterPopup", header) is Popup { Child: UIElement surface })
+            {
+                // Events bubble out of a popup to its Popup, so a wheel turn over the box or the buttons would
+                // scroll the grid under it. The popup keeps them (its lists handle their own turns first).
+                surface.MouseWheel -= OnFilterPopupMouseWheel;
+                surface.MouseWheel += OnFilterPopupMouseWheel;
+            }
             header.Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
             {
                 if (header.Template?.FindName("PART_FilterBox", header) is TextBox box)
@@ -1233,6 +1240,8 @@ public partial class NocturneGrid : DataGrid
             });
         }
     }
+
+    private static void OnFilterPopupMouseWheel(object sender, MouseWheelEventArgs e) => e.Handled = true;
 
     private static void OnDateNodeSelected(object sender, RoutedEventArgs e)
     {

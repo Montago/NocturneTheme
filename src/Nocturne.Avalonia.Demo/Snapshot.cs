@@ -244,6 +244,31 @@ internal static class Snapshot
         check("Tab takes the AutoCompleteBox's first match and moves on", city.Text == "Berlin" && !city.IsDropDownOpen && !city.IsKeyboardFocusWithin);
         CloseOpenPopups(window);
 
+        // A list that scrolls (30 rows in 120px, put on the page for the check): at its end further turns
+        // stay in it instead of scrolling the page.
+        var host = page.FindControl<HamburgerMenu>("DemoMenu")!.GetVisualAncestors().OfType<StackPanel>().First();
+        var longList = new ListBox { Height = 120, ItemsSource = Enumerable.Range(1, 30).Select(i => $"Row {i}").ToList() };
+        var room = new Border { Height = 1200 }; // so the page could still scroll down under the list
+        host.Children.Add(longList);
+        host.Children.Add(room);
+        ScrollTo(window, longList);
+        var listScroller = longList.GetVisualDescendants().OfType<ScrollViewer>().First();
+        var pageScroller = window.FindControl<ScrollViewer>("PageScroller")!;
+        var listCentre = longList.TranslatePoint(new Point(longList.Bounds.Width / 2, longList.Bounds.Height / 2), window)!.Value;
+        var pageBefore = pageScroller.Offset;
+        window.MouseMove(listCentre);
+        for (var i = 0; i < 40; i++)
+        {
+            window.MouseWheel(listCentre, new Vector(0, -1));
+        }
+        Headless.Capture(window);
+        check("wheel turns stay in a list at its end and leave the page alone",
+            listScroller.Extent.Height > listScroller.Viewport.Height && pageScroller.Offset.Y < pageScroller.Extent.Height - pageScroller.Viewport.Height - 100
+            && listScroller.Offset.Y >= listScroller.Extent.Height - listScroller.Viewport.Height - 1 && pageScroller.Offset == pageBefore);
+        host.Children.Remove(longList);
+        host.Children.Remove(room);
+        Headless.Capture(window);
+
         var colour = page.FindControl<ColorPicker>("LabelColour")!;
         ScrollTo(window, colour);
         Click(window, colour);
@@ -373,6 +398,19 @@ internal static class Snapshot
         rows = grid.GetVisibleItems().Cast<Car>().ToList();
         check("ticking a value in a header filter keeps only those rows",
             options?.Count == 4 && NocturneGrid.GetFilterText(fuel) == "Diesel" && rows.Count > 0 && rows.All(c => c.Fuel == "Diesel"));
+        var bar = grid.GetVisualDescendants().OfType<ScrollBar>().First(b => b.Name == "PART_VerticalScrollbar");
+        var pageScroller = window.FindControl<ScrollViewer>("PageScroller")!;
+        var filterBox = PopupPart<TextBox>(window, "PART_FilterBox");
+        var (gridBefore, pageBefore) = (bar.Value, pageScroller.Offset);
+        if (filterBox != null)
+        {
+            var boxCentre = filterBox.TranslatePoint(new Point(filterBox.Bounds.Width / 2, filterBox.Bounds.Height / 2), window)!.Value;
+            window.MouseMove(boxCentre);
+            window.MouseWheel(boxCentre, new Vector(0, -1));
+            Headless.Capture(window);
+        }
+        check("a wheel turn over a header filter scrolls neither the grid nor the page",
+            filterBox != null && bar.Maximum > 0 && bar.Value == gridBefore && pageScroller.Offset == pageBefore && fuelButton.IsChecked == true);
         fuelButton.IsChecked = false;
         Headless.Capture(window);
 

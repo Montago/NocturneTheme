@@ -104,8 +104,9 @@ internal static class Snapshot
     }
 
     /// <summary>
-    /// A wheel turn over the settings ListBox (which has nothing to scroll) must scroll the page.
-    /// Writes the result to wheel-check.txt.
+    /// A wheel turn over the settings ListBox (which has nothing to scroll) must scroll the page; one over a
+    /// list scrolled to its end (30 rows in 120px, put on the page for the check) must not.
+    /// Writes the results to wheel-check.txt.
     /// </summary>
     private static async Task CheckWheelChaining(MainWindow window)
     {
@@ -115,23 +116,51 @@ internal static class Snapshot
 
         var target = window.ControlsPage.SettingsList.Items.OfType<ListBoxItem>().First();
         var before = window.PageScroller.VerticalOffset;
-        var preview = new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
-        {
-            RoutedEvent = UIElement.PreviewMouseWheelEvent,
-        };
-        target.RaiseEvent(preview);
-        if (!preview.Handled)
-        {
-            target.RaiseEvent(new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
-            {
-                RoutedEvent = UIElement.MouseWheelEvent,
-            });
-        }
+        Wheel(target);
         await Settle(window);
-
         var after = window.PageScroller.VerticalOffset;
-        File.WriteAllText(Path.Combine(Folder!, "wheel-check.txt"),
-            $"{(after > before ? "PASS" : "FAIL")}: page offset {before} -> {after} after a wheel turn over the ListBox");
+        var lines = new List<string>
+        {
+            $"{(after > before ? "PASS" : "FAIL")}: page offset {before} -> {after} after a wheel turn over the ListBox",
+        };
+
+        window.PageScroller.ScrollToTop();
+        DependencyObject card = window.ControlsPage.SettingsList;
+        while (VisualTreeHelper.GetParent(card) is not StackPanel)
+        {
+            card = VisualTreeHelper.GetParent(card);
+        }
+        var host = (StackPanel)VisualTreeHelper.GetParent(card);
+        var longList = new ListBox { Height = 120, ItemsSource = Enumerable.Range(1, 30).Select(i => $"Row {i}").ToList() };
+        host.Children.Insert(host.Children.IndexOf((UIElement)card) + 1, longList);
+        await Settle(window);
+        var listScroller = FindChild<ScrollViewer>(longList)!;
+        listScroller.ScrollToBottom();
+        await Settle(window);
+        before = window.PageScroller.VerticalOffset;
+        Wheel(longList.Items.Count > 0 ? (UIElement)longList.ItemContainerGenerator.ContainerFromIndex(longList.Items.Count - 1) ?? longList : longList);
+        await Settle(window);
+        after = window.PageScroller.VerticalOffset;
+        lines.Add($"{(after == before && listScroller.ScrollableHeight > 0 ? "PASS" : "FAIL")}: page offset {before} -> {after} after a wheel turn over a list at its end");
+        host.Children.Remove(longList);
+        await Settle(window);
+        File.WriteAllLines(Path.Combine(Folder!, "wheel-check.txt"), lines);
+
+        static void Wheel(UIElement element)
+        {
+            var preview = new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
+            {
+                RoutedEvent = UIElement.PreviewMouseWheelEvent,
+            };
+            element.RaiseEvent(preview);
+            if (!preview.Handled)
+            {
+                element.RaiseEvent(new System.Windows.Input.MouseWheelEventArgs(System.Windows.Input.Mouse.PrimaryDevice, Environment.TickCount, -120)
+                {
+                    RoutedEvent = UIElement.MouseWheelEvent,
+                });
+            }
+        }
     }
 
     /// <summary>Opens the combo box, context menu (with a submenu) and tool tip and renders each popup on the window's ground.</summary>
@@ -282,6 +311,23 @@ internal static class Snapshot
         Save(window, Path.Combine(Folder!, "grid-grouped.png"));
         window.GridPage.GroupBy.SelectedIndex = 0;
         await Settle(window);
+    }
+
+    private static T? FindChild<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T found)
+            {
+                return found;
+            }
+            if (FindChild<T>(child) is { } deeper)
+            {
+                return deeper;
+            }
+        }
+        return null;
     }
 
     private static DataGridColumnHeader? FindHeader(DependencyObject parent, string header)

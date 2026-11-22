@@ -57,7 +57,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
@@ -332,7 +332,7 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"

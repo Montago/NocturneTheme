@@ -12,8 +12,9 @@ namespace Nocturne.Wpf.Helpers;
 /// Mouse wheel chaining. WPF's ScrollViewer swallows every wheel turn, even when it has nothing
 /// to scroll, so a ListBox or DataGrid inside a scrolling page stops the page from scrolling.
 /// With <see cref="ChainMouseWheelProperty"/> on (the Nocturne ScrollViewer style sets it), a
-/// wheel turn that the innermost scroll viewer under the mouse cannot use (no overflow, or already
-/// at the top or bottom) goes to the nearest outer scroll viewer that can scroll that way.
+/// wheel turn over a scroll viewer with nothing to scroll goes to the nearest outer scroll viewer
+/// that can scroll that way. One that has something to scroll keeps its turns, also at its top or
+/// bottom, so the page does not move on under a list scrolled to its end.
 /// </summary>
 public static class ScrollViewerHelper
 {
@@ -43,7 +44,7 @@ public static class ScrollViewerHelper
         // Preview events tunnel from the outside in; only the innermost scroll viewer decides.
         if (e.Handled || e.Delta == 0 || Keyboard.Modifiers != ModifierKeys.None
             || !ReferenceEquals(FindScrollViewer(e.OriginalSource as DependencyObject), viewer)
-            || CanScroll(viewer, e.Delta))
+            || viewer.ScrollableHeight > 0.01)
         {
             return;
         }

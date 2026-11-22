@@ -116,7 +116,7 @@
         <Setter Property="SelectionForegroundBrush" Value="{DynamicResource Nocturne.Brushes.Text.OnAccent}" />
         <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
         <Setter Property="ContextFlyout" Value="{StaticResource Nocturne.ContextMenu.Text}" />
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
         <Setter Property="Template">

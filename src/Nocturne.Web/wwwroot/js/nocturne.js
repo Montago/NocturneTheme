@@ -1977,6 +1977,34 @@ also raise "nc-change" with the new value in event.detail. A data grid raises "n
     check();
   }
 
+  /* ===================================================== wheel at the ends */
+  /* Wheel turns stay in a scroll container that has something to scroll, also at its ends, so the page
+     around it does not move on; one with nothing to scroll lets them through (as Nocturne.Wpf and
+     Nocturne.Avalonia do). overscroll-behavior: contain would hold back a list with nothing to scroll as
+     well, so the theme's scroll containers under the pointer get data-nc-overscroll ("x", "y" or "x y")
+     by their overflow at that moment, and the CSS contains only those axes. */
+  const scrollContainers = '.nc-scroll-viewer, .nc-list-box, .nc-list-view, .nc-tree-view, .nc-data-grid-host, ' +
+    '.nc-nocturne-grid__viewport, .nc-nocturne-grid-filter__list, .nc-context-menu, textarea.nc-text-box, ' +
+    '.nc-rich-text-box, .nc-hamburger-menu, .nc-hamburger-menu__content, .nc-flyout__content';
+
+  function markOverscroll(target) {
+    let el = target instanceof Element ? target.closest(scrollContainers) : null;
+    for (; el; el = el.parentElement?.closest(scrollContainers)) {
+      const axes = [el.scrollWidth > el.clientWidth + 1 ? 'x' : '', el.scrollHeight > el.clientHeight + 1 ? 'y' : '']
+        .filter(Boolean).join(' ');
+      if (axes) {
+        if (el.dataset.ncOverscroll !== axes) el.dataset.ncOverscroll = axes;
+      } else if (el.dataset.ncOverscroll !== undefined) {
+        delete el.dataset.ncOverscroll;
+      }
+    }
+  }
+
+  /* The pointer moving in marks the containers before the first turn; a turn checks again for the next
+     one (items added or folded while the pointer stood still) */
+  document.addEventListener('pointerover', event => markOverscroll(event.target), { passive: true });
+  document.addEventListener('wheel', event => markOverscroll(event.target), { passive: true });
+
   /* ================================================================ sliders */
   function setUpSlider(slider) {
     const range = slider.classList.contains('nc-range-slider');

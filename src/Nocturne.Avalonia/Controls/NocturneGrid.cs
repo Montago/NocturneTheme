@@ -1154,6 +1154,12 @@ public partial class NocturneGrid : DataGrid
         {
             done.Click += (_, _) => CloseFilter(column, button);
         }
+        // Events bubble out of a popup to its Popup, so a wheel turn the filter's lists leave (over the box
+        // or the buttons, or a list at its end) would scroll the grid under it. The popup keeps them.
+        if (e.NameScope.Find<Popup>("PART_FilterPopup")?.Child is { } surface)
+        {
+            surface.AddHandler(PointerWheelChangedEvent, (_, args) => args.Handled = true);
+        }
     }
 
     private static void CloseFilter(DataGridColumn column, ToggleButton? button)
