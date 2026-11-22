@@ -224,6 +224,26 @@ internal static class Snapshot
         check("Enter takes the SearchComboBox match", (owner.SelectedItem as Person)?.Name == "Mikkel Dahl" && !owner.IsDropDownOpen);
         CloseOpenPopups(window);
 
+        var city = page.FindControl<AutoCompleteBox>("CityBox")!;
+        var cityText = city.GetVisualDescendants().OfType<TextBox>().First(t => t.Name == "PART_TextBox");
+        ScrollTo(window, city);
+        Click(window, cityText);
+        window.KeyTextInput("cop");
+        Headless.Wait(TimeSpan.FromMilliseconds(200));
+        Headless.Capture(window);
+        check("typing opens the AutoCompleteBox's matches", city.IsDropDownOpen);
+        window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+        Headless.Capture(window);
+        check("Enter takes the AutoCompleteBox's match", city.Text == "Copenhagen" && city.SelectedItem as string == "Copenhagen" && !city.IsDropDownOpen);
+        cityText.SelectAll();
+        window.KeyTextInput("ber");
+        Headless.Wait(TimeSpan.FromMilliseconds(200));
+        Headless.Capture(window);
+        window.KeyPress(Key.Tab, RawInputModifiers.None, PhysicalKey.Tab, null);
+        Headless.Capture(window);
+        check("Tab takes the AutoCompleteBox's first match and moves on", city.Text == "Berlin" && !city.IsDropDownOpen && !city.IsKeyboardFocusWithin);
+        CloseOpenPopups(window);
+
         var colour = page.FindControl<ColorPicker>("LabelColour")!;
         ScrollTo(window, colour);
         Click(window, colour);

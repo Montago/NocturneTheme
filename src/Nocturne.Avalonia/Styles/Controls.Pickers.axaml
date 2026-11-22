@@ -178,12 +178,14 @@
 
     <!--
         AutoCompleteBox: the TextBox itself (ControlHelper.Icon, ClearButton and HasError pass through)
-        with the matches in a drop-down while you type.
+        with the matches in a drop-down while you type. Enter and Tab take the highlighted match, else
+        the first one in the list (AutoCompleteBoxHelper.CommitMatch).
     -->
     <ControlTheme x:Key="{x:Type AutoCompleteBox}" TargetType="AutoCompleteBox">
         <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Text}" />
         <Setter Property="PlaceholderForeground" Value="{DynamicResource Nocturne.Brushes.Text.Placeholder}" />
         <Setter Property="MaxDropDownHeight" Value="264" />
+        <Setter Property="h:AutoCompleteBoxHelper.CommitMatch" Value="True" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="Root">
