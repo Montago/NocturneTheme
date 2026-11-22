@@ -442,6 +442,23 @@ internal static class Snapshot
 
         grid.ClearFilters();
         Headless.Capture(window);
+        var rowsCentre = grid.TranslatePoint(new Point(grid.Bounds.Width / 2, grid.Bounds.Height / 2), window)!.Value;
+        pageBefore = pageScroller.Offset;
+        window.MouseMove(rowsCentre);
+        window.MouseWheel(rowsCentre, new Vector(0, -1));
+        Headless.Capture(window);
+        var oneNotch = bar.Value;
+        window.MouseWheel(rowsCentre, new Vector(0, -1));
+        Headless.Capture(window);
+        var twoNotches = bar.Value;
+        for (var i = 0; i < 3; i++)
+        {
+            window.MouseWheel(rowsCentre, new Vector(0, 1));
+        }
+        Headless.Capture(window);
+        check($"a wheel notch scrolls the grid by whole rows ({oneNotch / grid.RowHeight:0.##} rows), and back to the top",
+            oneNotch > 0 && Math.Abs(oneNotch % grid.RowHeight) < 0.5 && Math.Abs(twoNotches - 2 * oneNotch) < 0.5
+            && bar.Value == 0 && pageScroller.Offset == pageBefore);
         var next = grid.GetVisualDescendants().OfType<Button>().First(b => b.Name == "PART_NextPage");
         Click(window, next);
         check("Clear filters shows every row, and the pager moves to the next page",

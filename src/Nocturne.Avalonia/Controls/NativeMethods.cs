@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace Nocturne.Avalonia.Controls;
 
-/// <summary>Windows calls for <see cref="NocturneWindow"/>. Every caller checks <c>OperatingSystem.IsWindows()</c> first.</summary>
+/// <summary>Windows calls for <see cref="NocturneWindow"/> (and the wheel setting for NocturneGrid). Every caller checks <c>OperatingSystem.IsWindows()</c> first.</summary>
 [SupportedOSPlatform("windows")]
 internal static class NativeMethods
 {
@@ -26,6 +26,15 @@ internal static class NativeMethods
 
     [DllImport("user32.dll")]
     private static extern int GetSystemMetrics(int index);
+
+    private const int SpiGetWheelScrollLines = 0x0068;
+
+    [DllImport("user32.dll")]
+    private static extern bool SystemParametersInfo(int action, int param, out int value, int winIni);
+
+    /// <summary>The wheel's "lines to scroll" setting: 3 by default, -1 for "one screen at a time".</summary>
+    public static int WheelScrollLines() =>
+        SystemParametersInfo(SpiGetWheelScrollLines, 0, out var lines, 0) ? lines : 3;
 
     /// <summary>Sets a DWM window attribute; false where Windows does not know it (older versions).</summary>
     public static bool SetDwmAttribute(IntPtr hwnd, int attribute, int value) =>

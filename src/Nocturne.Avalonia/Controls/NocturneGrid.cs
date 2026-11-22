@@ -596,6 +596,7 @@ public partial class NocturneGrid : DataGrid
         lastPage = e.NameScope.Find<Button>(PartLastPage);
         pageText = e.NameScope.Find<TextBlock>(PartPageText);
         rangeText = e.NameScope.Find<TextBlock>(PartRangeText);
+        verticalBar = e.NameScope.Find<ScrollBar>("PART_VerticalScrollbar");
         foreach (var button in new[] { firstPage, previousPage, nextPage, lastPage })
         {
             if (button != null)
