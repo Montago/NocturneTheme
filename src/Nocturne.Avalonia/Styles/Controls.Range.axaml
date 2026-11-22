@@ -263,8 +263,10 @@
         </Style>
     </ControlTheme>
 
-    <!-- ProgressBar: a 6px rounded track; IsIndeterminate runs a bar across in 1.6 s -->
+    <!-- ProgressBar: a 6px rounded track; IsIndeterminate runs a bar across in 1.6 s (again after the page was
+         switched away and back: ControlHelper.MarksShown) -->
     <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar">
+        <Setter Property="h:ControlHelper.MarksShown" Value="True" />
         <Setter Property="Height" Value="6" />
         <Setter Property="MinWidth" Value="40" />
         <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
@@ -291,7 +293,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Bottom" />
         </Style>
-        <Style Selector="^:horizontal:indeterminate /template/ Border#Runner">
+        <Style Selector="^:horizontal:indeterminate:shown /template/ Border#Runner">
             <Setter Property="Width" Value="{Binding TemplateSettings.ContainerWidth, RelativeSource={RelativeSource TemplatedParent}}" />
             <Style.Animations>
                 <Animation IterationCount="Infinite" Duration="0:0:1.6" Easing="SineEaseInOut">
@@ -311,6 +313,7 @@
 
     <!-- ProgressRing: a quarter arc in the light accent runs round a faint track once a second; size it with Width and Height -->
     <ControlTheme x:Key="{x:Type c:ProgressRing}" TargetType="c:ProgressRing">
+        <Setter Property="h:ControlHelper.MarksShown" Value="True" />
         <Setter Property="Width" Value="32" />
         <Setter Property="Height" Value="32" />
         <Setter Property="Foreground" Value="{DynamicResource Nocturne.Brushes.Accent.Light}" />
@@ -331,7 +334,7 @@
         <Style Selector="^[IsActive=False] /template/ Viewbox#Root">
             <Setter Property="IsVisible" Value="False" />
         </Style>
-        <Style Selector="^[IsActive=True] /template/ Path#Arc">
+        <Style Selector="^[IsActive=True]:shown /template/ Path#Arc">
             <Style.Animations>
                 <Animation Duration="0:0:1" IterationCount="Infinite">
                     <KeyFrame Cue="0%">

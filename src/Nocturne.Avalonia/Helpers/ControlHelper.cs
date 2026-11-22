@@ -16,6 +16,7 @@ public class ControlHelper
     {
         ClearButtonProperty.Changed.AddClassHandler<Control>((c, e) => c.Classes.Set("clearButton", e.NewValue is true));
         HasErrorProperty.Changed.AddClassHandler<Control>((c, e) => c.Classes.Set("hasError", e.NewValue is true));
+        MarksShownProperty.Changed.AddClassHandler<Control>(OnMarksShownChanged);
     }
 
     /// <summary>Background a button fades to (120 ms) while the pointer is over it.</summary>
@@ -49,6 +50,37 @@ public class ControlHelper
     /// <summary>An × button at the end of a TextBox that has text; it empties the box.</summary>
     public static readonly AttachedProperty<bool> ClearButtonProperty =
         AvaloniaProperty.RegisterAttached<ControlHelper, Control, bool>("ClearButton");
+
+    /// <summary>
+    /// Sets the pseudo-class <c>:shown</c> while the control is in the visual tree. Avalonia stops a style's
+    /// animations when the control leaves the tree (a page switched away) and does not start them again when
+    /// it comes back, since the selector still matches. A theme puts <c>:shown</c> in the selector of an
+    /// endless animation (the indeterminate ProgressBar, ProgressRing), so it matches anew and runs again.
+    /// </summary>
+    public static readonly AttachedProperty<bool> MarksShownProperty =
+        AvaloniaProperty.RegisterAttached<ControlHelper, Control, bool>("MarksShown");
+
+    public static bool GetMarksShown(Control c) => c.GetValue(MarksShownProperty);
+    public static void SetMarksShown(Control c, bool value) => c.SetValue(MarksShownProperty, value);
+
+    private static void OnMarksShownChanged(Control control, AvaloniaPropertyChangedEventArgs e)
+    {
+        control.AttachedToVisualTree -= OnAttachedToVisualTree;
+        control.DetachedFromVisualTree -= OnDetachedFromVisualTree;
+        var on = e.NewValue is true;
+        if (on)
+        {
+            control.AttachedToVisualTree += OnAttachedToVisualTree;
+            control.DetachedFromVisualTree += OnDetachedFromVisualTree;
+        }
+        SetShown(control, on && TopLevel.GetTopLevel(control) != null);
+    }
+
+    private static void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e) => SetShown((Control)sender!, true);
+
+    private static void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e) => SetShown((Control)sender!, false);
+
+    private static void SetShown(Control control, bool shown) => ((IPseudoClasses)control.Classes).Set(":shown", shown);
 
     public static IBrush? GetHoverBackground(Control c) => c.GetValue(HoverBackgroundProperty);
     public static void SetHoverBackground(Control c, IBrush? value) => c.SetValue(HoverBackgroundProperty, value);

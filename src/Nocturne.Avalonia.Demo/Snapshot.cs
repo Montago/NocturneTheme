@@ -130,6 +130,7 @@ internal static class Snapshot
         Click(window, tabs.GetVisualDescendants().OfType<Button>().First(b => b.Name == "AddButton"));
         Check("the + button adds a tab", tabs.ItemCount == 3 && (tabs.SelectedItem as TabItem)?.Header as string == "New 1");
 
+        CheckAnimationsAfterPageSwitch(window, Check);
         CheckCustomPage(window, Check);
         CheckGridPage(window, Check);
         CheckIconsPage(window, Check);
@@ -467,6 +468,46 @@ internal static class Snapshot
         grid.PageIndex = 0;
         Headless.Capture(window);
         ScrollToStart(window);
+    }
+
+    /// <summary>
+    /// The indeterminate ProgressBar and the ProgressRing keep running when their page is left and shown
+    /// again (Avalonia stops a style's animations when the control leaves the visual tree).
+    /// </summary>
+    private static void CheckAnimationsAfterPageSwitch(MainWindow window, Action<string, bool> check)
+    {
+        window.ShowPage("controls");
+        Headless.Capture(window);
+        var bar = window.GetVisualDescendants().OfType<ProgressBar>().First(b => b.IsIndeterminate);
+        var runner = bar.GetVisualDescendants().OfType<Border>().First(b => b.Name == "Runner");
+        double RunnerX() => runner.RenderTransform?.Value.M31 ?? double.NaN;
+        check("the indeterminate ProgressBar runs", Moves(window, RunnerX));
+        window.ShowPage("tokens");
+        Headless.Capture(window);
+        window.ShowPage("controls");
+        Headless.Capture(window);
+        check("the indeterminate ProgressBar runs again after a page switch", Moves(window, RunnerX));
+
+        window.ShowPage("custom");
+        Headless.Capture(window);
+        var ring = window.GetVisualDescendants().OfType<ProgressRing>().First();
+        var arc = ring.GetVisualDescendants().OfType<global::Avalonia.Controls.Shapes.Path>().First(p => p.Name == "Arc");
+        double ArcAngle() => arc.RenderTransform is { } t ? Math.Atan2(t.Value.M12, t.Value.M11) * 180 / Math.PI : double.NaN;
+        check("the ProgressRing turns", Moves(window, ArcAngle));
+        window.ShowPage("tokens");
+        Headless.Capture(window);
+        window.ShowPage("custom");
+        Headless.Capture(window);
+        check("the ProgressRing turns again after a page switch", Moves(window, ArcAngle));
+
+        static bool Moves(MainWindow window, Func<double> value)
+        {
+            var before = value();
+            Headless.Wait(TimeSpan.FromMilliseconds(250));
+            Headless.Capture(window);
+            var after = value();
+            return !double.IsNaN(before) && !double.IsNaN(after) && Math.Abs(after - before) > 0.5;
+        }
     }
 
     /// <summary>The header of a column in a grid.</summary>

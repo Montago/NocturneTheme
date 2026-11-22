@@ -232,6 +232,9 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   gallery restarts a sample's ProgressRing / indeterminate ProgressBar (IsActive / IsIndeterminate off and on;
   putting the content back stops them instead), so they stand at 700 ms in the picture as in WPF. Scroll bars
   fade on real-time `DispatcherTimer`s, so a few page pictures can still differ by a pixel shade between runs.
+- A style's endless animation (`Style.Animations`, `IterationCount="Infinite"`) stops when the control leaves the
+  visual tree (a page switched away) and does not start again when it returns, as the selector still matches:
+  set `h:ControlHelper.MarksShown` in the theme and put `:shown` in the animation's selector (ProgressBar, ProgressRing).
 - Headless, `Dispatcher.UIThread.RunJobs()` never fires a `DispatcherTimer`; run
   `Dispatcher.UIThread.MainLoop(token)` for the time to wait (`Snapshot.Wait`).
 - Avalonia has no WPF `RoutedCommand`: TabHelper offers `CloseTabCommand` / `AddTabCommand` (ICommand),
