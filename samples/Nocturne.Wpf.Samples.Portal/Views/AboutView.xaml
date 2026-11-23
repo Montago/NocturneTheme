@@ -14,7 +14,7 @@
                 <TextBlock Margin="0,0,0,6">
                     <Hyperlink NavigateUri="https://github.com/Montago/NocturneTheme" RequestNavigate="OnRequestNavigate">Nocturne for WPF on GitHub</Hyperlink>
                 </TextBlock>
-                <TextBlock x:Name="Version" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" />
+                <TextBlock Text="Built with Nocturne WPF" Style="{StaticResource Nocturne.Styles.TextBlock.Caption}" />
             </StackPanel>
         </HeaderedContentControl>
     </StackPanel>

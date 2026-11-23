@@ -63,7 +63,7 @@
             <StatusBarItem Content="Ready" />
             <Separator />
             <StatusBarItem Content="Signed in as Ida Kragh" />
-            <StatusBarItem x:Name="Version" HorizontalAlignment="Right" />
+            <StatusBarItem Content="Nocturne WPF" HorizontalAlignment="Right" />
         </StatusBar>
 
         <!-- The navigation pane: each item carries its page in Tag, and the content area shows it -->

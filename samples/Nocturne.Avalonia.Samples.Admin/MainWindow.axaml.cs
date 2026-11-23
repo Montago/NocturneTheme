@@ -10,7 +10,6 @@ public partial class MainWindow : NocturneWindow
     public MainWindow()
     {
         InitializeComponent();
-        Version.Content = $"Nocturne.Avalonia {typeof(NocturneWindow).Assembly.GetName().Version?.ToString(3)}";
 
         BackdropBox.ItemsSource = Enum.GetValues<WindowBackdrop>();
         BackdropBox.SelectedItem = Backdrop;

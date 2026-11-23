@@ -11,7 +11,6 @@ public partial class MainWindow : NocturneWindow
     public MainWindow()
     {
         InitializeComponent();
-        Version.Content = $"Nocturne.Wpf {typeof(NocturneWindow).Assembly.GetName().Version?.ToString(3)}";
         BackdropBox.ItemsSource = Enum.GetValues<WindowBackdrop>();
         AccentBox.ItemsSource = Enum.GetValues<NocturneAccent>();
         AccentBox.SelectedItem = NocturneTheme.Accent;

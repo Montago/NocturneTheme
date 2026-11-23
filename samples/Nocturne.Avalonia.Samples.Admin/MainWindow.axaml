@@ -55,7 +55,7 @@
             <nc:StatusBarItem Content="Ready" />
             <Separator />
             <nc:StatusBarItem Content="Signed in as Ida Kragh" />
-            <nc:StatusBarItem Name="Version" HorizontalAlignment="Right" />
+            <nc:StatusBarItem Content="Nocturne Avalonia" HorizontalAlignment="Right" />
         </nc:StatusBar>
 
         <!-- The navigation pane: each item carries its page in Tag, and the content area shows it -->
