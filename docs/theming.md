@@ -56,14 +56,14 @@ NocturneTheme.SetAccent(NocturneAccent.Blue);
 | `Orange` | |
 | `Blue` | The default |
 | `Yellow` | Gold; text on it is dark, as white on yellow is hard to read |
-| `Red` | |
+| `Teal` | |
 | `System` | The accent colour chosen in Windows (Settings, Personalisation, Colours), followed while the app runs; blue where Windows has none |
 
 ![Orange](screenshots/accent-orange.png)
 
 ![Yellow](screenshots/accent-yellow.png)
 
-![Red](screenshots/accent-red.png)
+![Teal](screenshots/accent-teal.png)
 
 `System` reads the seven shades Windows derives from the user's colour, takes the window's tint from
 its hue and picks white or dark text on the accent by its brightness. A `NocturneWindow` listens for
@@ -101,12 +101,14 @@ The accent brushes are the exception: `SetAccent` rewrites them, so pick an acce
 
 ## Font
 
-The theme uses Segoe UI, and Cascadia Mono (or Consolas) for monospaced text; both come with
-Windows, so nothing is bundled. To use another font, redefine `Nocturne.Fonts.Family` (and `Nocturne.Fonts.Family.Mono`
-for the monospaced text):
+The theme uses [Inter](https://rsms.me/inter/), embedded in the package (Regular, Medium, SemiBold and
+Bold), with Segoe UI behind it for characters Inter lacks, so the app looks the same whether or not
+Inter is installed. Monospaced text uses Cascadia Mono (or Consolas), which come with Windows. To use
+another font, redefine `Nocturne.Fonts.Family` (and `Nocturne.Fonts.Family.Mono` for the monospaced
+text):
 
 ```xml
-<FontFamily x:Key="Nocturne.Fonts.Family">Inter, Segoe UI</FontFamily>
+<FontFamily x:Key="Nocturne.Fonts.Family">Segoe UI Variable Text, Segoe UI</FontFamily>
 ```
 
 The type scale (`Nocturne.Font.Size.*`) and the text styles are on [Typography and surfaces](typography.md).

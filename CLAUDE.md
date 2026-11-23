@@ -339,8 +339,8 @@ tools/generate_avalonia_tokens.py   Brushes.xaml, Icons.xaml and the accent pale
   `ScrollViewer.*` properties; popups (ContextMenu, MenuItem) set them to Auto, or an empty bar shows.
 - WPF's ScrollViewer swallows every wheel turn, even with nothing to scroll. The Nocturne ScrollViewer
   style turns on `ScrollViewerHelper.ChainMouseWheel`: the innermost scroll viewer under the mouse
-  passes a turn it cannot use to the nearest outer one that can (visual parents only, so popups
-  never scroll the page).
+  passes a turn on to the nearest outer one that can scroll only when it has nothing to scroll itself
+  (one scrolled to its end keeps the turn; visual parents only, so popups never scroll the page).
 - Scroll bars are 18px wide with a thumb that fills that width (the drawn bar is 6px, 10px under
   the mouse), so a bar along the window edge stays clear of the 6px resize border.
   `ScrollViewerHelper.AutoHide` (on in the ScrollViewer styles) fades the bars out while the mouse

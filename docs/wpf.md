@@ -34,7 +34,7 @@ standard control; the package adds the controls a desktop app usually needs on t
   `NumericUpDown`, `TimePicker`, `ColorPicker`, `AutoSuggestBox`, `SearchComboBox`, `RangeSlider`,
   `Rating`, `ProgressRing`, `BusyIndicator`, `InfoBar`, `Accordion`, `HamburgerMenu`, `NocturneDialog`,
   `Flyout` and `NocturneGrid`, a data grid for large lists with search, header filters, grouping and paging.
-- **Accents.** Blue by default; `NocturneTheme.SetAccent` switches to green, orange, yellow, red or
+- **Accents.** Blue by default; `NocturneTheme.SetAccent` switches to green, orange, yellow, teal or
   the accent colour chosen in Windows, at run time. See [Theme and accents](theming.md).
 - **Building blocks**: cards, tags, pills, badges, icon tiles, a type scale, a small set of line
   icons (`nc:StrokeIcon`) and Material Design Icons (`nc:NocturneIcon`, `{nc:Icon Bell}`). See
@@ -60,5 +60,5 @@ one. They show the opaque fallback ground, as a snapshot cannot see the Windows 
 ## License
 
 MIT, except the Material Design Icons that `NocturneIcon` draws (Apache License 2.0, by
-Pictogrammers; see `NOTICE.md`). The rest, including the line icons, is drawn for Nocturne; the font
-is Segoe UI, which comes with Windows. The package's licence is `MIT AND Apache-2.0`.
+Pictogrammers) and the embedded Inter font (SIL Open Font License 1.1); see `NOTICE.md`. The rest,
+including the line icons, is drawn for Nocturne. The package's licence is `MIT AND Apache-2.0 AND OFL-1.1`.

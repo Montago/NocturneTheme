@@ -18,7 +18,7 @@ Every `Button` is a light translucent surface with a 1px border and 8px corners;
 | --- | --- |
 | *(implicit)* / `Nocturne.Styles.Button` | Light surface, for most actions |
 | `Nocturne.Styles.Button.Primary` | The accent with a light top edge and a small shadow; one per view, for the main action |
-| `Nocturne.Styles.Button.Danger` | A deep red, darker than the red accent, for actions that cannot be undone (delete) |
+| `Nocturne.Styles.Button.Danger` | A deep red, for actions that cannot be undone (delete) |
 | `Nocturne.Styles.Button.Subtle` | No surface until hovered; for less important actions |
 | `Nocturne.Styles.Button.Icon` | A 36×36 square for an icon |
 | `Nocturne.Styles.Button.Icon.Subtle` | An icon button with no surface until hovered (tool bars, title bar) |
@@ -38,8 +38,7 @@ Every `Button` is a light translucent surface with a 1px border and 8px corners;
 
 `Nocturne.Styles.Button.Danger` is for deleting and other actions that cannot be undone, usually next
 to a Cancel button or as the main button of a confirmation dialog
-(`NocturneDialog.AffirmativeButtonStyle`). Its red is deeper than the red accent, so it stands apart
-from the accent in every colour.
+(`NocturneDialog.AffirmativeButtonStyle`). Its red stays the same in every accent.
 
 ```xml
 <Button Style="{StaticResource Nocturne.Styles.Button.Danger}">

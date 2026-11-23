@@ -222,8 +222,9 @@ along the window edge stays clear of the resize border. They fade out while the 
 come back when it is over the scroll viewer or the content scrolls; their room stays, so the content
 does not move ([`ScrollViewerHelper.AutoHide`](helpers.md#scrollviewerhelper)). The pictures on these
 pages show no bars for that reason. The theme's `ScrollViewer` passes a wheel turn
-it cannot use (a list scrolled to its end, or with nothing to scroll) on to the scroll viewer around
-it, so a list inside a scrolling page does not stop the page ([`ScrollViewerHelper`](helpers.md#scrollviewerhelper)).
+over a list with nothing to scroll on to the scroll viewer around it, so a short list inside a
+scrolling page does not stop the page; a list that can scroll keeps its turns, also at its end
+([`ScrollViewerHelper`](helpers.md#scrollviewerhelper)).
 
 ```xml
 <ScrollViewer HorizontalScrollBarVisibility="Auto">

@@ -41,5 +41,5 @@ app and a web portal can look the same.
 ## License
 
 MIT, except the Material Design Icons (Apache License 2.0, by Pictogrammers) and the Inter font
-(SIL Open Font License 1.1) that Nocturne.Avalonia and Nocturne.Web carry. See
+(SIL Open Font License 1.1) that all three carry. See
 [NOTICE](https://github.com/Montago/NocturneTheme/blob/master/NOTICE.md).

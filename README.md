@@ -33,7 +33,7 @@ control; the package adds the controls a desktop app usually needs on top.
   `Rating`, `ProgressRing`, `BusyIndicator`, `InfoBar`, `Accordion`, `HamburgerMenu`, `NocturneDialog`,
   `Flyout` and `NocturneGrid`, a data grid for large lists with search, header filters, grouping and
   paging.
-- **Accents.** Blue by default; `NocturneTheme.SetAccent` switches to green, orange, yellow, red or the
+- **Accents.** Blue by default; `NocturneTheme.SetAccent` switches to green, orange, yellow, teal or the
   accent colour chosen in Windows, at run time.
 - **Building blocks**: cards, tags, pills, badges, icon tiles, a type scale and a set of line icons
   (`nc:StrokeIcon`).
@@ -160,6 +160,6 @@ The demo and the samples take `--snapshot <folder>`: they render their pages to 
 ## Licence
 
 MIT, see [LICENSE](LICENSE), except the Material Design Icons by Pictogrammers in `icons/` and the
-path data generated from them, which are under the Apache License 2.0 (see [NOTICE.md](NOTICE.md)).
-The rest, including the line icons, is drawn for Nocturne; the font is Segoe UI, which comes with
-Windows. The package's licence is `MIT AND Apache-2.0`.
+path data generated from them, which are under the Apache License 2.0, and the Inter font in
+`fonts/inter/`, which is under the SIL Open Font License 1.1 (see [NOTICE.md](NOTICE.md)). The rest,
+including the line icons, is drawn for Nocturne. The packages' licence is `MIT AND Apache-2.0 AND OFL-1.1`.

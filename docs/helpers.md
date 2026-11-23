@@ -59,9 +59,11 @@ For `Nocturne.Styles.TabControl.Document` ([Document tabs](navigation.md#documen
 
 ## ScrollViewerHelper
 
-`ChainMouseWheel` passes a wheel turn that a scroll viewer cannot use (it has nothing to scroll, or is
-at its end in that direction) to the nearest scroll viewer around it that can. WPF's `ScrollViewer`
-swallows every turn otherwise, so a `ListBox` or `DataGrid` inside a scrolling page stops the page.
+`ChainMouseWheel` passes a wheel turn over a scroll viewer with nothing to scroll to the nearest
+scroll viewer around it that can scroll that way. WPF's `ScrollViewer` swallows every turn otherwise,
+so a short `ListBox` or `DataGrid` inside a scrolling page stops the page. A scroll viewer with
+something to scroll keeps its turns, also at its top or bottom, so the page does not move on under a
+list scrolled to its end.
 The theme's `ScrollViewer` style turns it on; only visual parents are searched, so a popup never
 scrolls the page under it.
 

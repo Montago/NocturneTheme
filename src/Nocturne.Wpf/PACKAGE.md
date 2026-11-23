@@ -74,9 +74,11 @@ public partial class MainWindow : Nocturne.Wpf.Controls.NocturneWindow { ... }
   virtualized rows and columns with text drawn straight from the font. Columns: `NocturneGridColumn`
   and `NocturneGridCheckBoxColumn`.
 - **Accent colours**: blue by default; `NocturneTheme.SetAccent(NocturneAccent.Green)` (or Orange,
-  Yellow, Red) switches the accent, the primary button and the window tint at run time. `NocturneAccent.System` uses
+  Yellow, Teal) switches the accent, the primary button and the window tint at run time. `NocturneAccent.System` uses
   the accent colour chosen in Windows and follows it when the user changes it.
 - **Cards** (`Nocturne.Styles.Card`), tags, status pills, badges, icon tiles, typography styles.
+- **Font**: Inter, embedded in the package (SIL Open Font License 1.1, see `NOTICE.md`); override
+  `Nocturne.Fonts.Family` to use another.
 - **StrokeIcon** and a small set of line icons (`Nocturne.Icons.*`).
 - **NocturneIcon**: Material Design Icons by Pictogrammers, `<nc:NocturneIcon Kind="Bell" />`, with
   the shortcuts `{nc:Icon ContentSave}` (for `MenuItem.Icon`, `Content`) and `{nc:IconGeometry Star}`.

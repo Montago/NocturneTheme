@@ -11,7 +11,7 @@ nav_order: 8
 
 ![The text styles](screenshots/controls/typography.png)
 
-The type is Segoe UI at 14px for body text and controls. The text styles are keyed `TextBlock` styles;
+The type is Inter at 14px for body text and controls. The text styles are keyed `TextBlock` styles;
 the sizes are resources, so a whole app can scale them.
 
 | Style | Size / weight | For |
@@ -149,5 +149,6 @@ The demo's Icons page shows every icon with its name; click one to copy its XAML
 | `Data` | Read-only: the icon's geometry in 24×24 units (`NocturneIcon.GeometryOf(kind)` from code) |
 | `Foreground` | The colour (inherited) |
 
-The icons are licensed under the Apache License 2.0, the rest of Nocturne under MIT; the package's
-licence is `MIT AND Apache-2.0` and it carries both licences and a `NOTICE.md`.
+The icons are licensed under the Apache License 2.0, the Inter font under the SIL Open Font License
+1.1 and the rest of Nocturne under MIT; the package's licence is `MIT AND Apache-2.0 AND OFL-1.1` and
+it carries the licences and a `NOTICE.md`.
