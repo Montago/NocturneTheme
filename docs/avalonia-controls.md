@@ -226,7 +226,11 @@ package; this is the theme's small swatch picker, the same as in WPF.)
 
 ![AutoCompleteBox](screenshots/avalonia/controls/autocompletebox.png)
 
-Avalonia's `AutoCompleteBox` in the field look, with the suggestions in a popup list.
+Avalonia's `AutoCompleteBox` in the field look, with the suggestions in a popup list. While the list is
+open, Enter and Tab take the highlighted suggestion, else the one that equals the text, else the first
+one, so a match can be taken without the arrow keys (Avalonia's own box takes only an item moved to with
+Up or Down). Enter stays in the box; Tab moves on. `nc:AutoCompleteBoxHelper.CommitMatch="False"` turns
+this off.
 
 ### SearchComboBox
 
@@ -342,6 +346,9 @@ itself when you give it one. Rows and columns are virtualized.
 - **Grouping**: `GroupMemberPath` groups the rows under the DataGrid's group headers, with the row count.
 - **Paging**: `PageSize` shows one page at a time with a pager under the rows.
 - A new search, filter or page keeps the selected row when it is still shown, and otherwise selects none.
+- **Wheel**: a notch scrolls by whole rows, as in Nocturne.Wpf: Windows' "lines per notch" rows (3
+  elsewhere), leaving a row's top edge at the top. A grouped grid, shown row details and Shift keep the
+  DataGrid's own pixel scrolling.
 
 ```xml
 <TextBox Name="Search" Theme="{StaticResource Nocturne.Styles.TextBox.Search}" Classes="clearButton" />
@@ -422,6 +429,11 @@ are searched through `NocturneGrid.FilterMemberPath` or their `SortMemberPath`.
 Scroll bars are 18px wide, but the drawn bar is a thin 6px line that widens to 10px under the pointer.
 They fade in while the content scrolls or the pointer is over it, and out again a moment later
 (`AllowAutoHide`, as in Avalonia), which is why the picture shows none.
+
+A wheel turn stays in the scroll viewer under the pointer when it has something to scroll, also once it
+has reached its end, so a list or grid inside a scrolling page does not move the page when it runs out;
+one with nothing to scroll passes the turn on to the scroll viewer around it
+(the theme turns `IsScrollChainingEnabled` off).
 
 ## Navigation and layout
 
